@@ -1,0 +1,347 @@
+//целевая ширина экрана 1366px +
+/// radiuses ///
+$radius-xxxs: 2px;
+$radius-xxs: 4px;
+$radius-xs: 8px;
+$radius-s: 12px;
+$radius-m: 16px;
+$radius-l: 20px;
+$radius-xl: 24px;
+$radius-xxl: 28px;
+$radius-xxxl: 32px;
+$radius-big: 40px;
+//////////////////////////////////////////////////////////////////////
+/// margins ///
+$margin-xxxs: 2px;
+$margin-xxs: 4px;
+$margin-xs: 8px;
+$margin-s: 12px;
+$margin-m: 16px;
+$margin-l: 20px;
+$margin-xl: 24px;
+$margin-xxl: 28px;
+$margin-xxxl: 32px;
+$margin-big: 40px;
+//////////////////////////////////////////////////////////////////////
+/// colors ///
+$color-neutral-0: #000000;
+$color-neutral-10: #1a1a1a;
+$color-black: #262626;
+$color-neutral-30: #333333;
+$color-neutral-40: #3f3f3f;
+$color-neutral-50: #62656a;
+$color-neutral-60: #b9b9b9;
+$color-neutral-70: #d2d2d2;
+$color-neutral-80: #eeeeee;
+$color-neutral-90: #f7f8f9;
+$color-white: #fff;
+
+$color-brand-50: #fe5000;
+$color-brand-60: #ff7332;
+$color-brand-70: #fe8750;
+
+$color-primary: #418cff;
+$color-info-50: #0066ff;
+$color-info-60: #3f8cff;
+
+$color-error: #d96a75;
+$color-error-0: #201e1e;
+$color-error-50: #ff002e;
+$color-error-60: #fa5050;
+$color-error-100: #fffafa;
+
+$color-success: #3ab08e;
+$color-success-50: #009944;
+$color-success-60: #43b67c;
+
+$color-warning: #fab067;
+$color-warning-30: #ffb900;
+$color-warning-40: #fec223;
+$color-warning-50: #ffcf54;
+
+//////////////////////////////////////////////////////////////////////
+/// font ///
+$font-primary: 'Roboto';
+
+$font-size-xxxs: 8px;
+$font-size-xxs: 10px;
+$font-size-xs: 12px;
+$font-size-s: 14px;
+$font-size-sm: 16px;
+$font-size-md: 18px;
+$font-size-lg: 20px;
+$font-size-xl: 22px;
+$font-size-xxl: 28px;
+$font-size-xxxl: 36px;
+
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+
+$line-height-xxs: 12px;
+$line-height-xs: 16px;
+$line-height-s: 20px;
+$line-height-md: 24px;
+$line-height-lg: 28px;
+$line-height-xl: 36px;
+$line-height-xxl: 44px;
+
+.title1Bold {
+  font-family: $font-primary;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-xxxl;
+  line-height: $line-height-xxl;
+}
+
+.title1Medium {
+  font-family: $font-primary;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-xxxl;
+  line-height: $line-height-xxl;
+}
+
+.title1Regular {
+  font-family: $font-primary;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-xxxl;
+  line-height: $line-height-xxl;
+}
+
+.title2Bold {
+  font-family: $font-primary;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-xxl;
+  line-height: $line-height-xl;
+}
+
+.title2Medium {
+  font-family: $font-primary;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-xxl;
+  line-height: $line-height-xl;
+}
+
+.title2Regular {
+  font-family: $font-primary;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-xxl;
+  line-height: $line-height-xl;
+}
+
+.title3Bold {
+  font-family: $font-primary;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-xl;
+  line-height: $line-height-lg;
+}
+
+.title3Medium {
+  font-family: $font-primary;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-xl;
+  line-height: $line-height-lg;
+}
+
+.title3Regular {
+  font-family: $font-primary;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-xl;
+  line-height: $line-height-lg;
+}
+
+.title4Bold {
+  font-family: $font-primary;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-lg;
+  line-height: $line-height-lg;
+}
+
+.title4Medium {
+  font-family: $font-primary;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-lg;
+  line-height: $line-height-lg;
+}
+
+.title4Regular {
+  font-family: $font-primary;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-lg;
+  line-height: $line-height-lg;
+}
+
+.title5Bold {
+  font-family: $font-primary;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-md;
+  line-height: $line-height-md;
+}
+
+.title5Medium {
+  font-family: $font-primary;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-md;
+  line-height: $line-height-md;
+}
+
+.title5Regular {
+  font-family: $font-primary;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-md;
+  line-height: $line-height-md;
+}
+
+.bodyBold {
+  font-family: $font-primary;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-sm;
+  line-height: $line-height-s;
+}
+
+.bodyMedium {
+  font-family: $font-primary;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-sm;
+  line-height: $line-height-s;
+}
+
+.bodyRegular {
+  font-family: $font-primary;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-sm;
+  line-height: $line-height-s;
+}
+
+.Caption1Bold {
+  font-family: $font-primary;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-s;
+  line-height: $line-height-s;
+}
+
+.Caption1Medium {
+  font-family: $font-primary;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-s;
+  line-height: $line-height-s;
+}
+
+.Caption1Regular {
+  font-family: $font-primary;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-s;
+  line-height: $line-height-s;
+}
+
+.Caption2Bold {
+  font-family: $font-primary;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-xs;
+  line-height: $line-height-xs;
+}
+
+.Caption2Medium {
+  font-family: $font-primary;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-xs;
+  line-height: $line-height-xs;
+}
+
+.Caption2Regular {
+  font-family: $font-primary;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-xs;
+  line-height: $line-height-xs;
+}
+
+.Caption3Bold {
+  font-family: $font-primary;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-xxs;
+  line-height: $line-height-xxs;
+}
+
+.Caption3Medium {
+  font-family: $font-primary;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-xxs;
+  line-height: $line-height-xxs;
+}
+
+.Caption3Regular {
+  font-family: $font-primary;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-xxs;
+  line-height: $line-height-xxs;
+}
+
+.Caption4Bold {
+  font-family: $font-primary;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-xxxs;
+  line-height: $line-height-xxs;
+}
+
+.Caption4Medium {
+  font-family: $font-primary;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-xxxs;
+  line-height: $line-height-xxs;
+}
+
+.Caption4Regular {
+  font-family: $font-primary;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-xxxs;
+  line-height: $line-height-xxs;
+}
+
+.typesetting{
+  font-family: $font-primary;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-sm;
+  line-height: $line-height-md;
+}
+
+//Экспорт переменных для ts файлов
+:export {
+  colorPrimary: $color-primary;
+  colorSuccess: $color-success;
+  colorError: $color-error;
+  colorWarning: $color-warning;
+  colorPrimaryLight: $color-info-50;
+  colorPrimaryDark: $color-info-60;
+  colorContrast: $color-white;
+  colorSecondaryMain: $color-brand-50;
+  colorSecondaryLight: $color-brand-60;
+  colorSecondaryDark: $color-brand-70;
+  colorWhite: $color-white;
+
+  fontPrimary:$font-primary;
+  fontWeightRegular: $font-weight-regular;
+  fontWeightMedium: $font-weight-medium;
+  fontWeightBold: $font-weight-bold;
+
+  marginXS: $margin-xs;
+}
+
+//Глобальные css переменные
+:root {
+  --margin-xxxs: #{$margin-xxxs};
+  --margin-xxs: #{$margin-xxxs};
+  --margin-xs: #{$margin-xs};
+  --margin-s: #{$margin-s};
+  --margin-m: #{$margin-m};
+  --margin-l: #{$margin-l};
+  --margin-xl: #{$margin-xl};
+  --margin-xxxl: #{$margin-xxxl};
+  --margin-big: #{$margin-big};
+
+  --color-primary: #{$color-primary};
+
+  --color-error: #{$color-error};
+  --color-success: #{$color-success};
+  --color-warning: #{$color-warning};
+  --color-black: #{$color-black};
+  --color-white: #{$color-white};
+}
