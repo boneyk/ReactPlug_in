@@ -5,6 +5,8 @@ import Placeholder from 'navigation/Placeholder';
 import ErrorPage from 'pages/error/ErrorPage';
 import LoginPage from 'pages/login/LoginPage';
 
+import EditModal from 'components/modals/editModal';
+
 import { ProtectedRouteProvider } from './ProtectedRouteProvider';
 import { SuspenseLayout } from './SuspenseLayout';
 
@@ -39,7 +41,7 @@ const Navigation = () => {
                 {
                   path: 'users',
                   children: [
-                    { index: true, element: <Placeholder text="i am users list" /> },
+                    { index: true, element: <EditModal /> },
                     { path: 'create', element: <Placeholder text="i am create user page" /> },
                     { path: 'edit/:id', element: <Placeholder text="i am edit user page" /> }
                   ]
