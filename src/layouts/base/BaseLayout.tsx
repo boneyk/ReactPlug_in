@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 import ArticleIcon from '@mui/icons-material/Article';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -8,7 +7,6 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 
 const BaseLayout = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const menuItems = [
     { key: 'schedule', label: 'Расписание', icon: <CalendarMonthIcon /> },
@@ -16,17 +14,7 @@ const BaseLayout = () => {
     { key: 'applications', label: 'Заявки', icon: <ArticleIcon /> }
   ];
 
-  const path = location.pathname.split('/')[1] || 'users';
-  const [activeKey, setActiveKey] = useState(path);
-
-  useEffect(() => {
-    if (location.pathname === '/') {
-      navigate('/users', { replace: true });
-    }
-  }, [location.pathname, navigate]);
-
   const handleClick = (key: string) => {
-    setActiveKey(key);
     navigate(`/${key}`);
   };
 
@@ -36,13 +24,7 @@ const BaseLayout = () => {
         <Stack direction="row" spacing={2}>
           <img src="/favicon.svg" style={{ width: '44px' }}></img>
           {menuItems.map((item) => (
-            <Button
-              key={item.key}
-              startIcon={item.icon}
-              variant={activeKey === item.key ? 'contained' : 'outlined'}
-              color="secondary"
-              onClick={() => handleClick(item.key)}
-            >
+            <Button key={item.key} startIcon={item.icon} color="secondary" onClick={() => handleClick(item.key)}>
               {item.label}
             </Button>
           ))}
@@ -57,6 +39,7 @@ const BaseLayout = () => {
         <Typography variant="body2" color="text.secondary">
           {`Copyright © ${new Date().getFullYear()} Material UI SAS, trading as MUI`}
         </Typography>
+        {/*TO DO: убрать подпись в футере*/}
       </Box>
     </Box>
   );

@@ -7,7 +7,9 @@ const LoginPage = () => {
       <Stack spacing={2} alignItems="center" textAlign="center">
         <LoginIcon sx={{ fontSize: 64, color: 'text.secondary' }} />
 
-        <Typography variant="h6" color="text.secondary">{`login page`}</Typography>
+        <Typography variant="h6" color="text.secondary">
+          login page
+        </Typography>
       </Stack>
     </Box>
   );

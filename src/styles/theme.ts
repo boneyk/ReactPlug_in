@@ -4,7 +4,7 @@ import { getNumberValue } from './utils';
 
 import vars from './variables.module.scss';
 
-export const templateTheme = createTheme({
+export const theme = createTheme({
   palette: {
     primary: {
       main: vars.colorPrimary,

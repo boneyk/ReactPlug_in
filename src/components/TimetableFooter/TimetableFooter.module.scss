@@ -1,0 +1,60 @@
+@use "../../styles/helpers/mixins" as *;
+
+$move-button-width: 50px;
+$move-button-height: 30px;
+$move-button-radius: 15px;
+
+$move-button-hover-bg: rgba(220, 220, 220, 0.86);
+$move-button-disabled-bg: rgba(171, 171, 171, 0.86);
+
+$control-buttons-height: 40px;
+$control-buttons-gap: 15px;
+
+$workers-control-width: 300px;
+
+.timetable-footer {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+}
+
+.move-button {
+  width: $move-button-width;
+  height: $move-button-height;
+  border-radius: $move-button-radius;
+  background-color: var(--color-white);
+  border: solid var(--color-gray-200) var(--border-width-thin);
+  @include flex-center();
+  box-sizing: border-box;
+  transition:
+          background-color var(--transition-fast),
+          border-color var(--transition-fast);
+  cursor: pointer;
+
+  &:hover {
+    background-color: $move-button-hover-bg;
+    border: solid $move-button-hover-bg var(--border-width-thin);
+  }
+
+  &:focus-visible {
+    @include focus-visible();
+  }
+
+  &:disabled {
+    @include disabled();
+    background-color: $move-button-disabled-bg;
+    border: solid $move-button-disabled-bg var(--border-width-thin);
+  }
+}
+
+.timetable-control-buttons {
+  @include flex-center();
+  width: 100%;
+  height: $control-buttons-height;
+  gap: $control-buttons-gap;
+}
+
+.workers-control-buttons {
+  width: $workers-control-width;
+  height: fit-content;
+}
