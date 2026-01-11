@@ -5,6 +5,8 @@ import Placeholder from 'navigation/Placeholder';
 import ErrorPage from 'pages/error/ErrorPage';
 import LoginPage from 'pages/login/LoginPage';
 
+import TimetablePage from '../pages/timetable/TimetablePage';
+
 import { ProtectedRouteProvider } from './ProtectedRouteProvider';
 import { SuspenseLayout } from './SuspenseLayout';
 
@@ -15,6 +17,10 @@ const Navigation = () => {
       element: <LoginPage />
     },
     {
+      path: 'timetable',
+      element: <TimetablePage />
+    },
+    {
       element: <ProtectedRouteProvider />,
       children: [
         {
@@ -22,8 +28,8 @@ const Navigation = () => {
           children: [
             {
               index: true,
-              path: '/'
-              // element: defaultPath ? <Navigate replace to={defaultPath} /> : <SpinCentered spinning />
+              path: '/',
+              element: <Navigate to="/login" replace />
             },
             {
               element: <SuspenseLayout />,

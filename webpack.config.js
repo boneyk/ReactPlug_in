@@ -11,7 +11,7 @@ const version = fs.readFileSync(path.resolve(__dirname, './build/build-tag'));
 const mode = process?.env?.NODE_ENV || 'development';
 // const env = dotenv.config().parsed; может быть полезен в devServer и plugins
 
-const isDev = mode == 'development';
+const isDev = mode === 'development';
 
 // todo: вынести по аналогии с devServer
 const outputSettings = {
@@ -45,6 +45,9 @@ module.exports = {
   module: { rules: loadersConfig(isDev) },
   resolve: {
     modules: [path.resolve(__dirname, 'src'), 'node_modules'],
-    extensions: ['.ts', '.tsx', '.js', '.jsx']
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
   }
 };

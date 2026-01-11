@@ -17,13 +17,7 @@ const SpinCentered: FC<SpinCenteredProps> = ({ loading = true, size = 40, classN
   }
 
   return (
-    <Box
-      className={`${styles.spin} ${className ?? ''}`}
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      minHeight="100%"
-    >
+    <Box className={`${styles.spin} ${className ?? ''}`}>
       <CircularProgress size={size} />
     </Box>
   );

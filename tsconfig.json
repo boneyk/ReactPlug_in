@@ -16,6 +16,9 @@
     "noEmit": false,
     "jsx": "react-jsx",
     "baseUrl": "src",
+    "paths": {
+      "assets/*": ["assets/*"]
+    },
     "outDir": "./dist"
   },
   "include": ["src", "./**/*.ts", "./**/*.tsx"],

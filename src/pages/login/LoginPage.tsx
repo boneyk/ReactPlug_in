@@ -1,9 +1,7 @@
-import { useState } from 'react';
-
 import Groups2Icon from '@mui/icons-material/Groups2';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { Box, Button, Stack, TextField } from '@mui/material';
+import { Alert, Box, Button, FormHelperText, Stack, TextField } from '@mui/material';
 import FilledInput from '@mui/material/FilledInput';
 import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
@@ -11,51 +9,67 @@ import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
 
 import styles from './LoginPage.module.scss';
+import { useLoginPage } from './useLoginPage';
 
 const LoginPage = () => {
-  const [login, setLogin] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleClickShowPassword = () => {
-    setShowPassword((showPassword) => !showPassword);
-  };
-
-  const isFormValid = login.trim() !== '' && password.length >= 8;
+  const {
+    login,
+    password,
+    showPassword,
+    error,
+    isDisabled,
+    toggleShowPassword,
+    handleLoginChange,
+    handlePasswordChange,
+    loginError,
+    loginHelperText,
+    passwordError,
+    passwordHelperText,
+    sendSubmit
+  } = useLoginPage();
 
   return (
-    <Box minHeight="100vh" display="flex" alignItems="center" justifyContent="center">
-      <Stack spacing={2} alignItems="center" textAlign="center">
-        <Groups2Icon sx={{ fontSize: 180, color: 'text.secondary' }} />
+    <Box className={styles.container} component="form" onSubmit={sendSubmit}>
+      <Stack spacing={2} className={styles.container}>
+        <Groups2Icon className={styles.icon} />
+        {error && (
+          <Alert variant="filled" severity="error">
+            {error}
+          </Alert>
+        )}
         <TextField
-          sx={{ m: 1, width: '40ch' }}
-          id="filled-hidden-label-normal"
+          className={styles.input}
           label="Логин"
           variant="filled"
           value={login}
-          onChange={(e) => setLogin(e.target.value)}
+          onChange={handleLoginChange}
+          error={loginError}
+          helperText={loginHelperText}
         />
-        <FormControl sx={{ m: 1, width: '40ch' }} variant="filled">
+        <FormControl className={styles.input} variant="filled">
           <InputLabel htmlFor="filled-adornment-password">Пароль</InputLabel>
           <FilledInput
             id="filled-adornment-password"
             type={showPassword ? 'text' : 'password'}
-            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+            onChange={handlePasswordChange}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
-                  aria-label={showPassword ? 'hide the password' : 'display the password'}
-                  onClick={handleClickShowPassword}
+                  aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
+                  onClick={toggleShowPassword}
                   edge="end"
                 >
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
             }
+            error={passwordError}
           />
+          <FormHelperText>{passwordHelperText}</FormHelperText>
         </FormControl>
-        <Button className={styles.button} variant="contained">
-          {`Войти`}
+        <Button className={styles.button} variant="contained" type="submit" disabled={isDisabled}>
+          Войти
         </Button>
       </Stack>
     </Box>

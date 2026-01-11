@@ -18,13 +18,14 @@ const ErrorPage = () => {
         </Typography>
 
         <Stack direction="row" spacing={1} alignItems="center">
-          <Typography
-            variant="body1"
-            color="text.secondary"
-          >{`Sorry, the page you visited does not exist.`}</Typography>
+          <Typography variant="body1" color="text.secondary">
+            Sorry, the page you visited does not exist.
+          </Typography>
         </Stack>
 
-        <Button variant="contained" color="primary" onClick={handleClick}>{`Back Home`}</Button>
+        <Button variant="contained" color="primary" onClick={handleClick}>
+          Back Home
+        </Button>
       </Stack>
     </Box>
   );
