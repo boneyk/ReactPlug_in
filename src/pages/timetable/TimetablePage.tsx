@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 
-import Timetable from '../../components/Timetable';
 import { timetableStore } from 'stores/timetable.store';
+
+import Timetable from '../../components/Timetable';
 
 const TimetablePage = () => {
   useEffect(() => {

@@ -1,5 +1,4 @@
 import { scheduleInstance } from 'api/config';
-import { getShifts } from 'api/shedule_service';
 import { makeAutoObservable, runInAction } from 'mobx';
 
 export type ShiftType = 'work' | 'vacation' | 'sick';
@@ -49,7 +48,6 @@ export class TimetableStore {
       console.error('Ошибка при загрузке смен:', error);
     }
   }
-  
 
   constructor() {
     makeAutoObservable(this);

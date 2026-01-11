@@ -219,7 +219,7 @@ const TimetableCalendar: FC<TimetableCalendarProps> = observer(({ className }) =
                                   title={b.text}
                                   onClick={() => {
                                     openShiftModal({
-                                      id: b.id,  
+                                      id: b.id,
                                       fullname: workerData.fullName,
                                       job,
                                       dayIndex,
