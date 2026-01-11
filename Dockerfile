@@ -28,8 +28,14 @@ RUN rm -f /etc/nginx/conf.d/default.conf \
 '}' > /etc/nginx/conf.d/default.conf
 
 COPY --from=build /app/build /usr/share/nginx/html
+
+# Проброс переменных, получаемых из Docker|Kuber
+COPY public/env.js /usr/share/nginx/html/env.js
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/docker-entrypoint.sh"]
 
 FROM deps AS dev
 WORKDIR /app
