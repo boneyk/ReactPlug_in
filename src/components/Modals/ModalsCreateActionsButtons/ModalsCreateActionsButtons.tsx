@@ -1,4 +1,5 @@
 import { Alert, AlertTitle, Button } from '@mui/material';
+import { createShift } from 'api/shedule_service';
 import { observer } from 'mobx-react-lite';
 import { timetableCreateStore } from 'stores/modalCreate.store';
 import { timetableStore } from 'stores/timetable.store';
@@ -15,9 +16,10 @@ export const ActionsButtons = observer(() => {
     (!selectedRole && 'Не выбрана должность') ||
     (!selectedEmployee && 'Не выбран сотрудник');
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (!createShiftDto) return;
     console.log('DTO для отправки:', createShiftDto);
+    await createShift(createShiftDto);
   };
   return (
     <>

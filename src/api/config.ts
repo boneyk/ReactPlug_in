@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { createTokenRefreshMiddleware } from 'axios-jwt-refresh-token';
 
 import { refreshToken } from './auth_service';
@@ -10,8 +10,15 @@ export const getErrorMessage = (status?: number | null): string => {
   return 'Произошла неизвестная ошибка';
 };
 
-export const instance = axios.create({
-  baseURL: 'http://89.208.106.245:8080',
+const BASE_URL = 'http://89.208.106.245';
+
+export const authInstance = axios.create({
+  baseURL: `${BASE_URL}:8080`,
+  withCredentials: true
+});
+
+export const scheduleInstance = axios.create({
+  baseURL: `${BASE_URL}:8083`,
   withCredentials: true
 });
 
@@ -37,14 +44,18 @@ const requestAccessMiddleware = createTokenRefreshMiddleware({
   }
 });
 
-instance.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken');
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+const attachInterceptors = (instance: AxiosInstance) => {
+  instance.interceptors.request.use((config) => {
+    const token = localStorage.getItem('accessToken');
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
 
-instance.interceptors.request.use((response) => response, requestAccessMiddleware);
+  instance.interceptors.request.use((response) => response, requestAccessMiddleware);
+};
 
-export default instance;
+// подключаем interceptors к обоим инстансам
+attachInterceptors(authInstance);
+attachInterceptors(scheduleInstance);
