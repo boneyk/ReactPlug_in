@@ -12,6 +12,6 @@ export const refreshToken = (): Promise<AxiosResponse<{ accessToken: string; ref
   return authInstance.post('/auth/refresh');
 };
 
-export const logout = (): Promise<AxiosResponse<void>> => {
-  return authInstance.post('/auth/logout');
+export const logout = (dto: LoginDTO): Promise<AxiosResponse<void>> => {
+  return authInstance.post('/auth/logout',dto);
 };

@@ -1,9 +1,11 @@
 import { FC, useState } from 'react';
 
 import { Button, Grid2 } from '@mui/material';
+import { logout } from 'api/auth_service';
 import arrowBack from 'assets/move-back-arrow.svg';
 import arrowForward from 'assets/move-forward-arrow.svg';
 import classNames from 'classnames';
+import { LoginDTO } from 'dto/DtoAuthService';
 import { observer } from 'mobx-react-lite';
 
 import { monthList } from '../../constants/timetable';
@@ -23,9 +25,31 @@ const TimetableCurrentDateYear: FC<TimetableCurrentDateYearProps> = observer(({ 
 
   const [isOpen, setIsOpen] = useState(false);
   const handleClose = () => setIsOpen(false);
-  const handleRequest = async () => {
+  const handleRequestGetShifts = async () => {
     try {
       timetableStore.loadShifts(timetableStore.year, timetableStore.month + 1);
+    } catch (err: any) {
+      if (err.response?.data?.detail) {
+        console.log(err.response.data.detail);
+      }
+    }
+  };
+
+  const handleRequestLogOut = async () => {
+    try {
+      const username = localStorage.getItem('username');
+      const password = localStorage.getItem('password');
+
+      if (!username || !password) {
+        console.error('Нет данных для выхода');
+        return;
+      }
+
+      const dto: LoginDTO = { username, password };
+      await logout(dto);
+      localStorage.clear();
+
+      window.location.href = '/login';
     } catch (err: any) {
       if (err.response?.data?.detail) {
         console.log(err.response.data.detail);
@@ -53,7 +77,7 @@ const TimetableCurrentDateYear: FC<TimetableCurrentDateYearProps> = observer(({ 
           className={classNames(styles['timetable__header-button'], 'decrease')}
           onClick={() => {
             timetableStore.decYear();
-            handleRequest();
+            handleRequestGetShifts();
           }}
           type="button"
         >
@@ -64,7 +88,7 @@ const TimetableCurrentDateYear: FC<TimetableCurrentDateYearProps> = observer(({ 
           className={classNames(styles['timetable__header-button'], 'increase')}
           onClick={() => {
             timetableStore.incYear();
-            handleRequest();
+            handleRequestGetShifts();
           }}
           type="button"
         >
@@ -78,6 +102,9 @@ const TimetableCurrentDateYear: FC<TimetableCurrentDateYearProps> = observer(({ 
             {'Создать смену'}
           </Button>
         )}
+        <Button className={styles['create_btn']} onClick={() => handleRequestLogOut()}>
+          {'Выйти'}
+        </Button>
         <Modal isOpen={isOpen} onClose={handleClose} />
       </div>
     </Grid2>

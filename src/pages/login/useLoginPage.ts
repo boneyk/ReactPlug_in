@@ -49,6 +49,9 @@ export const useLoginPage = () => {
 
     login_request(loginDTO)
       .then((response) => {
+        localStorage.setItem('username', login);
+        localStorage.setItem('password', password);
+
         localStorage.setItem('accessToken', response.data.accessToken);
         const decoded: JwtPayload = jwtDecode(response.data.accessToken);
         console.log(decoded.authorities.join(','));

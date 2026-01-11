@@ -56,6 +56,5 @@ const attachInterceptors = (instance: AxiosInstance) => {
   instance.interceptors.request.use((response) => response, requestAccessMiddleware);
 };
 
-// подключаем interceptors к обоим инстансам
 attachInterceptors(authInstance);
 attachInterceptors(scheduleInstance);
