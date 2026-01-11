@@ -22,13 +22,13 @@ export const useLoginPage = () => {
   const toggleShowPassword = () => {
     setShowPassword((prev) => !prev);
   };
-  const loginError = login.length > 0 && login.length < 5;
-  const loginHelperText = loginError ? 'Минимум 5 символов' : '';
+  const loginError = login.length > 0 && login.length < 4;
+  const loginHelperText = loginError ? 'Минимум 4 символов' : '';
   const passwordError = password.length > 0 && password.length < 8;
   const passwordHelperText = passwordError ? 'Минимум 8 символов' : ' ';
 
   const isFormValid = () => {
-    return login.length >= 5 && login.length <= 255 && password.length >= 8 && password.length <= 255;
+    return login.length >= 4 && login.length <= 255 && password.length >= 8 && password.length <= 255;
   };
   const isDisabled = !isFormValid();
 

@@ -44,13 +44,17 @@ export const ShiftButtons: FC<TimetableModalViewProps> = ({ onClose, shift }) =>
         </Alert>
       )}
       <Stack direction="row" spacing={1} className={styles.stackPosition}>
-        <IconButton>
-          {/* TODO: добавить логику редактирования при нажатии на иконку (задача ORNG-134) */}
-          <EditIcon />
-        </IconButton>
-        <IconButton onClick={onDelete}>
-          <DeleteForeverIcon />
-        </IconButton>
+        {localStorage.getItem('authorities') === 'ROLE_ADMIN' && (
+          <>
+            <IconButton>
+              {/* TODO: добавить логику редактирования при нажатии на иконку (задача ORNG-134) */}
+              <EditIcon />
+            </IconButton>
+            <IconButton onClick={onDelete}>
+              <DeleteForeverIcon />
+            </IconButton>
+          </>
+        )}
         <IconButton aria-label="close" onClick={onClose}>
           <CloseIcon />
         </IconButton>

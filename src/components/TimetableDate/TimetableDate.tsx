@@ -48,14 +48,12 @@ const TimetableDate: FC<TimetableDateProps> = observer(({ className }) => {
           <img src={arrowForward} alt="+" />
         </button>
       </div>
-      <Button
-        className={styles.create_btn}
-        onClick={() => {
-          setIsOpen(true);
-        }}
-      >
-        Создать смену
-      </Button>
+      {localStorage.getItem("authorities") === 'ROLE_ADMIN' && (
+        <Button className={styles.create_btn} onClick={() => setIsOpen(true)}>
+          Создать смену
+        </Button>
+      )}
+
       <Modal isOpen={isOpen} onClose={handleClose} />
     </div>
   );
