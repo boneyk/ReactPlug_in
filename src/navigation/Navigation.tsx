@@ -29,8 +29,7 @@ const Navigation = () => {
             {
               index: true,
               path: '/',
-              element: <Navigate to="/users" replace />
-              // element: defaultPath ? <Navigate replace to={defaultPath} /> : <SpinCentered spinning />
+              element: <Navigate to="/login" replace />
             },
             {
               element: <SuspenseLayout />,

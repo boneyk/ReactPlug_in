@@ -1,33 +1,17 @@
-import request from './auth';
+import { AxiosResponse } from 'axios';
+import { LoginDTO } from 'dto/DtoAuthService';
 
-export const ApiService = {
-  auth: async (login: string, password: string) => {
-    return request('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ login, password })
-    });
-  },
+import { instance } from '../api/config';
 
-  refreshToken: async () => {
-    return request('/auth/refresh', {
-      method: 'GET'
-    });
-  },
-
-  logout: async () => {
-    return request('/auth/logout', {
-      method: 'POST'
-    });
-  },
-
-  // пример другого эндпоинта
-  getUsers: async () => {
-    return request('/users', { method: 'GET' });
-  },
-
-  createUser: async (user: any) => {
-    return request('/users', { method: 'POST', body: JSON.stringify(user) });
-  }
+export const login_request = (dto: LoginDTO): Promise<AxiosResponse<{ accessToken: string; refreshToken: string }>> => {
+  localStorage.removeItem('accessToken');
+  return instance.post('/auth/login', dto);
 };
 
-export default ApiService;
+export const refreshToken = (): Promise<AxiosResponse<{ accessToken: string; refreshToken: string }>> => {
+  return instance.post('/auth/refresh');
+};
+
+export const logout = (): Promise<AxiosResponse<void>> => {
+  return instance.post('/auth/logout');
+};

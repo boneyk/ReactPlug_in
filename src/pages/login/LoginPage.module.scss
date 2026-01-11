@@ -1,0 +1,22 @@
+.button {
+  margin: 8px;
+  width: 45ch;
+  border-radius: 12px;
+}
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  font-size: 180px !important;
+  color: var(--text-secondary);
+}
+
+.input {
+  margin: 8px 0;
+  width: 40ch;
+}
