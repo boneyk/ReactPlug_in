@@ -8,6 +8,7 @@ import { ShiftInfo } from '../ModalViewShiftInfo/ModalViewShiftInfo';
 import { ShiftTitle } from '../ModalViewShiftTitle/ModalViewShiftTitle';
 
 export interface ShiftModalData {
+  id: number;
   fullname: string;
   job: string;
   dayIndex: number;
@@ -32,7 +33,7 @@ const TimetableModalView: FC<TimetableModalViewProps> = ({ isOpen, onClose, shif
           <ShiftTitle shiftData={shiftData} />
         )}
       </DialogTitle>
-      <ShiftButtons onClose={onClose} />
+      {shiftData && <ShiftButtons onClose={onClose} shift={shiftData} />}
       <DialogContent dividers>
         {!shiftData ? (
           <Typography color="text.secondary">Нет данных о смене</Typography>

@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { ShiftType } from 'stores/timetable.store';
 
 export interface ShiftModalData {
+  id: number;
   fullname: string;
   job: string;
   dayIndex: number;
@@ -26,9 +27,10 @@ export const useViewModal = () => {
 
   const openShiftModal = useCallback(
     (params: ShiftModalData) => {
-      const { fullname, job, dayIndex, type, text, spanDays } = params;
+      const { id, fullname, job, dayIndex, type, text, spanDays } = params;
 
       openModal({
+        id,
         fullname,
         job,
         dayIndex,

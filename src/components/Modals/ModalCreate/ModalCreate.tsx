@@ -30,7 +30,7 @@ const TimetableModalCreate: FC<TimetableModalCreateProps> = observer(({ isOpen, 
       </DialogContent>
 
       <DialogActions>
-        <ActionsButtons />
+        <ActionsButtons onClose={onClose} />
       </DialogActions>
     </Dialog>
   );

@@ -19,6 +19,7 @@ interface TimetableCalendarProps {
 }
 
 type ShiftBlock = {
+  id: number;
   startIdx: number;
   spanDays: number;
   type: ShiftType;
@@ -59,6 +60,7 @@ const buildWorkerBlocks = (worker: Worker, year: number, month: number, daysInMo
 
     const spanDays = clamped.endIdx - clamped.startIdx + 1;
     shiftSegments.push({
+      id: shift.id,
       startIdx: clamped.startIdx,
       spanDays,
       type: shift.type,
@@ -217,6 +219,7 @@ const TimetableCalendar: FC<TimetableCalendarProps> = observer(({ className }) =
                                   title={b.text}
                                   onClick={() => {
                                     openShiftModal({
+                                      id: b.id,  
                                       fullname: workerData.fullName,
                                       job,
                                       dayIndex,
