@@ -27,11 +27,7 @@ interface TimetableWorkerRowProps {
 const TimetableGridWorkerRow: FC<TimetableWorkerRowProps> = ({ workerId, worker, blocksByStart, job, workerData }) => {
   const { timetableStore } = useStores();
 
-<<<<<<< HEAD
-  const { openShiftModal } = useViewModal();
-=======
   const { isOpen, selectedShift, openShiftModal, closeModal } = useViewModal();
->>>>>>> 0e3eaffa0ecdbc17725a1cfc4ee4f021bf8b3e54
 
   return (
     <div className={styles['worker-row']}>
@@ -74,10 +70,7 @@ const TimetableGridWorkerRow: FC<TimetableWorkerRowProps> = ({ workerId, worker,
           </div>
         );
       })}
-<<<<<<< HEAD
-=======
       <TimetableModalView isOpen={isOpen} onClose={closeModal} shiftData={selectedShift} />
->>>>>>> 0e3eaffa0ecdbc17725a1cfc4ee4f021bf8b3e54
     </div>
   );
 };
