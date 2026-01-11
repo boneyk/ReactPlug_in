@@ -2,11 +2,8 @@ import { FC } from 'react';
 
 import classNames from 'classnames';
 
-<<<<<<< HEAD
-=======
 import TimetableModalView from 'components/Modals/ModalView/ModalView';
 
->>>>>>> 0e3eaffa0ecdbc17725a1cfc4ee4f021bf8b3e54
 import { CELL_W } from '../../constants/timetable';
 import { ShiftBlock } from '../../utils/functions';
 
