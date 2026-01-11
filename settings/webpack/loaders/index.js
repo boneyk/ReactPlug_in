@@ -24,14 +24,36 @@ const loaders = (isDev) => [
   },
   {
     test: /\.css$/,
-    use: isDev ? ['style-loader', 'css-loader'] : [MiniCssExtractPlugin.loader, 'css-loader']
+    use: [
+      isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+      'css-loader',
+      {
+        loader: 'postcss-loader',
+        options: {
+          postcssOptions: {
+            config: path.resolve(process.cwd(), 'postcss.config.mjs')
+          }
+        }
+      }
+    ]
   },
   {
     test: /\.s[ac]ss$/,
     use: [
-      isDev ? { loader: 'style-loader' } : MiniCssExtractPlugin.loader,
-      { loader: 'css-loader', options: { modules: { namedExport: false, exportLocalsConvention: 'camelCase' } } },
-      { loader: 'sass-loader' }
+      isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+      {
+        loader: 'css-loader',
+        options: { modules: { namedExport: false, exportLocalsConvention: 'camelCase' } }
+      },
+      {
+        loader: 'postcss-loader',
+        options: {
+          postcssOptions: {
+            config: path.resolve(process.cwd(), 'postcss.config.mjs')
+          }
+        }
+      },
+      'sass-loader'
     ]
   },
   {

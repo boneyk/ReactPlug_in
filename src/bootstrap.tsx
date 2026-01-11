@@ -1,22 +1,30 @@
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
-import { templateTheme } from 'styles';
+import { theme } from 'styles';
 
 import './index.css';
 import Navigation from './navigation/Navigation';
+import { timetableStore } from './stores/timetable.store';
 
 dayjs.locale('ru');
 
+export const StoresContext = React.createContext({
+  timetableStore
+});
+
 const root = createRoot(document.getElementById('root') as HTMLElement);
 root.render(
-  <ThemeProvider theme={templateTheme}>
+  <ThemeProvider theme={theme}>
     <CssBaseline />
     <BrowserRouter>
-      <Navigation />
+      <StoresContext.Provider value={{ timetableStore }}>
+        <Navigation />
+      </StoresContext.Provider>
     </BrowserRouter>
   </ThemeProvider>
 );

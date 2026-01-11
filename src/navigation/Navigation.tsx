@@ -5,7 +5,7 @@ import Placeholder from 'navigation/Placeholder';
 import ErrorPage from 'pages/error/ErrorPage';
 import LoginPage from 'pages/login/LoginPage';
 
-import EditModal from 'components/modals/editModal';
+import TimetablePage from '../pages/timetable/TimetablePage';
 
 import { ProtectedRouteProvider } from './ProtectedRouteProvider';
 import { SuspenseLayout } from './SuspenseLayout';
@@ -17,6 +17,10 @@ const Navigation = () => {
       element: <LoginPage />
     },
     {
+      path: 'timetable',
+      element: <TimetablePage />
+    },
+    {
       element: <ProtectedRouteProvider />,
       children: [
         {
@@ -24,7 +28,8 @@ const Navigation = () => {
           children: [
             {
               index: true,
-              path: '/'
+              path: '/',
+              element: <Navigate to="/users" replace />
               // element: defaultPath ? <Navigate replace to={defaultPath} /> : <SpinCentered spinning />
             },
             {
@@ -41,7 +46,7 @@ const Navigation = () => {
                 {
                   path: 'users',
                   children: [
-                    { index: true, element: <EditModal /> },
+                    { index: true, element: <Placeholder text="i am users list" /> },
                     { path: 'create', element: <Placeholder text="i am create user page" /> },
                     { path: 'edit/:id', element: <Placeholder text="i am edit user page" /> }
                   ]

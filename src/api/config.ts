@@ -1,24 +1,25 @@
 type RequestOptions = RequestInit & { _isRetry?: boolean };
 const BASE_URL = 'http://localhost:3001';
-// TO DO: допилить авторизацию по запросу и разграничение ролей пользователя
-const request = async (url: string, options: RequestOptions = {}): Promise<any> => {
-  // const token = localStorage.getItem('token');
 
-  // const headers: HeadersInit = {
-  //   ...(options.headers || {}),
-  //   Authorization: token ? `Bearer ${token}` : '',
-  //   'Content-Type': 'application/json'
-  // };
+const request = async (url: string, options: RequestOptions = {}): Promise<any> => {
+  const token = localStorage.getItem('token');
+
+  const headers: HeadersInit = {
+    ...(options.headers || {}),
+    Authorization: token ? `Bearer ${token}` : '',
+    'Content-Type': 'application/json'
+  };
   const response = await fetch(BASE_URL + url, {
-    ...options
-    // credentials: 'include',
-    // headers
+    ...options,
+    credentials: 'include',
+    headers
   });
 
   if (response.ok) {
     return response.json();
   }
 
+  // если 401 и запрос ещё не повторялся
   if (response.status === 401 && !options._isRetry) {
     try {
       // обновляем токен
