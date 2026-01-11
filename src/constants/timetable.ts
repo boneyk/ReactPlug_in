@@ -16,3 +16,9 @@ export const monthList: string[] = [
 const STEP_DAYS = 7;
 export const CELL_W = 66;
 export const stepPx = STEP_DAYS * CELL_W;
+
+export const shiftTypeMap = new Map<string, string | undefined>([
+  ['work', undefined],
+  ['vacation', 'Отпуск'],
+  ['sick', 'Больничный']
+]);
