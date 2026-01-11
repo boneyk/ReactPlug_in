@@ -23,7 +23,15 @@ const TimetableCurrentDateYear: FC<TimetableCurrentDateYearProps> = observer(({ 
 
   const [isOpen, setIsOpen] = useState(false);
   const handleClose = () => setIsOpen(false);
-
+  const handleRequest = async () => {
+    try {
+      timetableStore.loadShifts(timetableStore.year, timetableStore.month + 1);
+    } catch (err: any) {
+      if (err.response?.data?.detail) {
+        console.log(err.response.data.detail);
+      }
+    }
+  };
   return (
     <Grid2
       container
@@ -43,7 +51,10 @@ const TimetableCurrentDateYear: FC<TimetableCurrentDateYearProps> = observer(({ 
 
         <button
           className={classNames(styles['timetable__header-button'], 'decrease')}
-          onClick={() => timetableStore.decYear()}
+          onClick={() => {
+            timetableStore.decYear();
+            handleRequest();
+          }}
           type="button"
         >
           <img src={arrowBack} alt="-" />
@@ -51,7 +62,10 @@ const TimetableCurrentDateYear: FC<TimetableCurrentDateYearProps> = observer(({ 
 
         <button
           className={classNames(styles['timetable__header-button'], 'increase')}
-          onClick={() => timetableStore.incYear()}
+          onClick={() => {
+            timetableStore.incYear();
+            handleRequest();
+          }}
           type="button"
         >
           <img src={arrowForward} alt="+" />
