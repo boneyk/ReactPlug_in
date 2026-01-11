@@ -17,11 +17,11 @@ const TimetableMonthPicker: FC<TimetableMonthPickerProps> = observer(({ classNam
   const { timetableStore } = useStores();
   const handleRequest = async () => {
     try {
-        timetableStore.loadShifts(timetableStore.year, timetableStore.month + 1);
-      } catch (err: any) {
-        if (err.response?.data?.detail) {
-          console.log(err.response.data.detail);
-        } 
+      timetableStore.loadShifts(timetableStore.year, timetableStore.month + 1);
+    } catch (err: any) {
+      if (err.response?.data?.detail) {
+        console.log(err.response.data.detail);
+      }
     }
   };
   return (
@@ -32,7 +32,7 @@ const TimetableMonthPicker: FC<TimetableMonthPickerProps> = observer(({ classNam
           className={classNames(styles['month-button'], { [styles['choosen']]: timetableStore.month === idx })}
           onClick={() => {
             timetableStore.changeMonth(idx);
-            handleRequest()
+            handleRequest();
           }}
           type="button"
         >
