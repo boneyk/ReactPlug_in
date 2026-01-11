@@ -31,6 +31,8 @@ export class TimetableStore {
   month: number = new Date().getMonth();
   calendarTranslatePx: number = 0;
   calendarMaxTranslatePx: number = 0;
+  daysInMonth: number = 0;
+  days: number[] = [];
   selectedRole: string | null = null;
   selectedEmployee: { id: number; name: string } | null = null;
   shifts: TimetableShifts = {};
@@ -50,7 +52,7 @@ export class TimetableStore {
   }
 
   constructor() {
-    makeAutoObservable(this);
+    makeAutoObservable(this, {}, { autoBind: true });
   }
 
   setCalendarMaxTranslatePx(max: number) {
@@ -81,6 +83,16 @@ export class TimetableStore {
     this.month = month;
     this.resetCalendarTranslate();
   }
+
+  changeDaysInMonth(day: number) {
+    this.daysInMonth = day;
+    this.changeDays();
+  }
+
+  changeDays() {
+    this.days = Array.from({ length: this.daysInMonth }, (_, i) => i);
+  }
+
   get roles(): string[] {
     return Object.keys(this.shifts);
   }

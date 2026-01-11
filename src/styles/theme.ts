@@ -47,7 +47,7 @@ export const theme = createTheme({
         root: {
           borderRadius: 16,
           textTransform: 'none',
-          fontFamily: vars.fontFamily,
+          fontFamily: vars.fontFamilyBase,
           fontWeight: vars.fontWeightRegular,
           fontSize: vars.fontSize,
           padding: '8px 16px',

@@ -1,0 +1,46 @@
+@use "../../styles/helpers/mixins" as *;
+
+$header-width: 400px;
+$header-gap: 16px;
+$button-hover-bg: #e1e1e1;
+$button-hover-border: #939393;
+
+.timetable__header-date {
+  height: var(--timetable-controls-height);
+  width: $header-width;
+  font-size: var(--font-size-m);
+  font-family: var(--font-family-base), sans-serif;
+  display: flex;
+  align-items: center;
+  gap: $header-gap;
+  margin-bottom: var(--margin-s);
+}
+
+.timetable__header-button {
+  @include square(var(--timetable-controls-height));
+  background-color: var(--color-white);
+  border-radius: 50%;
+  border: solid var(--border-width-thin) var(--color-gray-300);
+  @include flex-center();
+  cursor: pointer;
+  transition:
+          background-color var(--transition-fast),
+          border-color var(--transition-fast);
+
+  &:hover {
+    background-color: $button-hover-bg;
+    border-color: $button-hover-border;
+  }
+
+  &:focus-visible {
+    @include focus-visible();
+  }
+
+  &:disabled {
+    @include disabled();
+  }
+}
+
+.tools {
+  width: fit-content;
+}
