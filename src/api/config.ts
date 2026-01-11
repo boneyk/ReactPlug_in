@@ -10,15 +10,15 @@ export const getErrorMessage = (status?: number | null): string => {
   return 'Произошла неизвестная ошибка';
 };
 
-const BASE_URL = 'http://89.208.106.245';
+const env = (window as any).__ENV__ || {};
 
 export const authInstance = axios.create({
-  baseURL: `${BASE_URL}:8080`,
+  baseURL: env.AUTH_BASE_URL ?? 'http://localhost:8080',
   withCredentials: true
 });
 
 export const scheduleInstance = axios.create({
-  baseURL: `${BASE_URL}:8083`,
+  baseURL: env.SCHEDULE_BASE_URL ?? 'http://localhost:8083',
   withCredentials: true
 });
 
