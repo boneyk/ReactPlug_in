@@ -183,8 +183,8 @@ const TimetableCalendar: FC<TimetableCalendarProps> = observer(({ className }) =
               <div key={job}>
                 <div className={styles['blank-line']} />
 
-                {Object.entries(workersByRole).map(([fullname, worker]) => {
-                  const blocks = buildWorkerBlocks(worker, timetableStore.year, timetableStore.month, daysInMonth);
+                {Object.entries(workersByRole).map(([workerId, workerData]) => {
+                  const blocks = buildWorkerBlocks(workerData, timetableStore.year, timetableStore.month, daysInMonth);
 
                   const blocksByStart = new Map<number, ShiftBlock[]>();
                   for (const b of blocks) {
@@ -194,14 +194,14 @@ const TimetableCalendar: FC<TimetableCalendarProps> = observer(({ className }) =
                   }
 
                   return (
-                    <div key={`${job}-${fullname}`} className={styles['worker-row']}>
+                    <div key={`${job}-${workerId}`} className={styles['worker-row']}>
                       {days.map((dayIndex) => {
                         const startBlocks = blocksByStart.get(dayIndex) ?? [];
                         const hasStart = startBlocks.length > 0;
 
                         return (
                           <div
-                            key={`${fullname}-${dayIndex}`}
+                            key={`${workerId}-${dayIndex}`}
                             className={classNames(styles['cell'], styles['worker-cell'], {
                               [styles['worker-cell--has-start']]: hasStart
                             })}
@@ -209,7 +209,7 @@ const TimetableCalendar: FC<TimetableCalendarProps> = observer(({ className }) =
                             <div className={styles['worker-cell-content']}>
                               {startBlocks.map((b, idx) => (
                                 <div
-                                  key={`${fullname}-${dayIndex}-${b.type}-${idx}`}
+                                  key={`${workerId}-${dayIndex}-${b.type}-${idx}`}
                                   className={classNames(styles['shift'], styles[`shift--${b.type}` as const])}
                                   style={{
                                     width: `calc(${b.spanDays} * ${CELL_W}px - 8px)`
@@ -217,7 +217,7 @@ const TimetableCalendar: FC<TimetableCalendarProps> = observer(({ className }) =
                                   title={b.text}
                                   onClick={() => {
                                     openShiftModal({
-                                      fullname,
+                                      fullname: workerData.fullName,
                                       job,
                                       dayIndex,
                                       type: b.type,

@@ -28,12 +28,13 @@ const TimetableWorkers: FC<TimetableWorkersProps> = observer(({ className }) => 
         <div key={job}>
           <div className={styles['role']}>{job}</div>
 
-          {Object.entries(workersByRole).map(([fullname, workerData]) => (
-            <div key={`${job}-${fullname}`} className={styles['worker-cell']}>
+          {Object.entries(workersByRole).map(([workerId, workerData]) => (
+            <div key={`${job}-${workerId}`} className={styles['worker-cell']}>
               <div className={styles['worker-pic__container']}></div>
               <div className={styles['worker']}>
-                <div className={styles['fullname']}>{fullname}</div>
-                <div className={styles['phone']}>{workerData.phone}</div>
+                <div className={styles['fullname']}>{workerData.fullName}</div>
+
+                <div className={styles['phone']}>{'+7 (999) 999-99-99'}</div>
               </div>
             </div>
           ))}

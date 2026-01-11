@@ -1,0 +1,20 @@
+.dialogTitle {
+  position: relative; 
+  padding-right: 48px;
+}
+
+.stackPosition {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  color: var(--mui-palette-grey-500)
+}
+
+.container{
+  display: flex;
+  align-items: center;
+}
+
+.alert{
+  width: 100%;
+}
