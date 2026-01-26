@@ -6,8 +6,8 @@ import { ShiftType, timetableStore } from 'stores/timetable.store';
 import { useViewModal } from 'components/Modals/ModalView/useViewModal';
 
 import { buildShiftsWorkerList, getShiftTitle, getShiftType } from '../utils/functions';
+import { EmployeeSchedule } from 'dto/DtoScheduleService';
 
-import { EmployeeSchedule } from '../api/shedule_service';
 
 interface CreateModalData {
   open: boolean;

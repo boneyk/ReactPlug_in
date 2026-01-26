@@ -1,9 +1,13 @@
+import axios from 'axios';
+import { OfficeDto } from 'dto/DtoEmployeesService';
 import { makeAutoObservable, runInAction } from 'mobx';
 
 import { handleNetworkError } from '../utils/errorHandlers';
 import { getMonthDaysCount } from '../utils/functions';
 
-import { getOffices, getSchedule, OfficeDto, ScheduleResponse } from '../api/shedule_service';
+import { getOffices, getSchedule, ScheduleResponse } from '../api/shedule_service';
+
+import { baseLayoutStore } from './baseLayout.store';
 
 export type ShiftType = 'work' | 'vacation' | 'sick';
 
@@ -38,7 +42,7 @@ export class TimetableStore {
     this.changeTodayIndex();
     await this.fetchOffices();
     if (this.selectedOffice) {
-      void this.fetchSchedule(this.year, this.month, this.selectedOffice.id);
+      void this.fetchSchedule(this.selectedOffice.id, this.year, this.month);
     }
   }
 
@@ -48,7 +52,7 @@ export class TimetableStore {
     try {
       const response = await getOffices();
       runInAction(() => {
-        this.offices = response.data.content;
+        this.offices = response.data.offices;
         if (this.offices.length > 0) {
           const savedOfficeId = this.getSavedOfficeId();
           const savedOffice = savedOfficeId ? this.offices.find((office) => office.id === savedOfficeId) : null;
@@ -56,8 +60,12 @@ export class TimetableStore {
           this.isLoading = false;
         }
       });
-    } catch (error) {
-      console.error('Ошибка загрузки офисов:', error);
+    } catch (error: unknown) {
+      let message = 'Ошибка при загрузке рабочего графика';
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.detail ?? message;
+      }
+      baseLayoutStore.showWarning(message);
       runInAction(() => {
         this.isLoading = false;
       });
@@ -192,13 +200,15 @@ export class TimetableStore {
   }
 
   getEmployeesByRole(role: string): { id: number; name: string }[] {
-    const workersByRole = this.shifts[role];
-    if (!workersByRole) return [];
-    return Object.entries(workersByRole).map(([id, worker]) => ({
-      id: Number(id),
+    const workers = this.shifts[role];
+    if (!workers) return [];
+
+    return workers.map((worker) => ({
+      id: worker.employeeId,
       name: worker.fullName
     }));
   }
+
   get employeeId(): number | null {
     return this.selectedEmployee?.id ?? null;
   }
@@ -210,17 +220,16 @@ export class TimetableStore {
     this.selectedEmployee = employee;
   }
 
-  async fetchSchedule(year: number, month: number, officeId: number) {
+  async fetchSchedule(officeId: number, year: number, month: number) {
     this.isLoading = true;
-
     try {
-      const response = await getSchedule(year, month + 1, officeId);
+      const response = await getSchedule(officeId, year, month + 1);
       runInAction(() => {
-        this.shifts = response.data;
+        this.shifts = response.data.data;
         this.isLoading = false;
       });
-    } catch (error) {
-      console.error('Ошибка загрузки расписания:', error);
+    } catch (error: any) {
+      baseLayoutStore.showWarning(error.response.data.detail);
       runInAction(() => {
         this.isLoading = false;
       });
@@ -231,8 +240,12 @@ export class TimetableStore {
   private saveOfficeId(officeId: number): void {
     try {
       localStorage.setItem(this.SELECTED_OFFICE_KEY, officeId.toString());
-    } catch (error) {
-      console.error('Ошибка сохранения офиса в localStorage:', error);
+    } catch (error: unknown) {
+      let message = 'Ошибка при загрузке офиса';
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.detail ?? message;
+      }
+      baseLayoutStore.showWarning(message);
     }
   }
 
@@ -240,8 +253,12 @@ export class TimetableStore {
     try {
       const savedId = localStorage.getItem(this.SELECTED_OFFICE_KEY);
       return savedId ? Number(savedId) : null;
-    } catch (error) {
-      console.error('Ошибка чтения офиса из localStorage:', error);
+    } catch (error: unknown) {
+      let message = 'Ошибка при загрузке офиса';
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.detail ?? message;
+      }
+      baseLayoutStore.showWarning(message);
       return null;
     }
   }

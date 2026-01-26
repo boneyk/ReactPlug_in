@@ -11,7 +11,7 @@ import ModalView from 'components/Modals/ModalView/ModalView';
 import { useCellClick } from '../../../hooks/useCellClick';
 import { getShiftTitle, getShiftType, isEnd, isMid, isSolo, isStart } from '../../../utils/functions';
 
-import { type EmployeeSchedule } from '../../../api/shedule_service';
+import { type EmployeeSchedule } from '../../../dto/DtoScheduleService';
 import { useStores } from '../../../stores/useStores';
 import Modal from '../../Modals/ModalCreate/ModalCreate';
 

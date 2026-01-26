@@ -1,6 +1,7 @@
+import { Absence, Shift as ApiShift, EmployeeSchedule } from 'dto/DtoScheduleService';
+
 import { shiftTypeMap } from '../constants/timetable';
 
-import type { Absence, Shift as ApiShift, EmployeeSchedule } from '../api/shedule_service';
 import { ShiftType } from '../stores/timetable.store';
 
 export interface Shift {
@@ -45,26 +46,29 @@ export function formatTime(time: string): string {
 
 export function transformEmployeeShifts(employeeData: EmployeeSchedule): Shift[] {
   return [
-    ...employeeData.shifts.map((shift: ApiShift) => ({
+    ...employeeData.shifts.map((shift: ApiShift): Shift => ({
       id: shift.id,
       startTime: shift.startTime,
       endTime: shift.endTime,
       date: shift.date,
-      type: 'work' as const
+      type: 'work'
     })),
-    ...employeeData.absences.map((absence: Absence) => {
-      const type = absence.code.toLowerCase() === 'sick' ? 'sick' : 'vacation';
+    ...employeeData.absences.map((absence): Shift => {
+      const type: ShiftType =
+        absence.typeCode === 'sick' ? 'sick' : 'vacation';
+
       return {
         id: absence.id,
         startTime: '00:00',
         endTime: '00:00',
         date: absence.date,
-        type: type as 'sick' | 'vacation',
-        label: absence.name
+        type,
+        label: absence.typeName
       };
     })
   ];
 }
+
 
 export function buildShiftsWorkerList(daysInMonth: number, employeeData: EmployeeSchedule) {
   const workerShifts = transformEmployeeShifts(employeeData);

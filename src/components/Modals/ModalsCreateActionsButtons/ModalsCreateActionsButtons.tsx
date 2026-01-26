@@ -31,7 +31,7 @@ export const ModalCreateActionsButtons: FC<ModalCreateActionsButtonsProps> = obs
       await createShift(createShiftDto);
       onClose();
       if (selectedOffice) {
-        await fetchSchedule(year, month, selectedOffice.id);
+        await fetchSchedule(selectedOffice.id, year, month);
       }
     } catch (err: unknown) {
       let message = 'Ошибка при удалении смены';

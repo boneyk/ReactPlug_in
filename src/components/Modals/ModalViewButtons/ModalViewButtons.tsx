@@ -31,7 +31,7 @@ export const ModalViewButtons: FC<ModalViewButtonsProps> = observer(({ onClose, 
       await deleteShift(shift.id);
       if (!selectedOffice) return;
 
-      fetchSchedule(year, month, selectedOffice.id);
+      fetchSchedule(selectedOffice.id, year, month);
       onClose();
     } catch (error: unknown) {
       let message = 'Ошибка при удалении смены';
