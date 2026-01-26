@@ -17,10 +17,6 @@ const Navigation = () => {
       element: <LoginPage />
     },
     {
-      path: 'timetable',
-      element: <TimetablePage />
-    },
-    {
       element: <ProtectedRouteProvider />,
       children: [
         {
@@ -36,7 +32,7 @@ const Navigation = () => {
               children: [
                 {
                   path: 'schedule',
-                  element: <Placeholder text={'i am schedule page'} />
+                  element: <TimetablePage />
                 },
                 {
                   path: 'applications',

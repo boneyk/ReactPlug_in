@@ -1,13 +1,6 @@
-import React, { useEffect } from 'react';
-
-import { timetableStore } from 'stores/timetable.store';
-
-import TimetableWidget from '../../components/TimetableWidget';
+import TimetableWidget from '../../components/TimetableComponent';
 
 const TimetablePage = () => {
-  useEffect(() => {
-    timetableStore.loadShifts();
-  }, []);
   return <TimetableWidget />;
 };
 

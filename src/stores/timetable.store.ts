@@ -1,30 +1,11 @@
-import { scheduleInstance } from 'api/config';
 import { makeAutoObservable, runInAction } from 'mobx';
 
+import { handleNetworkError } from '../utils/errorHandlers';
+import { getMonthDaysCount } from '../utils/functions';
+
+import { getOffices, getSchedule, OfficeDto, ScheduleResponse } from '../api/shedule_service';
+
 export type ShiftType = 'work' | 'vacation' | 'sick';
-
-export interface Shift {
-  id: number;
-  startTime: string;
-  endTime: string;
-  startDate: string;
-  endDate: string;
-  type: ShiftType;
-  label?: string;
-}
-
-export interface Worker {
-  fullName: string;
-  shifts: Shift[];
-}
-
-export interface WorkersByRole {
-  [id: string]: Worker;
-}
-
-export interface TimetableShifts {
-  [role: string]: WorkersByRole;
-}
 
 export class TimetableStore {
   year: number = new Date().getFullYear();
@@ -33,31 +14,75 @@ export class TimetableStore {
   calendarMaxTranslatePx: number = 0;
   daysInMonth: number = 0;
   days: number[] = [];
+  todayIndex: number = 0;
   selectedRole: string | null = null;
   selectedEmployee: { id: number; name: string } | null = null;
-  shifts: TimetableShifts = {};
-  loading = false;
 
-  async loadShifts(year?: number, month?: number) {
-    const y = year ?? this.year;
-    const m = month ?? this.month + 1;
-    try {
-      const response = await scheduleInstance.get<{ data: TimetableShifts }>(`/shifts?year=${y}&month=${m}`);
-      runInAction(() => {
-        this.shifts = response.data.data;
-      });
-    } catch (error) {
-      console.error('Ошибка при загрузке смен:', error);
-    }
-  }
+  offices: OfficeDto[] = [];
+  selectedOffice: OfficeDto | null = null;
+
+  shifts: ScheduleResponse = {};
+  isLoading: boolean = true;
+
+  scrollToEndAfterMonthChange: boolean = false;
+
+  private readonly SELECTED_OFFICE_KEY = 'selectedOfficeId';
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true });
+    void this.init();
+  }
+
+  async init() {
+    this.changeDaysInMonth(getMonthDaysCount(this.year, this.month));
+    this.changeTodayIndex();
+    await this.fetchOffices();
+    if (this.selectedOffice) {
+      void this.fetchSchedule(this.year, this.month, this.selectedOffice.id);
+    }
+  }
+
+  async fetchOffices() {
+    this.isLoading = true;
+
+    try {
+      const response = await getOffices();
+      runInAction(() => {
+        this.offices = response.data.content;
+        if (this.offices.length > 0) {
+          const savedOfficeId = this.getSavedOfficeId();
+          const savedOffice = savedOfficeId ? this.offices.find((office) => office.id === savedOfficeId) : null;
+          this.selectedOffice = savedOffice || this.offices[0];
+          this.isLoading = false;
+        }
+      });
+    } catch (error) {
+      console.error('Ошибка загрузки офисов:', error);
+      runInAction(() => {
+        this.isLoading = false;
+      });
+      handleNetworkError(error);
+    }
+  }
+
+  setSelectedOffice(office: OfficeDto) {
+    this.selectedOffice = office;
+    this.saveOfficeId(office.id);
+    void this.fetchSchedule(this.year, this.month, office.id);
   }
 
   setCalendarMaxTranslatePx(max: number) {
     this.calendarMaxTranslatePx = Math.max(0, max);
-    this.calendarTranslatePx = Math.min(this.calendarTranslatePx, this.calendarMaxTranslatePx);
+    if (this.scrollToEndAfterMonthChange) {
+      this.calendarTranslatePx = this.calendarMaxTranslatePx;
+      this.scrollToEndAfterMonthChange = false;
+    } else {
+      this.calendarTranslatePx = Math.min(this.calendarTranslatePx, this.calendarMaxTranslatePx);
+    }
+  }
+
+  setCalendarTranslatePx(px: number) {
+    this.calendarTranslatePx = Math.max(0, Math.min(px, this.calendarMaxTranslatePx));
   }
 
   resetCalendarTranslate() {
@@ -65,23 +90,82 @@ export class TimetableStore {
   }
 
   moveCalendarLeft(stepPx: number) {
-    this.calendarTranslatePx = Math.max(0, this.calendarTranslatePx - stepPx);
+    const currentPx = Math.min(this.calendarTranslatePx, this.calendarMaxTranslatePx);
+    if (currentPx <= 0) {
+      this.goToPreviousMonth();
+    } else {
+      this.calendarTranslatePx = Math.max(0, currentPx - stepPx);
+    }
   }
 
   moveCalendarRight(stepPx: number) {
-    this.calendarTranslatePx = Math.min(this.calendarMaxTranslatePx, this.calendarTranslatePx + stepPx);
+    if (this.calendarTranslatePx >= this.calendarMaxTranslatePx) {
+      this.goToNextMonth();
+    } else {
+      this.calendarTranslatePx = Math.min(this.calendarMaxTranslatePx, this.calendarTranslatePx + stepPx);
+    }
+  }
+  changeTodayIndex() {
+    const date = new Date();
+    if (date.getFullYear() !== this.year || date.getMonth() !== this.month) this.todayIndex = -1;
+    else this.todayIndex = date.getDate() - 1;
   }
 
   incYear() {
     this.year += 1;
+    this.changeTodayIndex();
+    if (this.selectedOffice) {
+      void this.fetchSchedule(this.year, this.month, this.selectedOffice.id);
+    }
   }
+
   decYear() {
     this.year -= 1;
+    this.changeTodayIndex();
+    if (this.selectedOffice) {
+      void this.fetchSchedule(this.year, this.month, this.selectedOffice.id);
+    }
   }
 
   changeMonth(month: number) {
     this.month = month;
     this.resetCalendarTranslate();
+    this.changeDaysInMonth(getMonthDaysCount(this.year, this.month));
+    this.changeTodayIndex();
+    if (this.selectedOffice) {
+      void this.fetchSchedule(this.year, this.month, this.selectedOffice.id);
+    }
+  }
+
+  goToPreviousMonth() {
+    if (this.month > 0) {
+      this.month -= 1;
+    } else {
+      this.year -= 1;
+      this.month = 11;
+    }
+    this.scrollToEndAfterMonthChange = true;
+    this.calendarTranslatePx = Number.MAX_SAFE_INTEGER;
+    this.changeDaysInMonth(getMonthDaysCount(this.year, this.month));
+    this.changeTodayIndex();
+    if (this.selectedOffice) {
+      void this.fetchSchedule(this.year, this.month, this.selectedOffice.id);
+    }
+  }
+
+  goToNextMonth() {
+    if (this.month < 11) {
+      this.month += 1;
+    } else {
+      this.year += 1;
+      this.month = 0;
+    }
+    this.resetCalendarTranslate();
+    this.changeDaysInMonth(getMonthDaysCount(this.year, this.month));
+    this.changeTodayIndex();
+    if (this.selectedOffice) {
+      void this.fetchSchedule(this.year, this.month, this.selectedOffice.id);
+    }
   }
 
   changeDaysInMonth(day: number) {
@@ -91,6 +175,16 @@ export class TimetableStore {
 
   changeDays() {
     this.days = Array.from({ length: this.daysInMonth }, (_, i) => i);
+  }
+
+  initRoleAndEmployee(role: string, employee: { id: number; name: string }) {
+    this.selectedRole = role;
+    this.selectedEmployee = employee;
+  }
+
+  resetRoleAndPerson() {
+    this.selectedRole = null;
+    this.selectedEmployee = null;
   }
 
   get roles(): string[] {
@@ -106,15 +200,51 @@ export class TimetableStore {
     }));
   }
   get employeeId(): number | null {
-    return timetableStore.selectedEmployee?.id ?? null;
+    return this.selectedEmployee?.id ?? null;
   }
-  setSelectedRole = (role: string | null) => {
+  setSelectedRole(role: string | null) {
     this.selectedRole = role;
     this.selectedEmployee = null;
-  };
-  setSelectedEmployee = (employee: { id: number; name: string } | null) => {
+  }
+  setSelectedEmployee(employee: { id: number; name: string } | null) {
     this.selectedEmployee = employee;
-  };
+  }
+
+  async fetchSchedule(year: number, month: number, officeId: number) {
+    this.isLoading = true;
+
+    try {
+      const response = await getSchedule(year, month + 1, officeId);
+      runInAction(() => {
+        this.shifts = response.data;
+        this.isLoading = false;
+      });
+    } catch (error) {
+      console.error('Ошибка загрузки расписания:', error);
+      runInAction(() => {
+        this.isLoading = false;
+      });
+      handleNetworkError(error);
+    }
+  }
+
+  private saveOfficeId(officeId: number): void {
+    try {
+      localStorage.setItem(this.SELECTED_OFFICE_KEY, officeId.toString());
+    } catch (error) {
+      console.error('Ошибка сохранения офиса в localStorage:', error);
+    }
+  }
+
+  private getSavedOfficeId(): number | null {
+    try {
+      const savedId = localStorage.getItem(this.SELECTED_OFFICE_KEY);
+      return savedId ? Number(savedId) : null;
+    } catch (error) {
+      console.error('Ошибка чтения офиса из localStorage:', error);
+      return null;
+    }
+  }
 }
 
 export const timetableStore = new TimetableStore();

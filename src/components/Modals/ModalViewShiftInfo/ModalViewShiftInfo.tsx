@@ -5,13 +5,13 @@ import PersonIcon from '@mui/icons-material/Person';
 import { Stack, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 
-import { ShiftModalData } from '../ModalView/ModalView';
+import { ShiftModalData } from '../ModalView/useViewModal';
 
-interface ShiftInfoProps {
+interface ModalViewShiftInfoProps {
   shiftData: ShiftModalData;
 }
 
-export const ShiftInfo: FC<ShiftInfoProps> = ({ shiftData }) => {
+export const ModalViewShiftInfo: FC<ModalViewShiftInfoProps> = ({ shiftData }) => {
   const start = dayjs().date(shiftData.dayIndex + 1);
   const end = start.add(shiftData.spanDays - 1, 'day');
 

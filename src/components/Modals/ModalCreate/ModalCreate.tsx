@@ -1,39 +1,41 @@
 import { FC } from 'react';
 
 import { Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
-import { observer } from 'mobx-react-lite';
+import { Dayjs } from 'dayjs';
 
-import { DatePeriod } from '../ModalCreateDatePeriod/ModalCreateDatePeriod';
-import { Pressets } from '../ModalCreatePressets/ModalCreatePressets';
-import { RoleAndPerson } from '../ModalCreateRole&Person/ModalCreateRole&Person';
-import { Title } from '../ModalCreateTitle/ModalCreateTitle';
-import { ActionsButtons } from '../ModalsCreateActionsButtons/ModalsCreateActionsButtons';
+import { ModalCreateDatePeriod } from '../ModalCreateDatePeriod/ModalCreateDatePeriod';
+import { ModalCreatePressets } from '../ModalCreatePressets/ModalCreatePressets';
+import { ModalCreateRoleAndPerson } from '../ModalCreateRole&Person/ModalCreateRole&Person';
+import { ModalCreateTitle } from '../ModalCreateTitle/ModalCreateTitle';
+import { ModalCreateActionsButtons } from '../ModalsCreateActionsButtons/ModalsCreateActionsButtons';
 
-interface TimetableModalCreateProps {
+interface ModalCreateProps {
   isOpen: boolean;
   onClose: () => void;
+  notEditable: boolean;
+  defaultStartDate: Dayjs | null;
 }
 
-const TimetableModalCreate: FC<TimetableModalCreateProps> = observer(({ isOpen, onClose }) => {
+const ModalCreate: FC<ModalCreateProps> = ({ isOpen, onClose, notEditable, defaultStartDate }) => {
   return (
     <Dialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
-        <Title onClose={onClose} />
+        <ModalCreateTitle onClose={onClose} />
       </DialogTitle>
 
       <DialogContent dividers>
         <Stack direction="column" spacing={3}>
-          <Pressets />
-          <DatePeriod />
-          <RoleAndPerson />
+          <ModalCreatePressets />
+          <ModalCreateDatePeriod defaultStartDate={defaultStartDate} />
+          <ModalCreateRoleAndPerson notEditable={notEditable} />
         </Stack>
       </DialogContent>
 
       <DialogActions>
-        <ActionsButtons onClose={onClose} />
+        <ModalCreateActionsButtons onClose={onClose} />
       </DialogActions>
     </Dialog>
   );
-});
+};
 
-export default TimetableModalCreate;
+export default ModalCreate;

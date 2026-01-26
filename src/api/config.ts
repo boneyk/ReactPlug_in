@@ -11,15 +11,14 @@ export const getErrorMessage = (status?: number | null): string => {
 };
 
 const BASE_URL = 'http://89.208.106.245';
-
 export const authInstance = axios.create({
   baseURL: `${BASE_URL}:8080`,
   withCredentials: true
 });
-
 export const scheduleInstance = axios.create({
   baseURL: `${BASE_URL}:8083`,
-  withCredentials: true
+  withCredentials: true,
+  timeout: 60000
 });
 
 const requestNewTokens = async () => {

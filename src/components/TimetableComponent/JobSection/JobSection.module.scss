@@ -1,0 +1,55 @@
+@use '@/styles/helpers' as *;
+
+$role-color: #799F79;
+$hover-cell-color: rgb(225, 251, 225);
+$cell-color: rgb(220, 246, 220);
+$first-col-shadow: 5px 0 15px var(--color-gray-200);
+
+.jobNameCell:global(.MuiTableCell-root) {
+  color: $role-color;
+  font-weight: var(--font-weight-semibold);
+  font-size: fluid(11, 8);
+  padding: 2px 8px 0 2px;
+  min-height: fluid(30, 18) !important;
+  display: flex;
+  align-items: center;
+}
+
+.jobNameRow:global(.MuiTableRow-root) {
+  background-color: $cell-color;
+  transition: background-color var(--transition-fast);
+  border-right: solid 1px var(--color-black);
+
+  &:hover {
+    background-color: $hover-cell-color;
+
+    & > .stickyFirstCol {
+      background-color: $hover-cell-color;
+    }
+  }
+}
+
+.stickyFirstCol {
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  background: $cell-color;
+  box-shadow: $first-col-shadow;
+  transition: background-color var(--transition-fast);
+}
+
+.blank:global(.MuiTableCell-root) {
+  border-right: none;
+  position: relative;
+}
+
+.pointer {
+  position: absolute;
+  height: 110%;
+  width: 2px;
+  background-color: var(--color-pointer);
+  top: -10%;
+  z-index: 4;
+  left: calc(50% - 0.5px);
+  transform: translateX(-50%);
+}

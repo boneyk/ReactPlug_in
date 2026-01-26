@@ -13,7 +13,7 @@ export const monthList: string[] = [
   'Декабрь'
 ];
 
-const STEP_DAYS = 7;
+const STEP_DAYS = 5;
 export const CELL_W = 66;
 export const stepPx = STEP_DAYS * CELL_W;
 

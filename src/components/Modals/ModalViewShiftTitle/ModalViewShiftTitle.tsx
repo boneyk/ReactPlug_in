@@ -2,13 +2,13 @@ import { FC } from 'react';
 
 import { Stack, Typography } from '@mui/material';
 
-import { ShiftModalData } from '../ModalView/ModalView';
+import { ShiftModalData } from '../ModalView/useViewModal';
 
-interface ShiftInfoProps {
+interface ModalViewShiftInfoProps {
   shiftData: ShiftModalData;
 }
 
-export const ShiftTitle: FC<ShiftInfoProps> = ({ shiftData }) => {
+export const ModalViewShiftTitle: FC<ModalViewShiftInfoProps> = ({ shiftData }) => {
   return (
     <Stack direction="column">
       <Typography variant="h6">{shiftData.job}</Typography>

@@ -50,8 +50,8 @@
 }
 
 @mixin square($size) {
-  width: $size;
-  height: $size;
+  width: $size !important;
+  height: $size !important;
 }
 
 @mixin visualy-hidden {

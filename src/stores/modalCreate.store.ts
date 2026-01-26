@@ -2,6 +2,8 @@ import dayjs, { Dayjs } from 'dayjs';
 import { CreateShiftDto, ShiftPresetDto } from 'dto/DtoScheduleService';
 import { makeAutoObservable } from 'mobx';
 
+import { Formats } from 'utils/formats';
+
 import { timetableStore } from './timetable.store';
 
 export interface ShiftPreset {
@@ -63,13 +65,11 @@ export class TimetableCreateStore {
     this.selectedPresetId = presetId;
     const preset = this.presets.find((p) => p.id === presetId) || null;
     if (!preset) {
-      this.startDate = null;
-      this.endDate = null;
       return;
     }
-    const today = dayjs();
-    this.startDate = today.hour(preset.startHour).minute(preset.startMinute).second(0);
-    this.endDate = today.hour(preset.endHour).minute(preset.endMinute).second(0);
+    const currentDate = this.startDate || dayjs();
+    this.startDate = currentDate.hour(preset.startHour).minute(preset.startMinute).second(0);
+    this.endDate = currentDate.hour(preset.endHour).minute(preset.endMinute).second(0);
   };
   reset = () => {
     this.selectedPresetId = null;
@@ -110,10 +110,10 @@ export class TimetableCreateStore {
 
     return {
       employeeId: employee.id,
-      startDate: startDate.format('YYYY-MM-DD'),
-      endDate: endDate.format('YYYY-MM-DD'),
-      startTime: startDate.format('HH:mm'),
-      endTime: endDate.format('HH:mm'),
+      startDate: startDate.format(Formats.DATE),
+      endDate: endDate.format(Formats.DATE),
+      startTime: startDate.format(Formats.TIME),
+      endTime: endDate.format(Formats.TIME),
       type: 'work'
     };
   }

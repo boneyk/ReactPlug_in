@@ -1,4 +1,161 @@
-.sider {
+@use "@/styles/helpers" as *;
+
+@keyframes scaling {
+  0% {
+    transform: scale(1);
+  }
+  75% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--color-background);
+}
+
+.logo {
+  height: fluid(44, 33, true);
+}
+
+.content {
+  flex-grow: 1;
+  padding: 16px;
+  overflow: auto;
+}
+
+.footer {
+  text-align: center;
+  padding: 16px 0;
+  background-color: var(--color-white);
+}
+
+.header:global(.MuiBox-root) {
+  width: calc(100% - 8px);
+  background-color: var(--color-contrast);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  height: fluid(60, 41, true);
+  margin: 0 auto;
+  max-width: 1700px;
+  position: relative;
+}
+
+.headerContent:global(.MuiStack-root) {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.desktopNav {
+  display: flex;
+  gap: 8px;
+  height: 100%;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+
+  @include mobile {
+    display: none;
+  }
+}
+
+.mobileNav {
+  display: none;
+  margin-left: auto;
+
+  @include mobile {
+    display: block;
+  }
+}
+
+.navBtn:global(.MuiButton-root) {
+  width: fit-content;
+  height: 100%;
+  font-size: fluid(16, 10, true) !important;
+  font-family: var(--font-family-base), sans-serif;
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.7);
+  font-weight: 600;
+  transition: color var(--transition-base), border-color var(--transition-base), transform var(--transition-base);
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  box-sizing: border-box;
+
+  &:hover {
+    background-color: transparent;
+    color: #1a1a1a;
+  }
+
+  &.selected {
+    background-color: transparent;
+    color: var(--color-pointer);
+    border-radius: 0;
+    border-bottom-color: var(--color-pointer);
+    cursor: default;
+    pointer-events: none;
+    transition: border-bottom-color var(--transition-base);
+
+    &:hover {}
+
+    :global(.MuiButton-startIcon) {
+      & > svg {
+        animation-name: scaling;
+        animation-duration: 380ms;
+        animation-iteration-count: 1;
+        animation-fill-mode: forwards;
+      }
+    }
+  }
+
+  :global(.MuiButton-startIcon) {
+    & > svg {
+      font-size: fluid(18, 12, true);
+    }
+  }
+
+  &:active {
+    :global(.MuiButton-startIcon) {
+      & > svg {
+        transform: scale(0.9);
+      }
+    }
+  }
+}
+
+.logout:global(.MuiButton-root) {
+  background-color: #232323;
+  box-sizing: border-box;
+  border-radius: fluid(12, 6, true);
+  font-size: fluid(16, 10, true);
+  color: var(--color-white);
+  border: 2px solid #232323;
+  transition: color var(--transition-base), background-color var(--transition-base), transform var(--transition-base), color var(--transition-base);
+  font-family: var(--font-family-base), sans-serif;
+  height: 90%;
+
+  &:hover {
+    color: #232323;
+    background-color: var(--color-contrast);
+  }
+
+  :global(.MuiButton-endIcon) {
+    & > svg {
+      font-size: fluid(18, 12, true);
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  @include mobile {
+    display: none;
+  }
 }

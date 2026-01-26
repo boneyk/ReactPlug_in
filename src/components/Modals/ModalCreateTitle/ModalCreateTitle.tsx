@@ -5,11 +5,11 @@ import { IconButton, Stack, Typography } from '@mui/material';
 
 import styles from '../ModalCreateTitle/ModalCreateTitle.module.scss';
 
-interface TimetableModalCreateProps {
+interface ModalCreateProps {
   onClose: () => void;
 }
 
-export const Title: FC<TimetableModalCreateProps> = ({ onClose }) => {
+export const ModalCreateTitle: FC<ModalCreateProps> = ({ onClose }) => {
   return (
     <Stack direction="row" spacing={1} className={styles.container}>
       <Typography variant="h5">Создание смены</Typography>

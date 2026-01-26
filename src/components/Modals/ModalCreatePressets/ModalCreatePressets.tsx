@@ -5,16 +5,15 @@ import { timetableCreateStore } from 'stores/modalCreate.store';
 
 import styles from '../ModalCreate/ModalCreate.module.scss';
 
-export const Pressets = observer(() => {
+export const ModalCreatePressets = observer(() => {
+  const changePresset = (_: unknown, newId: number | null) => {
+    timetableCreateStore.selectPreset(newId);
+  };
   return (
     <Stack direction="row" spacing={1} className={styles.container}>
       <DateRangeIcon />
       <Typography>Период работы</Typography>
-      <ToggleButtonGroup
-        value={timetableCreateStore.selectedPresetId}
-        exclusive
-        onChange={(_, newId) => timetableCreateStore.selectPreset(newId)}
-      >
+      <ToggleButtonGroup value={timetableCreateStore.selectedPresetId} exclusive onChange={changePresset}>
         {timetableCreateStore.presets.map((preset) => (
           <ToggleButton key={preset.id} value={preset.id}>
             {preset.label}

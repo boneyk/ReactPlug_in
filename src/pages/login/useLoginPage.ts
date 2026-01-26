@@ -23,12 +23,12 @@ export const useLoginPage = () => {
     setShowPassword((prev) => !prev);
   };
   const loginError = login.length > 0 && login.length < 4;
-  const loginHelperText = loginError ? 'Минимум 4 символов' : '';
+  const loginHelperText = loginError ? 'Минимум 4 символa' : '';
   const passwordError = password.length > 0 && password.length < 8;
   const passwordHelperText = passwordError ? 'Минимум 8 символов' : ' ';
 
   const isFormValid = () => {
-    return login.length >= 4 && login.length <= 255 && password.length >= 8 && password.length <= 255;
+    return login.length >= 4 && login.length <= 128 && password.length >= 8 && password.length <= 255;
   };
   const isDisabled = !isFormValid();
 
@@ -49,18 +49,12 @@ export const useLoginPage = () => {
 
     login_request(loginDTO)
       .then((response) => {
-        localStorage.setItem('username', login);
-        localStorage.setItem('password', password);
-
         localStorage.setItem('accessToken', response.data.accessToken);
         const decoded: JwtPayload = jwtDecode(response.data.accessToken);
-        console.log(decoded.authorities.join(','));
-        console.log(decoded.user_id);
 
         localStorage.setItem('authorities', decoded.authorities.join(','));
         localStorage.setItem('user_id', decoded.user_id);
-
-        navigate('/timetable', { replace: true });
+        navigate('/schedule', { replace: true });
       })
       .catch((err) => {
         const status = err.response?.status;

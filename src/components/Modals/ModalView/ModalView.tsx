@@ -1,21 +1,12 @@
 import { FC } from 'react';
 
 import { Dialog, DialogContent, DialogTitle, Typography } from '@mui/material';
-import { ShiftType } from 'stores/timetable.store';
 
-import { ShiftButtons } from '../ModalViewShiftButtons/ModalViewButtons';
-import { ShiftInfo } from '../ModalViewShiftInfo/ModalViewShiftInfo';
-import { ShiftTitle } from '../ModalViewShiftTitle/ModalViewShiftTitle';
+import { ModalViewButtons } from '../ModalViewButtons/ModalViewButtons';
+import { ModalViewShiftInfo } from '../ModalViewShiftInfo/ModalViewShiftInfo';
+import { ModalViewShiftTitle } from '../ModalViewShiftTitle/ModalViewShiftTitle';
 
-export interface ShiftModalData {
-  id: number;
-  fullname: string;
-  job: string;
-  dayIndex: number;
-  type: ShiftType;
-  text: string;
-  spanDays: number;
-}
+import { ShiftModalData } from './useViewModal';
 
 interface TimetableModalViewProps {
   isOpen: boolean;
@@ -30,15 +21,15 @@ const TimetableModalView: FC<TimetableModalViewProps> = ({ isOpen, onClose, shif
         {!shiftData ? (
           <Typography color="text.secondary">Нет данных о смене</Typography>
         ) : (
-          <ShiftTitle shiftData={shiftData} />
+          <ModalViewShiftTitle shiftData={shiftData} />
         )}
       </DialogTitle>
-      {shiftData && <ShiftButtons onClose={onClose} shift={shiftData} />}
+      {shiftData && <ModalViewButtons onClose={onClose} shift={shiftData} />}
       <DialogContent dividers>
         {!shiftData ? (
           <Typography color="text.secondary">Нет данных о смене</Typography>
         ) : (
-          <ShiftInfo shiftData={shiftData} />
+          <ModalViewShiftInfo shiftData={shiftData} />
         )}
       </DialogContent>
     </Dialog>

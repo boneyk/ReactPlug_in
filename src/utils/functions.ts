@@ -1,6 +1,16 @@
 import { shiftTypeMap } from '../constants/timetable';
 
-import type { Shift, ShiftType, Worker } from '../stores/timetable.store';
+import type { Absence, Shift as ApiShift, EmployeeSchedule } from '../api/shedule_service';
+import { ShiftType } from '../stores/timetable.store';
+
+export interface Shift {
+  id: number;
+  startTime: string;
+  endTime: string;
+  date: string;
+  type: ShiftType;
+  label?: string;
+}
 
 export function getMonthDaysCount(year: number, month: number): number {
   const nextMonthStartDate = new Date(year, month + 1, 1);
@@ -17,67 +27,100 @@ weekdays.set(4, 'Четверг');
 weekdays.set(5, 'Пятница');
 weekdays.set(6, 'Суббота');
 
-const clampShiftToMonth = (shift: Shift, year: number, month: number, daysInMonth: number) => {
-  const monthStart = new Date(year, month, 1, 0, 0, 0);
-  const monthEnd = new Date(year, month, daysInMonth, 0, 0, 0);
-
-  const startDate = new Date(`${shift.startDate}T00:00:00`);
-  const endDate = new Date(`${shift.endDate}T00:00:00`);
-
-  const start = startDate < monthStart ? monthStart : startDate;
-  const end = endDate > monthEnd ? monthEnd : endDate;
-
-  if (end < start) return null;
-
-  const startIdx = start.getDate() - 1;
-  const endIdx = end.getDate() - 1;
-
-  return { startIdx, endIdx };
-};
-
 export function getWeekdayByDate(year: number, month: number, day: number): string {
   return weekdays.get(new Date(year, month, day).getDay()) ?? 'Unknown';
 }
 
-export type ShiftBlock = {
-  id: number;
-  startIdx: number;
-  spanDays: number;
-  type: ShiftType;
-  text: string;
-};
+export function isShiftSameType(shift1: Shift, shift2: Shift): boolean {
+  return shift1.startTime === shift2?.startTime && shift1?.endTime === shift2?.endTime && shift1?.type === shift2?.type;
+}
 
-export const buildWorkerBlocks = (worker: Worker, year: number, month: number, daysInMonth: number): ShiftBlock[] => {
-  const shiftSegments: ShiftBlock[] = [];
+export function getDayFromShiftDay(shiftDate: string): number {
+  return Number(shiftDate.slice(-2));
+}
 
-  worker.shifts.forEach((shift: Shift) => {
-    const clamped = clampShiftToMonth(shift, year, month, daysInMonth);
-    if (!clamped) return;
+export function formatTime(time: string): string {
+  return time.slice(0, 5);
+}
 
-    const spanDays = clamped.endIdx - clamped.startIdx + 1;
-
-    shiftSegments.push({
+export function transformEmployeeShifts(employeeData: EmployeeSchedule): Shift[] {
+  return [
+    ...employeeData.shifts.map((shift: ApiShift) => ({
       id: shift.id,
-      startIdx: clamped.startIdx,
-      spanDays,
-      type: shift.type,
-      text: shiftTypeMap.get(shift.type.toLowerCase()) ?? `${shift.startTime} - ${shift.endTime}`
-    });
+      startTime: shift.startTime,
+      endTime: shift.endTime,
+      date: shift.date,
+      type: 'work' as const
+    })),
+    ...employeeData.absences.map((absence: Absence) => {
+      const type = absence.code.toLowerCase() === 'sick' ? 'sick' : 'vacation';
+      return {
+        id: absence.id,
+        startTime: '00:00',
+        endTime: '00:00',
+        date: absence.date,
+        type: type as 'sick' | 'vacation',
+        label: absence.name
+      };
+    })
+  ];
+}
+
+export function buildShiftsWorkerList(daysInMonth: number, employeeData: EmployeeSchedule) {
+  const workerShifts = transformEmployeeShifts(employeeData);
+
+  const daysArray: string[] = Array.from({ length: daysInMonth + 2 }, () => '');
+  let curShiftSectionNumber = 0;
+  let prevShift: Shift = {
+    id: -1,
+    startTime: '',
+    endTime: '',
+    date: '',
+    type: 'work'
+  };
+
+  const sortedShifts = JSON.parse(JSON.stringify(workerShifts));
+  sortedShifts.sort((a: Shift, b: Shift) => a.date.localeCompare(b.date));
+
+  sortedShifts.forEach((shift: Shift) => {
+    const day = getDayFromShiftDay(shift.date);
+    if (!isShiftSameType(prevShift, shift)) {
+      curShiftSectionNumber++;
+    } else if (day - getDayFromShiftDay(prevShift.date) !== 1) {
+      curShiftSectionNumber++;
+    }
+    daysArray[day] = `${shift.type.padEnd(8, ' ')}-shift${curShiftSectionNumber}|`;
+    if (shift.type === 'work') {
+      daysArray[day] += `${formatTime(shift.startTime)}-${formatTime(shift.endTime)}`;
+    } else {
+      daysArray[day] += shiftTypeMap.get(shift.type);
+    }
+    prevShift = shift;
   });
 
-  shiftSegments.sort((a, b) => b.spanDays - a.spanDays);
+  return daysArray;
+}
 
-  return shiftSegments;
-};
+export function isStart(daysShiftsList: string[], index: number): boolean {
+  return daysShiftsList[index] !== daysShiftsList[index + 1] && daysShiftsList[index + 1] === daysShiftsList[index + 2];
+}
 
-export function groupBlocksByStart(blocks: ShiftBlock[]) {
-  const map = new Map<number, ShiftBlock[]>();
+export function isEnd(daysShiftsList: string[], index: number): boolean {
+  return daysShiftsList[index] === daysShiftsList[index + 1] && daysShiftsList[index + 1] !== daysShiftsList[index + 2];
+}
 
-  for (const block of blocks) {
-    const arr = map.get(block.startIdx);
-    if (arr) arr.push(block);
-    else map.set(block.startIdx, [block]);
-  }
+export function isMid(daysShiftsList: string[], index: number): boolean {
+  return daysShiftsList[index] === daysShiftsList[index + 1] && daysShiftsList[index + 1] === daysShiftsList[index + 2];
+}
 
-  return map;
+export function isSolo(daysShiftsList: string[], index: number): boolean {
+  return daysShiftsList[index] !== daysShiftsList[index + 1] && daysShiftsList[index + 1] !== daysShiftsList[index + 2];
+}
+
+export function getShiftType(arrayString: string): string {
+  return arrayString.slice(0, 8).trim().toLowerCase();
+}
+
+export function getShiftTitle(daysShiftsList: string[], index: number): string {
+  return daysShiftsList[index + 1].split('|')[1];
 }

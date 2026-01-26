@@ -1,3 +1,5 @@
+@use "./helpers" as *;
+
 /// radiuses ///
 $radius-xxxs: 2px;
 $radius-xxs: 4px;
@@ -382,6 +384,7 @@ $z-popup: 10;
 $easing-smooth: cubic-bezier(0.22, 1, 0.36, 1);
 $transition-fast: 250ms $easing-smooth;
 $transition-base: 380ms $easing-smooth;
+$transition-slow: 760ms $easing-smooth;
 
 /// sizes (timetable / calendar) ///
 $timetable-workers-width: 300px;
@@ -413,6 +416,8 @@ $calendar-pointer-top: 55px;
   colorSecondaryLight: $color-brand-60;
   colorSecondaryDark: $color-brand-70;
   colorWhite: $color-white;
+  colorNeutral: $color-neutral-80;
+  colorHoverNeutral: $color-gray-400;
 
   fontPrimary:$font-primary;
   fontWeightRegular: $font-weight-regular;
@@ -439,6 +444,9 @@ $calendar-pointer-top: 55px;
 
   timetableWorkersWidth: $timetable-workers-width;
   timetableWorkersHeight: $timetable-workers-height;
+
+  monthSwitcherFontSize: fluid(16, 10, true);
+  monthSwitcherBorderRadius: fluid(12, 6, true);
 }
 
 :root {
@@ -503,6 +511,12 @@ $calendar-pointer-top: 55px;
   --color-gray-400: #{$color-gray-400};
   --color-gray-500: #{$color-gray-500};
 
+  --color-neutral-50: #{$color-neutral-50};
+  --color-neutral-60: #{$color-neutral-60};
+  --color-neutral-40: #{$color-neutral-40};
+  --color-neutral-30: #{$color-neutral-30};
+  --color-neutral-10: #{$color-neutral-10};
+
   --color-border-default: #{$color-border-default};
   --color-bg-hover: #{$color-bg-hover};
   --color-bg-active: #{$color-bg-active};
@@ -537,6 +551,7 @@ $calendar-pointer-top: 55px;
   // transitions
   --transition-fast: #{$transition-fast};
   --transition-base: #{$transition-base};
+  --transition-slow: #{$transition-slow};
 
   // sizes (timetable / calendar)
   --timetable-workers-width: #{$timetable-workers-width};

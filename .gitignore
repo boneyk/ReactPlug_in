@@ -40,3 +40,4 @@ package-lock.json
 !.vscode/launch.json
 !.vscode/extensions.json
 .history/*
+mockoon-environment.json
