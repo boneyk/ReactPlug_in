@@ -24,19 +24,6 @@ export interface EmployeeSchedule {
   absences: Absence[];
 }
 
-export interface MyShift extends Shift {
-  officeName: string;
-}
-
-export interface MyAbsence extends Pick<Absence, 'id' | 'absenceTypeId' | 'date'> {
-  type: 'SICK_LEAVE' | 'VACATION' | 'DAY_OFF';
-}
-
-export interface ScheduleMyResponse {
-  shifts: MyShift[];
-  absences: MyAbsence[];
-}
-
 export type EmployeesById = Record<string, EmployeeSchedule>;
 
 export type ScheduleResponse = Record<string, EmployeesById>;
@@ -66,15 +53,6 @@ export const getSchedule = (
       year,
       month,
       officeId
-    }
-  });
-};
-
-export const getScheduleMy = (year: number, month: number): Promise<AxiosResponse<ScheduleMyResponse>> => {
-  return scheduleInstance.get('/schedule/my', {
-    params: {
-      year,
-      month
     }
   });
 };

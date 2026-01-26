@@ -5,7 +5,7 @@ import Placeholder from 'navigation/Placeholder';
 import ErrorPage from 'pages/error/ErrorPage';
 import LoginPage from 'pages/login/LoginPage';
 
-import CalendarWidget from '../components/TimetableComponent/CalendarWidget';
+import EmployeesTable from '../components/EmployeesTable';
 
 import TimetablePage from '../pages/timetable/TimetablePage';
 
@@ -37,21 +37,9 @@ const Navigation = () => {
                   element: <TimetablePage />
                 },
                 {
-                  path: 'schedule/my',
-                  element: <CalendarWidget title={'Мой график смен'} />
-                },
-                {
-                  path: 'stats',
-                  element: <CalendarWidget title={'Статистика'} showDropdown={true} />
-                },
-                {
-                  path: 'applications',
-                  element: <Placeholder text={'i am applications page'} />
-                },
-                {
-                  path: 'users',
+                  path: 'employees',
                   children: [
-                    { index: true, element: <Placeholder text="i am users list" /> },
+                    { index: true, element: <EmployeesTable /> },
                     { path: 'create', element: <Placeholder text="i am create user page" /> },
                     { path: 'edit/:id', element: <Placeholder text="i am edit user page" /> }
                   ]

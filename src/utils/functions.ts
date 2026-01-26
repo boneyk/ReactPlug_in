@@ -1,6 +1,6 @@
 import { shiftTypeMap } from '../constants/timetable';
 
-import type { Absence, Shift as ApiShift, EmployeeSchedule, ScheduleMyResponse } from '../api/shedule_service';
+import type { Absence, Shift as ApiShift, EmployeeSchedule } from '../api/shedule_service';
 import { ShiftType } from '../stores/timetable.store';
 
 export interface Shift {
@@ -123,86 +123,4 @@ export function getShiftType(arrayString: string): string {
 
 export function getShiftTitle(daysShiftsList: string[], index: number): string {
   return daysShiftsList[index + 1].split('|')[1];
-}
-
-export function getCalendarMatrix(year: number, monthIndex: number): string[][] {
-  const calendarMatrix: string[][] = [];
-  const calendarPointer = new Date(year, monthIndex, 1);
-  calendarPointer.setDate(calendarPointer.getDate() - calendarPointer.getDay());
-
-  calendarMatrix.push(Array(7));
-  for (let i = 0; i < 7; i++) {
-    calendarMatrix[0][i] = `${calendarPointer.getDate()}|${calendarPointer.getMonth()}`;
-    calendarPointer.setDate(calendarPointer.getDate() + 1);
-  }
-
-  let rowNumber = 1;
-  while (calendarPointer.getMonth() === monthIndex) {
-    calendarMatrix.push(Array(7));
-    for (let i = 0; i < 7; i++) {
-      calendarMatrix[rowNumber][i] = `${calendarPointer.getDate()}|${calendarPointer.getMonth()}`;
-      calendarPointer.setDate(calendarPointer.getDate() + 1);
-    }
-    rowNumber++;
-  }
-
-  return calendarMatrix;
-}
-
-export interface ScheduleMyItem {
-  officeName: string;
-  startTime: string;
-  endTime: string;
-  type: string;
-}
-
-export interface CalendarCell {
-  day: number;
-  month: number;
-  myShifts: ScheduleMyItem[];
-}
-
-export function getScheduleMyMatrix(data: ScheduleMyResponse, calendarMatrix: string[][]): CalendarCell[][] {
-  const shiftsByDate = new Map<string, ScheduleMyItem[]>();
-
-  data.shifts.forEach((shift) => {
-    const dateParts = shift.date.split('-');
-    const day = parseInt(dateParts[2], 10);
-    const month = parseInt(dateParts[1], 10) - 1;
-    const key = `${day}|${month}`;
-    const items = shiftsByDate.get(key) || [];
-    items.push({
-      officeName: shift.officeName,
-      startTime: shift.startTime,
-      endTime: shift.endTime,
-      type: 'work'
-    });
-    shiftsByDate.set(key, items);
-  });
-
-  data.absences.forEach((absence) => {
-    const dateParts = absence.date.split('-');
-    const day = parseInt(dateParts[2], 10);
-    const month = parseInt(dateParts[1], 10) - 1;
-    const key = `${day}|${month}`;
-    const items = shiftsByDate.get(key) || [];
-    items.push({
-      officeName: '',
-      startTime: '',
-      endTime: '',
-      type: absence.type
-    });
-    shiftsByDate.set(key, items);
-  });
-
-  return calendarMatrix.map((week) =>
-    week.map((cell) => {
-      const [day, month] = cell.split('|').map(Number);
-      return {
-        day,
-        month,
-        myShifts: shiftsByDate.get(cell) || []
-      };
-    })
-  );
 }
