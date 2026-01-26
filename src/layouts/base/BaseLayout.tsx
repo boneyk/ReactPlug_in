@@ -1,9 +1,10 @@
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-import ArticleIcon from '@mui/icons-material/Article';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import GroupIcon from '@mui/icons-material/Group';
 import LogoutIcon from '@mui/icons-material/Logout';
+import WorkIcon from '@mui/icons-material/Work';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { logout } from 'api/auth_service';
 import logo from 'assets/logo.svg';
@@ -12,10 +13,13 @@ import classNames from 'classnames';
 import BurgerMenu from '../../components/BurgerMenu';
 import WarningMessage from '../../components/WarningMessage';
 
+import { isUserAdmin } from '../../utils/auth';
+
 import styles from './BaseLayout.module.scss';
 
 const BaseLayout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleClick = (key: string) => {
     navigate(`/${key}`);
@@ -32,7 +36,9 @@ const BaseLayout = () => {
   const menuItems = [
     { key: 'schedule', label: 'Расписание', icon: <CalendarMonthIcon /> },
     { key: 'users', label: 'Пользователи', icon: <GroupIcon /> },
-    { key: 'applications', label: 'Заявки', icon: <ArticleIcon /> }
+    isUserAdmin()
+      ? { key: 'schedule/my', label: 'Мой график смен', icon: <AssignmentIndIcon /> }
+      : { key: 'stats', label: 'График выработки', icon: <WorkIcon /> }
   ];
 
   const burgerMenuItems = menuItems.reduce(
@@ -56,7 +62,7 @@ const BaseLayout = () => {
                 key={item.key}
                 startIcon={item.icon}
                 color="secondary"
-                className={classNames(styles.navBtn, { [styles.selected]: window.location.href.includes(item.key) })}
+                className={classNames(styles.navBtn, { [styles.selected]: location.pathname === `/${item.key}` })}
                 onClick={() => handleClick(item.key)}
               >
                 {item.label}

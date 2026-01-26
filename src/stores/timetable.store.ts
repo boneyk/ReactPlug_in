@@ -2,8 +2,9 @@ import { makeAutoObservable, runInAction } from 'mobx';
 
 import { handleNetworkError } from '../utils/errorHandlers';
 import { getMonthDaysCount } from '../utils/functions';
+import { CalendarCell, getCalendarMatrix, getScheduleMyMatrix } from '../utils/functions';
 
-import { getOffices, getSchedule, OfficeDto, ScheduleResponse } from '../api/shedule_service';
+import { getOffices, getSchedule, getScheduleMy, OfficeDto, ScheduleResponse } from '../api/shedule_service';
 
 export type ShiftType = 'work' | 'vacation' | 'sick';
 
@@ -22,7 +23,9 @@ export class TimetableStore {
   selectedOffice: OfficeDto | null = null;
 
   shifts: ScheduleResponse = {};
+  myScheduleMatrix: CalendarCell[][] = [];
   isLoading: boolean = true;
+  isMyScheduleLoading: boolean = false;
 
   scrollToEndAfterMonthChange: boolean = false;
 
@@ -127,6 +130,18 @@ export class TimetableStore {
     }
   }
 
+  resetToCurrentDate() {
+    const now = new Date();
+    this.year = now.getFullYear();
+    this.month = now.getMonth();
+    this.resetCalendarTranslate();
+    this.changeDaysInMonth(getMonthDaysCount(this.year, this.month));
+    this.changeTodayIndex();
+    if (this.selectedOffice) {
+      void this.fetchSchedule(this.year, this.month, this.selectedOffice.id);
+    }
+  }
+
   changeMonth(month: number) {
     this.month = month;
     this.resetCalendarTranslate();
@@ -223,6 +238,31 @@ export class TimetableStore {
       console.error('Ошибка загрузки расписания:', error);
       runInAction(() => {
         this.isLoading = false;
+      });
+      handleNetworkError(error);
+    }
+  }
+
+  async fetchScheduleMy() {
+    this.isMyScheduleLoading = true;
+    try {
+      const response = await getScheduleMy(this.year, this.month + 1);
+      const calendarMatrix = getCalendarMatrix(this.year, this.month);
+      runInAction(() => {
+        this.myScheduleMatrix = getScheduleMyMatrix(response.data, calendarMatrix);
+        this.isMyScheduleLoading = false;
+      });
+    } catch (error) {
+      console.error('Ошибка загрузки личного расписания:', error);
+      const calendarMatrix = getCalendarMatrix(this.year, this.month);
+      runInAction(() => {
+        this.myScheduleMatrix = calendarMatrix.map((week) =>
+          week.map((cell) => {
+            const [day, month] = cell.split('|').map(Number);
+            return { day, month, myShifts: [] };
+          })
+        );
+        this.isMyScheduleLoading = false;
       });
       handleNetworkError(error);
     }

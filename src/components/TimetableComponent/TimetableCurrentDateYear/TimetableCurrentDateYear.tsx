@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { FC, useState } from 'react';
 
 import { AddCircleOutline } from '@mui/icons-material';
 import { Button, FormControl, Grid2, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
@@ -16,7 +16,11 @@ import Modal from '../../Modals/ModalCreate/ModalCreate';
 
 import styles from './TimetableCurrentDateYear.module.scss';
 
-const TimetableCurrentDateYear = observer(() => {
+interface TimetableCurrentDateYearProps {
+  showDropdown?: boolean;
+}
+
+const TimetableCurrentDateYear: FC<TimetableCurrentDateYearProps> = observer(({ showDropdown = true }) => {
   const { timetableStore } = useStores();
   const { offices, selectedOffice, year, decYear, incYear, setSelectedOffice } = timetableStore;
   const [isOpen, setIsOpen] = useState(false);
@@ -52,29 +56,31 @@ const TimetableCurrentDateYear = observer(() => {
         </Button>
       </Grid2>
 
-      <DropdownProvider>
-        <Grid2 container className={styles.tools}>
-          {isUserAdmin() && <DropdownButton items={actionItems} icon={<AddCircleOutline />} />}
-          {!isUserAdmin() && offices.length > 0 && (
-            <FormControl variant="outlined" className={styles.formControl}>
-              <InputLabel id="office-select-id">Офис</InputLabel>
-              <Select<number>
-                labelId="office-select-id"
-                label="Офис"
-                value={selectedOffice?.id ?? 0}
-                onChange={handleOfficeChange}
-                className={styles.selectOffice}
-              >
-                {offices.map((office) => (
-                  <MenuItem key={`office-${office.id}`} value={office.id}>
-                    {office.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
-        </Grid2>
-      </DropdownProvider>
+      {showDropdown && (
+        <DropdownProvider>
+          <Grid2 container className={styles.tools}>
+            {isUserAdmin() && <DropdownButton items={actionItems} icon={<AddCircleOutline />} />}
+            {!isUserAdmin() && offices.length > 0 && (
+              <FormControl variant="outlined" className={styles.formControl}>
+                <InputLabel id="office-select-id">Офис</InputLabel>
+                <Select<number>
+                  labelId="office-select-id"
+                  label="Офис"
+                  value={selectedOffice?.id ?? 0}
+                  onChange={handleOfficeChange}
+                  className={styles.selectOffice}
+                >
+                  {offices.map((office) => (
+                    <MenuItem key={`office-${office.id}`} value={office.id}>
+                      {office.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          </Grid2>
+        </DropdownProvider>
+      )}
 
       <Modal notEditable={true} defaultStartDate={dayjs()} isOpen={isOpen} onClose={handleClose} />
     </Grid2>

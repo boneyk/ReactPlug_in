@@ -5,6 +5,8 @@ import Placeholder from 'navigation/Placeholder';
 import ErrorPage from 'pages/error/ErrorPage';
 import LoginPage from 'pages/login/LoginPage';
 
+import CalendarWidget from '../components/TimetableComponent/CalendarWidget';
+
 import TimetablePage from '../pages/timetable/TimetablePage';
 
 import { ProtectedRouteProvider } from './ProtectedRouteProvider';
@@ -33,6 +35,14 @@ const Navigation = () => {
                 {
                   path: 'schedule',
                   element: <TimetablePage />
+                },
+                {
+                  path: 'schedule/my',
+                  element: <CalendarWidget title={'Мой график смен'} />
+                },
+                {
+                  path: 'stats',
+                  element: <CalendarWidget title={'Статистика'} showDropdown={true} />
                 },
                 {
                   path: 'applications',
