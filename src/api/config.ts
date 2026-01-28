@@ -7,8 +7,9 @@ export const getErrorMessage = (status?: number | null): string => {
   if ([400, 409].includes(status)) return 'Неверные данные запроса';
   return 'Произошла неизвестная ошибка';
 };
+const env = (window as any).__ENV__ || {};
 
-const baseURL = 'http://demo.orng.atbplugin.tech';
+const baseURL = env.BASE_URL ?? 'http://demo.orng.atbplugin.tech';
 export const instance = axios.create({ baseURL: baseURL, withCredentials: true, timeout: 60000 });
 
 instance.interceptors.request.use((config) => {
