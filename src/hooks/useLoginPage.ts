@@ -1,11 +1,11 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { LoginDTO } from 'dto/DtoAuthService';
 import jwtDecode from 'jwt-decode';
 
-import { login_request } from '../../api/auth_service';
-import { getErrorMessage } from '../../api/config';
+import { login_request } from '@/api/auth_service';
+import { getErrorMessage } from '@/api/config';
+import { LoginDTO } from '@/dto/DtoAuth';
 
 export type JwtPayload = {
   authorities: string[];
@@ -48,15 +48,17 @@ export const useLoginPage = () => {
     };
 
     login_request(loginDTO)
-      .then((response) => {
+      .then((response: any) => {
         localStorage.setItem('accessToken', response.data.accessToken);
+        localStorage.setItem('refreshToken', response.data.refreshToken);
+
         const decoded: JwtPayload = jwtDecode(response.data.accessToken);
 
         localStorage.setItem('authorities', decoded.authorities.join(','));
         localStorage.setItem('user_id', decoded.user_id);
         navigate('/schedule', { replace: true });
       })
-      .catch((err) => {
+      .catch((err: any) => {
         const status = err.response?.status;
         if (status === 404) return setError('Неверный логин или пароль');
         setError(getErrorMessage(status));

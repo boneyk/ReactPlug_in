@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { LoginDTO } from 'dto/DtoAuthService';
+import { LoginDTO } from 'dto/DtoAuth';
 
 import { instance } from './config';
 

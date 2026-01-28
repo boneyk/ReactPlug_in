@@ -1,4 +1,4 @@
-import { baseLayoutStore } from '../stores/baseLayout.store';
+import { baseLayoutStore } from '@/stores/baseLayout.store';
 
 export function handleNetworkError(error: unknown): void {
   const errorCode = (error as { code?: string }).code;

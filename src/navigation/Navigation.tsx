@@ -5,12 +5,12 @@ import Placeholder from 'navigation/Placeholder';
 import ErrorPage from 'pages/error/ErrorPage';
 import LoginPage from 'pages/login/LoginPage';
 
-import EmployeesTable from '../components/EmployeesTable';
-
-import TimetablePage from '../pages/timetable/TimetablePage';
+import EmployeesTable from '@/components/EmployeesTable';
+import CalendarWidget from '@/components/TimetableComponent/CalendarWidget';
 
 import { ProtectedRouteProvider } from './ProtectedRouteProvider';
 import { SuspenseLayout } from './SuspenseLayout';
+import TimetablePage from '@/pages/timetable/TimetablePage';
 
 const Navigation = () => {
   const routes = [
@@ -37,9 +37,21 @@ const Navigation = () => {
                   element: <TimetablePage />
                 },
                 {
-                  path: 'employees',
+                  path: 'schedule/my',
+                  element: <CalendarWidget title={'Мой график смен'} />
+                },
+                {
+                  path: 'stats',
+                  element: <CalendarWidget title={'Статистика'} showDropdown={true} />
+                },
+                {
+                  path: 'employee',
+                  element: <EmployeesTable />
+                },
+                {
+                  path: 'users',
                   children: [
-                    { index: true, element: <EmployeesTable /> },
+                    { index: true, element: <Placeholder text="i am users list" /> },
                     { path: 'create', element: <Placeholder text="i am create user page" /> },
                     { path: 'edit/:id', element: <Placeholder text="i am edit user page" /> }
                   ]

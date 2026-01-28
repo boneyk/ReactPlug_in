@@ -4,10 +4,10 @@ import { TableCell, TableRow } from '@mui/material';
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
 
-import { useStores } from '../../../stores/useStores';
 import WorkerRow from '../WorkerRow';
 
 import styles from './JobSection.module.scss';
+import { useStores } from '@/stores/useStores';
 
 interface JobSectionProps {
   jobTitle: string;
@@ -30,8 +30,8 @@ const JobSection: FC<JobSectionProps> = observer(({ jobTitle }) => {
         ))}
       </TableRow>
 
-      {Object.entries(workerShifts).map(([workerId, workerData]) => (
-        <WorkerRow key={`worker-${workerId}-data`} workerId={workerId} workerData={workerData} role={jobTitle} />
+      {Object.entries(workerShifts).map(([workerId]) => (
+        <WorkerRow key={`worker-${workerId}-data`} employeeId={Number(workerId)} role={jobTitle} />
       ))}
     </>
   );

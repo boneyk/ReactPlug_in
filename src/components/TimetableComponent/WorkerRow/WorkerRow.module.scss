@@ -75,6 +75,7 @@ $shift-border-radius: fluid(6, 3, true);
   height: 90%;
   border-width: 2px;
   border-style: solid;
+  pointer-events: none;
 }
 
 .startShift {

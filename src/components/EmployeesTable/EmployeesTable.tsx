@@ -5,10 +5,9 @@ import { observer } from 'mobx-react-lite';
 
 import { DataGrid } from '@mui/x-data-grid';
 
-import { useStores } from '../../stores/useStores';
-
 import styles from './EmployeesTable.module.scss';
 import EmployeesTableToolbar from './EmployeesTableToolbar';
+import { useStores } from '@/stores/useStores';
 
 const EMPLOYEES_TABLE_COLUMNS = [
   {
@@ -48,7 +47,7 @@ const EmployeesTable = observer(() => {
 
   const positions = useMemo(() => {
     const positionNames = employees
-      .map((employee) => employee.position?.name)
+      .map((employee) => employee.positionName)
       .filter((name): name is string => Boolean(name));
     return [...new Set(positionNames)];
   }, [employees]);
@@ -58,7 +57,7 @@ const EmployeesTable = observer(() => {
       id: employee.id,
       fullName: employee.fullName,
       email: employee.email,
-      work: employee.position?.name ?? ''
+      work: employee.positionName ?? ''
     }));
 
     if (selectedPositions.length === 0) {

@@ -5,3 +5,8 @@ export const isUserAdmin = (): boolean => {
     .map((role) => role.trim())
     .includes('ROLE_ADMIN');
 };
+
+export const isAuth = (): boolean => {
+  const accessToken = localStorage.getItem('accessToken');
+  return !!accessToken;
+};

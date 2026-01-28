@@ -1,8 +1,8 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 
-import { handleNetworkError } from '../utils/errorHandlers';
+import { handleNetworkError } from '@/utils/errorHandlers';
 
-import { EmployeeDto, getEmployees } from '../api/employees_service';
+import { EmployeeDto, getEmployees } from '@/api/employees_service';
 
 export type EmployeeStatus = 'ACTIVE' | 'FIRED';
 
@@ -24,9 +24,7 @@ export class EmployeesStore {
         this.employees = response.data;
         this.isLoading = false;
       });
-      console.log(this.employees);
     } catch (error) {
-      console.error('Ошибка загрузки списка сотрудников:', error);
       runInAction(() => {
         this.isLoading = false;
       });
@@ -35,7 +33,7 @@ export class EmployeesStore {
   }
 
   async init() {
-    void this.fetchEmployees();
+    await this.fetchEmployees();
   }
 }
 

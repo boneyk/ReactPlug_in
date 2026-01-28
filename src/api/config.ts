@@ -8,7 +8,7 @@ export const getErrorMessage = (status?: number | null): string => {
   return 'Произошла неизвестная ошибка';
 };
 
-const baseURL = 'https://api.kiberorange.ru';
+const baseURL = 'http://demo.orng.atbplugin.tech';
 export const instance = axios.create({ baseURL: baseURL, withCredentials: true, timeout: 60000 });
 
 instance.interceptors.request.use((config) => {
@@ -38,8 +38,7 @@ const getFreshAccessToken = async (): Promise<string> => {
         localStorage.setItem('refreshToken', response.data.refreshToken);
         return response.data.accessToken;
       } catch (error) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
+        localStorage.clear();
         window.location.href = '/login';
         throw error;
       } finally {
@@ -57,4 +56,4 @@ const refreshAuthLogic = async (failedRequest: InternalAxiosRequestConfig) => {
   return failedRequest;
 };
 
-createAuthRefreshInterceptor(instance, refreshAuthLogic, { statusCodes: [401] });
+createAuthRefreshInterceptor(instance as any, refreshAuthLogic, { statusCodes: [401] });

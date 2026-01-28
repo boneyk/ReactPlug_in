@@ -11,11 +11,10 @@ export interface EmployeeDto {
   fullName: string;
   phone: string;
   email: string;
-  officeId: number;
-  position: PositionDto;
-  status: EmployeeStatus;
-  hireAt: string;
-  firedAt: string | null;
+  cityId: number;
+  officeIds: number[];
+  positionCode: string;
+  positionName: string;
 }
 
 export interface EmployeeAllDto {
@@ -53,16 +52,4 @@ export interface UpdateEmployeeRequest {
 export interface GetEmployeesParams {
   officeId?: number;
   status?: EmployeeStatus;
-}
-
-export interface OfficeDto {
-  id: number;
-  code: string;
-  name: string;
-  address: string;
-  cityId: number;
-}
-
-export interface OfficesResponse {
-  offices: OfficeDto[];
 }

@@ -2,11 +2,10 @@ import { Button, FormControl, Grid2, InputLabel, MenuItem, Select, SelectChangeE
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
 
-import { monthList } from '../../../constants/timetable';
-
-import { useStores } from '../../../stores/useStores';
+import { monthList } from '@/constants/timetable';
 
 import styles from './TimetableMonthPicker.module.scss';
+import { useStores } from '@/stores/useStores';
 
 const TimetableMonthPicker = observer(() => {
   const { timetableStore } = useStores();

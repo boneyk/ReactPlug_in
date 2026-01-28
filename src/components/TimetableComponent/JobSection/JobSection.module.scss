@@ -1,6 +1,6 @@
 @use '@/styles/helpers' as *;
 
-$role-color: #799F79;
+$role-color: #799f79;
 $hover-cell-color: rgb(225, 251, 225);
 $cell-color: rgb(220, 246, 220);
 $first-col-shadow: 5px 0 15px var(--color-gray-200);
@@ -9,10 +9,11 @@ $first-col-shadow: 5px 0 15px var(--color-gray-200);
   color: $role-color;
   font-weight: var(--font-weight-semibold);
   font-size: fluid(11, 8);
-  padding: 2px 8px 0 2px;
   min-height: fluid(30, 18) !important;
-  display: flex;
-  align-items: center;
+  vertical-align: middle;
+  white-space: normal;
+  word-break: break-word;
+  padding: fluid(4, 2);
 }
 
 .jobNameRow:global(.MuiTableRow-root) {

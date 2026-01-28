@@ -1,15 +1,13 @@
 import axios from 'axios';
-import { OfficeDto } from 'dto/DtoEmployeesService';
 import { makeAutoObservable, runInAction } from 'mobx';
 
-import { handleNetworkError } from '../utils/errorHandlers';
-import { getMonthDaysCount } from '../utils/functions';
-
-import { getOffices, getSchedule, ScheduleResponse } from '../api/shedule_service';
+import { handleNetworkError } from '@/utils/errorHandlers';
 
 import { baseLayoutStore } from './baseLayout.store';
-
-export type ShiftType = 'work' | 'vacation' | 'sick';
+import { getMySchedule, getOffices, getSchedule } from '@/api/shedule_service';
+import type { EmployeesById, OfficeDto } from '@/dto/DtoSchedule';
+import { getCalendarMatrix, getMonthDaysCount, getScheduleMyMatrix } from '@/lib/schedule';
+import type { CalendarCell } from '@/types/schedule';
 
 export class TimetableStore {
   year: number = new Date().getFullYear();
@@ -25,8 +23,10 @@ export class TimetableStore {
   offices: OfficeDto[] = [];
   selectedOffice: OfficeDto | null = null;
 
-  shifts: ScheduleResponse = {};
+  shifts: Record<string, EmployeesById> = {};
+  myScheduleMatrix: CalendarCell[][] = [];
   isLoading: boolean = true;
+  isMyScheduleLoading: boolean = false;
 
   scrollToEndAfterMonthChange: boolean = false;
 
@@ -42,13 +42,12 @@ export class TimetableStore {
     this.changeTodayIndex();
     await this.fetchOffices();
     if (this.selectedOffice) {
-      void this.fetchSchedule(this.selectedOffice.id, this.year, this.month);
+      await this.fetchSchedule(this.selectedOffice.id, this.year, this.month);
     }
   }
 
   async fetchOffices() {
     this.isLoading = true;
-
     try {
       const response = await getOffices();
       runInAction(() => {
@@ -73,10 +72,12 @@ export class TimetableStore {
     }
   }
 
-  setSelectedOffice(office: OfficeDto) {
+  async setSelectedOffice(office: OfficeDto) {
     this.selectedOffice = office;
     this.saveOfficeId(office.id);
-    void this.fetchSchedule(this.year, this.month, office.id);
+    if (this.selectedOffice) {
+      await this.fetchSchedule(this.selectedOffice.id, this.year, this.month);
+    }
   }
 
   setCalendarMaxTranslatePx(max: number) {
@@ -113,39 +114,52 @@ export class TimetableStore {
       this.calendarTranslatePx = Math.min(this.calendarMaxTranslatePx, this.calendarTranslatePx + stepPx);
     }
   }
+
   changeTodayIndex() {
     const date = new Date();
     if (date.getFullYear() !== this.year || date.getMonth() !== this.month) this.todayIndex = -1;
     else this.todayIndex = date.getDate() - 1;
   }
 
-  incYear() {
+  async incYear() {
     this.year += 1;
     this.changeTodayIndex();
     if (this.selectedOffice) {
-      void this.fetchSchedule(this.year, this.month, this.selectedOffice.id);
+      await this.fetchSchedule(this.selectedOffice.id, this.year, this.month);
     }
   }
 
-  decYear() {
+  async decYear() {
     this.year -= 1;
     this.changeTodayIndex();
     if (this.selectedOffice) {
-      void this.fetchSchedule(this.year, this.month, this.selectedOffice.id);
+      await this.fetchSchedule(this.selectedOffice.id, this.year, this.month);
     }
   }
 
-  changeMonth(month: number) {
+  async resetToCurrentDate() {
+    const now = new Date();
+    this.year = now.getFullYear();
+    this.month = now.getMonth();
+    this.resetCalendarTranslate();
+    this.changeDaysInMonth(getMonthDaysCount(this.year, this.month));
+    this.changeTodayIndex();
+    if (this.selectedOffice) {
+      await this.fetchSchedule(this.selectedOffice.id, this.year, this.month);
+    }
+  }
+
+  async changeMonth(month: number) {
     this.month = month;
     this.resetCalendarTranslate();
     this.changeDaysInMonth(getMonthDaysCount(this.year, this.month));
     this.changeTodayIndex();
     if (this.selectedOffice) {
-      void this.fetchSchedule(this.year, this.month, this.selectedOffice.id);
+      await this.fetchSchedule(this.selectedOffice.id, this.year, this.month);
     }
   }
 
-  goToPreviousMonth() {
+  async goToPreviousMonth() {
     if (this.month > 0) {
       this.month -= 1;
     } else {
@@ -157,11 +171,11 @@ export class TimetableStore {
     this.changeDaysInMonth(getMonthDaysCount(this.year, this.month));
     this.changeTodayIndex();
     if (this.selectedOffice) {
-      void this.fetchSchedule(this.year, this.month, this.selectedOffice.id);
+      await this.fetchSchedule(this.selectedOffice.id, this.year, this.month);
     }
   }
 
-  goToNextMonth() {
+  async goToNextMonth() {
     if (this.month < 11) {
       this.month += 1;
     } else {
@@ -172,7 +186,7 @@ export class TimetableStore {
     this.changeDaysInMonth(getMonthDaysCount(this.year, this.month));
     this.changeTodayIndex();
     if (this.selectedOffice) {
-      void this.fetchSchedule(this.year, this.month, this.selectedOffice.id);
+      await this.fetchSchedule(this.selectedOffice.id, this.year, this.month);
     }
   }
 
@@ -200,15 +214,13 @@ export class TimetableStore {
   }
 
   getEmployeesByRole(role: string): { id: number; name: string }[] {
-    const workers = this.shifts[role];
-    if (!workers) return [];
-
-    return workers.map((worker) => ({
-      id: worker.employeeId,
+    const workersByRole = this.shifts[role];
+    if (!workersByRole) return [];
+    return Object.entries(workersByRole).map(([id, worker]) => ({
+      id: Number(id),
       name: worker.fullName
     }));
   }
-
   get employeeId(): number | null {
     return this.selectedEmployee?.id ?? null;
   }
@@ -232,6 +244,30 @@ export class TimetableStore {
       baseLayoutStore.showWarning(error.response.data.detail);
       runInAction(() => {
         this.isLoading = false;
+      });
+      handleNetworkError(error);
+    }
+  }
+
+  async fetchMySchedule() {
+    this.isMyScheduleLoading = true;
+    try {
+      const response = await getMySchedule(this.year, this.month + 1);
+      const calendarMatrix = getCalendarMatrix(this.year, this.month);
+      runInAction(() => {
+        this.myScheduleMatrix = getScheduleMyMatrix(response.data, calendarMatrix);
+        this.isMyScheduleLoading = false;
+      });
+    } catch (error) {
+      const calendarMatrix = getCalendarMatrix(this.year, this.month);
+      runInAction(() => {
+        this.myScheduleMatrix = calendarMatrix.map((week) =>
+          week.map((cell) => {
+            const [day, month] = cell.split('|').map(Number);
+            return { day, month, myShifts: [] };
+          })
+        );
+        this.isMyScheduleLoading = false;
       });
       handleNetworkError(error);
     }
@@ -261,6 +297,12 @@ export class TimetableStore {
       baseLayoutStore.showWarning(message);
       return null;
     }
+  }
+  resetStore() {
+    this.selectedOffice = null;
+    this.selectedEmployee = null;
+    this.selectedRole = null;
+    this.shifts = {};
   }
 }
 

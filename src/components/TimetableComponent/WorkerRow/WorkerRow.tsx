@@ -6,26 +6,25 @@ import profileLogo from 'assets/profilePicture.svg';
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
 
+import Modal from '@/components/Modals/ModalCreate/ModalCreate';
 import ModalView from 'components/Modals/ModalView/ModalView';
 
-import { useCellClick } from '../../../hooks/useCellClick';
-import { getShiftTitle, getShiftType, isEnd, isMid, isSolo, isStart } from '../../../utils/functions';
-
-import { type EmployeeSchedule } from '../../../dto/DtoScheduleService';
-import { useStores } from '../../../stores/useStores';
-import Modal from '../../Modals/ModalCreate/ModalCreate';
+import { useCellClick } from '@/hooks/useCellClick';
+import { isUserAdmin } from '@/utils/auth';
 
 import styles from './WorkerRow.module.scss';
+import { getShiftTitle, getShiftType, isEnd, isMid, isSolo, isStart } from '@/lib/schedule';
+import { useStores } from '@/stores/useStores';
 
 interface WorkerRowProps {
-  workerId: string;
-  workerData: EmployeeSchedule;
+  employeeId: number;
   role: string;
 }
 
-const WorkerRow: FC<WorkerRowProps> = observer(({ workerId, workerData, role }) => {
+const WorkerRow: FC<WorkerRowProps> = observer(({ role, employeeId }) => {
   const { timetableStore } = useStores();
-  const { days, daysInMonth, todayIndex, year, month } = timetableStore;
+  const { days, daysInMonth, todayIndex, year, month, shifts } = timetableStore;
+  const workerData = shifts[role]?.[employeeId];
   const {
     daysShiftsList,
     createModalData,
@@ -36,9 +35,8 @@ const WorkerRow: FC<WorkerRowProps> = observer(({ workerId, workerData, role }) 
     closeViewModal,
     canAddShift
   } = useCellClick({
-    workerId,
-    workerData,
     role,
+    employeeId,
     days,
     daysInMonth,
     year,
@@ -59,7 +57,7 @@ const WorkerRow: FC<WorkerRowProps> = observer(({ workerId, workerData, role }) 
 
         return (
           <TableCell
-            key={`worker-${workerId}-day-${day}`}
+            key={`worker-${employeeId}-day-${day}`}
             className={styles.workerDayCell}
             onClick={() => handleCellClick(index)}
           >
@@ -75,19 +73,21 @@ const WorkerRow: FC<WorkerRowProps> = observer(({ workerId, workerData, role }) 
                 {isStartOrSolo && getShiftTitle(daysShiftsList, index)}
               </span>
             )}
-            {!daysShiftsList[index + 1] && canAddShift(index) && (
+            {isUserAdmin() && !daysShiftsList[index + 1] && canAddShift(index) && (
               <AddCircleOutline className={styles.addIcon} fontSize="small" />
             )}
             {day === todayIndex && <div className={styles.pointer}></div>}
           </TableCell>
         );
       })}
-      <Modal
-        isOpen={createModalData.open}
-        onClose={closeCreateModal}
-        notEditable={false}
-        defaultStartDate={createModalData.startDate}
-      />
+      {isUserAdmin() && (
+        <Modal
+          isOpen={createModalData.open}
+          onClose={closeCreateModal}
+          notEditable={false}
+          defaultStartDate={createModalData.startDate}
+        />
+      )}
       <ModalView isOpen={isViewModalOpen} onClose={closeViewModal} shiftData={selectedShift} />
     </TableRow>
   );

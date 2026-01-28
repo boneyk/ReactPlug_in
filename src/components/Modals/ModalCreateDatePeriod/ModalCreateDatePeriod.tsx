@@ -7,7 +7,7 @@ import { Dayjs } from 'dayjs';
 import { observer } from 'mobx-react-lite';
 import { timetableCreateStore } from 'stores/modalCreate.store';
 
-import { useModalCreateDatePeriod } from './useModalCreateDatePeriod';
+import { useModalCreateDatePeriod } from '../../../hooks/useModalCreateDatePeriod';
 
 type ModalCreateDatePeriodProps = {
   defaultStartDate: Dayjs | null;

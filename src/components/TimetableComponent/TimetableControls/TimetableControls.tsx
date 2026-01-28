@@ -6,11 +6,10 @@ import arrowForward from 'assets/move-forward-arrow.svg';
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
 
-import { stepPx } from '../../../constants/timetable';
-
-import { useStores } from '../../../stores/useStores';
+import { stepPx } from '@/constants/timetable';
 
 import styles from './TimetableControls.module.scss';
+import { useStores } from '@/stores/useStores';
 
 interface TimetableControlsProps {
   className?: string;

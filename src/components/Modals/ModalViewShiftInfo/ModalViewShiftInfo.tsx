@@ -3,22 +3,16 @@ import { FC } from 'react';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import PersonIcon from '@mui/icons-material/Person';
 import { Stack, Typography } from '@mui/material';
-import dayjs from 'dayjs';
 
-import { ShiftModalData } from '../ModalView/useViewModal';
+import { ShiftModalData } from '../../../hooks/useViewModal';
 
 interface ModalViewShiftInfoProps {
   shiftData: ShiftModalData;
 }
 
 export const ModalViewShiftInfo: FC<ModalViewShiftInfoProps> = ({ shiftData }) => {
-  const start = dayjs().date(shiftData.dayIndex + 1);
-  const end = start.add(shiftData.spanDays - 1, 'day');
-
   const formattedDates =
-    shiftData.spanDays === 1
-      ? start.format('DD.MM.YYYY')
-      : `${start.format('DD.MM.YYYY')} - ${end.format('DD.MM.YYYY')}`;
+    shiftData.startDate === shiftData.endDate ? shiftData.startDate : `${shiftData.startDate} - ${shiftData.endDate}`;
 
   return (
     <Stack direction="column" spacing={2}>

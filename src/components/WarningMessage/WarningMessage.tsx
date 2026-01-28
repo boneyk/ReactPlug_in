@@ -3,9 +3,8 @@ import { Grid2 } from '@mui/material';
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
 
-import { useStores } from '../../stores/useStores';
-
 import styles from './WarningMessage.module.scss';
+import { useStores } from '@/stores/useStores';
 
 const WarningMessage = observer(() => {
   const { baseLayoutStore } = useStores();

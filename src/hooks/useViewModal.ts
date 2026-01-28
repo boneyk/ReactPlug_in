@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { ShiftType } from 'stores/timetable.store';
+import type { ShiftType } from '@/types/schedule';
 
 export interface ShiftModalData {
   id: number;
@@ -9,43 +9,28 @@ export interface ShiftModalData {
   dayIndex: number;
   type: ShiftType;
   text: string;
-  spanDays: number;
+  startDate: string;
+  endDate: string;
 }
 
 export const useViewModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedShift, setSelectedShift] = useState<ShiftModalData | null>(null);
 
-  const openModal = useCallback((data: ShiftModalData) => {
+  const openViewModal = useCallback((data: ShiftModalData) => {
     setSelectedShift(data);
     setIsOpen(true);
   }, []);
 
   const closeModal = () => {
     setIsOpen(false);
+    setSelectedShift(null);
   };
-
-  const openShiftModal = useCallback(
-    (params: ShiftModalData) => {
-      const { id, fullname, job, dayIndex, type, text, spanDays } = params;
-
-      openModal({
-        id,
-        fullname,
-        job,
-        dayIndex,
-        type,
-        text,
-        spanDays
-      });
-    },
-    [openModal]
-  );
 
   return {
     isOpen,
     selectedShift,
-    openShiftModal,
+    openViewModal,
     closeModal
   };
 };

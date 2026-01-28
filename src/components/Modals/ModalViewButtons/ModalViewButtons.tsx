@@ -1,18 +1,20 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
-import { Alert, AlertTitle, IconButton, Stack } from '@mui/material';
+import { IconButton, Stack } from '@mui/material';
 import { deleteShift } from 'api/shedule_service';
 import axios from 'axios';
 import { observer } from 'mobx-react-lite';
+import { baseLayoutStore } from 'stores/baseLayout.store';
 import { useStores } from 'stores/useStores';
 
-import { isUserAdmin } from 'utils/auth';
+import styles from '@/components/Modals/ModalView/ModalView.module.scss';
 
-import styles from '../../Modals/ModalView/ModalView.module.scss';
-import { ShiftModalData } from '../ModalView/useViewModal';
+import { ShiftModalData } from '@/hooks/useViewModal';
+import { handleNetworkError } from '@/utils/errorHandlers';
+import { isUserAdmin } from 'utils/auth';
 
 interface ModalViewButtonsProps {
   onClose: () => void;
@@ -21,36 +23,28 @@ interface ModalViewButtonsProps {
 
 export const ModalViewButtons: FC<ModalViewButtonsProps> = observer(({ onClose, shift }) => {
   const { timetableStore } = useStores();
-  const { selectedOffice, year, month, fetchSchedule } = timetableStore;
-  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const onDelete = async () => {
-    setDeleteError(null);
     if (!shift?.id) return;
     try {
       await deleteShift(shift.id);
-      if (!selectedOffice) return;
-
-      fetchSchedule(selectedOffice.id, year, month);
+      if (timetableStore.selectedOffice) {
+        await timetableStore.fetchSchedule(timetableStore.selectedOffice.id, timetableStore.year, timetableStore.month);
+      }
       onClose();
     } catch (error: unknown) {
       let message = 'Ошибка при удалении смены';
       if (axios.isAxiosError(error)) {
         message = error.response?.data?.detail ?? message;
       }
-      setDeleteError(message);
+      baseLayoutStore.showWarning(message);
+      handleNetworkError(error);
     }
   };
   return (
     <>
-      {deleteError && (
-        <Alert severity="error">
-          <AlertTitle>Ошибка удаления</AlertTitle>
-          {deleteError}
-        </Alert>
-      )}
       <Stack direction="row" spacing={1} className={styles.stackPosition}>
-        {isUserAdmin() && (
+        {isUserAdmin() && shift.type === 'work' && (
           <div>
             <IconButton>
               {/* TODO: добавить логику редактирования при нажатии на иконку (задача ORNG-134) */}

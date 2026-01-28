@@ -4,11 +4,9 @@ import { Grid2, TableCell, TableHead, TableRow } from '@mui/material';
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
 
-import { getWeekdayByDate } from '../../../utils/functions';
-
-import { useStores } from '../../../stores/useStores';
-
 import styles from './TimetableHeader.module.scss';
+import { getWeekdayByDate } from '@/lib/schedule';
+import { useStores } from '@/stores/useStores';
 
 const TimetableHeader = observer(() => {
   const { timetableStore } = useStores();

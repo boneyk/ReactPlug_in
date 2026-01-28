@@ -1,5 +1,5 @@
 import dayjs, { Dayjs } from 'dayjs';
-import { CreateShiftDto, ShiftPresetDto } from 'dto/DtoScheduleService';
+import { CreateShiftDto } from 'dto/DtoSchedule';
 import { makeAutoObservable } from 'mobx';
 
 import { Formats } from 'utils/formats';
@@ -13,6 +13,12 @@ export interface ShiftPreset {
   startMinute: number;
   endHour: number;
   endMinute: number;
+}
+
+interface ShiftPresetDto {
+  id: number;
+  startTime: string;
+  endTime: string;
 }
 
 const shiftPresetsMock: ShiftPresetDto[] = [
@@ -106,15 +112,16 @@ export class TimetableCreateStore {
   get createShiftDto(): CreateShiftDto | null {
     const { startDate, endDate } = this;
     const employee = timetableStore.selectedEmployee;
-    if (!this.isValid || !employee || !startDate || !endDate) return null;
+    const office = timetableStore.selectedOffice;
+    if (!this.isValid || !employee || !startDate || !endDate || !office) return null;
 
     return {
       employeeId: employee.id,
+      officeId: office.id,
       startDate: startDate.format(Formats.DATE),
       endDate: endDate.format(Formats.DATE),
       startTime: startDate.format(Formats.TIME),
-      endTime: endDate.format(Formats.TIME),
-      type: 'work'
+      endTime: endDate.format(Formats.TIME)
     };
   }
 }

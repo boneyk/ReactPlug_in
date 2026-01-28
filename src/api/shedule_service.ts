@@ -1,28 +1,22 @@
 import { AxiosResponse } from 'axios';
-import { OfficesResponse } from 'dto/DtoEmployeesService';
-import { Absence, CreateAbsenceDto, CreateShiftDto, EmployeeSchedule } from 'dto/DtoScheduleService';
-
-import { Shift } from 'utils/functions';
 
 import { instance } from './config';
-
-export type EmployeesById = Record<string, EmployeeSchedule>;
-
-export type ScheduleResponse = {
-  [role: string]: EmployeeSchedule[];
-};
-
-export interface GetScheduleApiResponse {
-  data: ScheduleResponse;
-}
-
+import type {
+  Absence,
+  ApiShift,
+  CreateAbsenceDto,
+  CreateShiftDto,
+  OfficesResponse,
+  ScheduleMyResponse,
+  ScheduleResponse
+} from '@/dto/DtoSchedule';
 
 export const getSchedule = (
   officeId: number,
   year: number,
   month: number
-): Promise<AxiosResponse<GetScheduleApiResponse>> => {
-  return instance.get(`/schedule/schedules/${officeId}`, {
+): Promise<AxiosResponse<ScheduleResponse>> => {
+  return instance.get(`/schedules/${officeId}`, {
     params: {
       year,
       month
@@ -30,21 +24,29 @@ export const getSchedule = (
   });
 };
 
-export const createShift = (dto: CreateShiftDto): Promise<AxiosResponse<Shift>> => {
-  return instance.post('/schedule/shifts', dto);
+export const getMySchedule = (year: number, month: number): Promise<AxiosResponse<ScheduleMyResponse>> => {
+  return instance.get('/schedules/my', {
+    params: {
+      year,
+      month
+    }
+  });
+};
+
+export const createShift = (dto: CreateShiftDto): Promise<AxiosResponse<ApiShift>> => {
+  return instance.post('/shifts', dto);
 };
 
 export const deleteShift = (shiftId: number): Promise<AxiosResponse<void>> => {
-  return instance.delete(`/schedule/shifts/${shiftId}`);
+  return instance.delete(`/shifts/${shiftId}`);
 };
 
 export const createAbsence = (dto: CreateAbsenceDto): Promise<AxiosResponse<Absence>> => {
-  return instance.post('/schedule/absences', dto);
+  return instance.post('/absences', dto);
 };
 
 export const deleteAbsence = (absenceId: number): Promise<AxiosResponse<void>> => {
-  return instance.delete(`/schedule/absences/${absenceId}`);
+  return instance.delete(`/absences/${absenceId}`);
 };
 
-export const getOffices = (): Promise<AxiosResponse<OfficesResponse>> =>
-  instance.get<OfficesResponse>('/office/offices/my');
+export const getOffices = (): Promise<AxiosResponse<OfficesResponse>> => instance.get<OfficesResponse>('/offices/my');

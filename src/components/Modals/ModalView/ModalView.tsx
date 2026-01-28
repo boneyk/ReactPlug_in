@@ -2,11 +2,11 @@ import { FC } from 'react';
 
 import { Dialog, DialogContent, DialogTitle, Typography } from '@mui/material';
 
+import { ShiftModalData } from '../../../hooks/useViewModal';
+
 import { ModalViewButtons } from '../ModalViewButtons/ModalViewButtons';
 import { ModalViewShiftInfo } from '../ModalViewShiftInfo/ModalViewShiftInfo';
 import { ModalViewShiftTitle } from '../ModalViewShiftTitle/ModalViewShiftTitle';
-
-import { ShiftModalData } from './useViewModal';
 
 interface TimetableModalViewProps {
   isOpen: boolean;

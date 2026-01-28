@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { Grid2 } from '@mui/material';
 
 import Timetable from '../Timetable';
@@ -5,8 +7,15 @@ import TimetableControls from '../TimetableControls';
 import TimetableToolbar from '../TimetableToolbar';
 
 import styles from './TimetableWidget.module.scss';
+import { useStores } from '@/stores/useStores';
 
 const TimetableWidget = () => {
+  const { timetableStore } = useStores();
+
+  useEffect(() => {
+    timetableStore.resetToCurrentDate();
+  }, [timetableStore]);
+
   return (
     <div>
       <Grid2 container className={styles.sectiolnName}>

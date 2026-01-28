@@ -9,8 +9,9 @@ import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
 import { observer } from 'mobx-react-lite';
 
+import { useLoginPage } from '../../hooks/useLoginPage';
+
 import styles from './LoginPage.module.scss';
-import { useLoginPage } from './useLoginPage';
 
 const LoginPage = observer(() => {
   const {
@@ -28,7 +29,6 @@ const LoginPage = observer(() => {
     passwordHelperText,
     sendSubmit
   } = useLoginPage();
-  localStorage.clear();
   return (
     <Box className={styles.container} component="form" onSubmit={sendSubmit}>
       <Stack spacing={2} className={styles.container}>

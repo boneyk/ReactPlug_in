@@ -4,23 +4,16 @@ import { Grid2, Paper, Skeleton, Table, TableBody, TableCell, TableContainer, Ta
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
 
-import { useStores } from '../../../stores/useStores';
 import JobSection from '../JobSection';
 import TimetableHeader from '../TimetableHeader';
 
 import styles from './Timetable.module.scss';
+import { useStores } from '@/stores/useStores';
 
 const Timetable = observer(() => {
   const { timetableStore } = useStores();
-  const {
-    shifts,
-    calendarTranslatePx,
-    setCalendarMaxTranslatePx,
-    setCalendarTranslatePx,
-    daysInMonth,
-    fetchOffices,
-    isLoading
-  } = timetableStore;
+  const { shifts, calendarTranslatePx, setCalendarMaxTranslatePx, setCalendarTranslatePx, daysInMonth, isLoading } =
+    timetableStore;
   const containerRef = useRef<HTMLDivElement>(null);
   const isProgrammaticScroll = useRef(false);
 
@@ -82,10 +75,6 @@ const Timetable = observer(() => {
 
     return () => clearTimeout(updateScroll);
   }, [calendarTranslatePx]);
-
-  useEffect(() => {
-    void fetchOffices();
-  }, [fetchOffices]);
 
   return (
     <Grid2 container className={styles.wrapper}>

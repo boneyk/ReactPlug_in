@@ -1,5 +1,4 @@
 import eslint from '@eslint/js';
-import i18nextPlugin from 'eslint-plugin-i18next';
 import noInlineStyles from 'eslint-plugin-no-inline-styles';
 import prettier from 'eslint-plugin-prettier';
 import reactPlugin from 'eslint-plugin-react';
