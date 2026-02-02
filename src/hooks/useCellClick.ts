@@ -7,6 +7,7 @@ import { Formats } from '@/utils/formats';
 
 import { useViewModal } from './useViewModal';
 import { buildShiftsWorkerList, getShiftTitle, getShiftType } from '@/lib/schedule';
+import { modalCreateStore } from '@/stores/modalCreate.store';
 import type { ShiftType } from '@/types/schedule';
 
 interface CreateModalData {
@@ -42,7 +43,9 @@ export const useCellClick = ({ role, employeeId, days, daysInMonth, year, month 
 
   const getShiftByDayIndex = (dayIndex: number) => {
     const date = getCellDate(dayIndex).format(Formats.DATE);
-    return workerData.shifts.find((shift) => shift.date === date);
+    const shift = workerData.shifts.find((shift) => shift.scheduledOn === date);
+    if (shift) return shift;
+    return workerData.absences?.find((absence) => absence.absentOn === date);
   };
 
   const openViewModalForShift = (dayIndex: number) => {
@@ -70,9 +73,14 @@ export const useCellClick = ({ role, employeeId, days, daysInMonth, year, month 
       id: workerData.employeeId,
       name: workerData.fullName
     });
+
+    const cellDate = getCellDate(dayIndex);
+    modalCreateStore.setStartDate(cellDate);
+    modalCreateStore.setEndDate(cellDate);
+    modalCreateStore.selectPreset(1);
     setCreateModalData({
       open: true,
-      startDate: getCellDate(dayIndex)
+      startDate: modalCreateStore.startDate
     });
   };
 

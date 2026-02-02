@@ -27,7 +27,7 @@ const shiftPresetsMock: ShiftPresetDto[] = [
   { id: 3, startTime: '09:00', endTime: '19:00' }
 ];
 
-export class TimetableCreateStore {
+export class ModalCreateStore {
   startDate: Dayjs | null = null;
   endDate: Dayjs | null = null;
   selectedPresetId: number | null = null;
@@ -35,12 +35,7 @@ export class TimetableCreateStore {
 
   constructor() {
     makeAutoObservable(this);
-
     this.presets = shiftPresetsMock.map(this.mapShiftPresetDtoToModel);
-
-    if (this.presets.length > 0) {
-      this.selectPreset(this.presets[0].id);
-    }
   }
 
   private parseTime = (time: string) => {
@@ -73,9 +68,11 @@ export class TimetableCreateStore {
     if (!preset) {
       return;
     }
-    const currentDate = this.startDate || dayjs();
-    this.startDate = currentDate.hour(preset.startHour).minute(preset.startMinute).second(0);
-    this.endDate = currentDate.hour(preset.endHour).minute(preset.endMinute).second(0);
+    const currentDate1 = this.startDate || dayjs();
+    const currentDate2 = this.endDate || dayjs();
+
+    this.startDate = currentDate1.hour(preset.startHour).minute(preset.startMinute).second(0);
+    this.endDate = currentDate2.hour(preset.endHour).minute(preset.endMinute).second(0);
   };
   reset = () => {
     this.selectedPresetId = null;
@@ -118,11 +115,11 @@ export class TimetableCreateStore {
     return {
       employeeId: employee.id,
       officeId: office.id,
-      startDate: startDate.format(Formats.DATE),
-      endDate: endDate.format(Formats.DATE),
-      startTime: startDate.format(Formats.TIME),
-      endTime: endDate.format(Formats.TIME)
+      startOn: startDate.format(Formats.DATE),
+      endOn: endDate.format(Formats.DATE),
+      startAt: startDate.format(Formats.TIME),
+      endAt: endDate.format(Formats.TIME)
     };
   }
 }
-export const timetableCreateStore = new TimetableCreateStore();
+export const modalCreateStore = new ModalCreateStore();

@@ -7,6 +7,7 @@ export const getErrorMessage = (status?: number | null): string => {
   if ([400, 409].includes(status)) return 'Неверные данные запроса';
   return 'Произошла неизвестная ошибка';
 };
+
 const env = (window as any).__ENV__ || {};
 
 const baseURL = env.BASE_URL ?? 'http://demo.orng.atbplugin.tech';
@@ -26,7 +27,7 @@ const getFreshAccessToken = async (): Promise<string> => {
     refreshPromise = (async () => {
       try {
         const response = await axios.post(
-          `${baseURL}/auth/refresh`,
+          `${baseURL}/api/auth/refresh`,
           {},
           {
             headers: {

@@ -1,0 +1,67 @@
+@use "@/styles/helpers" as *;
+
+.datePicker:global(.MuiFormControl-root) {
+  width: 100%;
+  box-sizing: border-box;
+
+  & :global(.MuiFormHelperText-root) {
+    display: none;
+  }
+}
+
+.datePeriod:global(.MuiGrid2-root) {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+
+  @include mobile {
+    flex-direction: column;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.info:global(.MuiBox-root) {
+  width: 100%;
+  @include mobile-above {
+    padding: 0 8px;
+  }
+
+  & :global(.MuiTypography-root) {
+    &:last-child {
+      text-transform: capitalize;
+    }
+  }
+}
+
+.wrapper:global(.MuiGrid2-root),
+.wrapperTime:global(.MuiGrid2-root) {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  padding: 0 8px;
+  gap: 8px;
+
+  .timePeriod:global(.MuiGrid2-root) {
+    width: 1fr;
+  }
+}
+
+.wrapper:global(.MuiGrid2-root) {
+  padding: 0;
+
+  @include mobile-above {
+    padding: 0 8px;
+  }
+}
+
+.contentWrapper:global(.MuiGrid2-root) {
+  width: 100%;
+  @include mobile {
+    padding: 0 8px;
+  }
+}

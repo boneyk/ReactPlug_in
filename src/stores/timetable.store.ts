@@ -4,8 +4,10 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import { handleNetworkError } from '@/utils/errorHandlers';
 
 import { baseLayoutStore } from './baseLayout.store';
+import { getEmployeeEntity } from '@/api/employees_service';
 import { getMySchedule, getOffices, getSchedule } from '@/api/shedule_service';
-import type { EmployeesById, OfficeDto } from '@/dto/DtoSchedule';
+import { OfficeDto } from '@/dto/DtoOffice';
+import type { EmployeeSchedule } from '@/dto/DtoSchedule';
 import { getCalendarMatrix, getMonthDaysCount, getScheduleMyMatrix } from '@/lib/schedule';
 import type { CalendarCell } from '@/types/schedule';
 
@@ -23,7 +25,7 @@ export class TimetableStore {
   offices: OfficeDto[] = [];
   selectedOffice: OfficeDto | null = null;
 
-  shifts: Record<string, EmployeesById> = {};
+  shifts: Record<string, EmployeeSchedule[]> = {};
   myScheduleMatrix: CalendarCell[][] = [];
   isLoading: boolean = true;
   isMyScheduleLoading: boolean = false;
@@ -214,10 +216,10 @@ export class TimetableStore {
   }
 
   getEmployeesByRole(role: string): { id: number; name: string }[] {
-    const workersByRole = this.shifts[role];
-    if (!workersByRole) return [];
-    return Object.entries(workersByRole).map(([id, worker]) => ({
-      id: Number(id),
+    const workers = this.shifts[role];
+    if (!workers) return [];
+    return workers.map((worker) => ({
+      id: worker.employeeId,
       name: worker.fullName
     }));
   }
@@ -252,10 +254,11 @@ export class TimetableStore {
   async fetchMySchedule() {
     this.isMyScheduleLoading = true;
     try {
-      const response = await getMySchedule(this.year, this.month + 1);
+      const employeeEntityResponse = await getEmployeeEntity(Number(localStorage.getItem('user_id')));
+      const response = await getMySchedule(employeeEntityResponse.data.id, this.year, this.month + 1);
       const calendarMatrix = getCalendarMatrix(this.year, this.month);
       runInAction(() => {
-        this.myScheduleMatrix = getScheduleMyMatrix(response.data, calendarMatrix);
+        this.myScheduleMatrix = getScheduleMyMatrix(response.data, calendarMatrix, this.getOfficeMap());
         this.isMyScheduleLoading = false;
       });
     } catch (error) {
@@ -297,6 +300,9 @@ export class TimetableStore {
       baseLayoutStore.showWarning(message);
       return null;
     }
+  }
+  getOfficeMap(): Map<number, string> {
+    return new Map<number, string>(this.offices.map((office) => [office.id, office.address]));
   }
   resetStore() {
     this.selectedOffice = null;

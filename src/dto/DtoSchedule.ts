@@ -1,45 +1,38 @@
-// Request DTOs
-export interface CreateShiftDto {
-  employeeId: number;
-  officeId: number;
-  startDate: string;
-  endDate: string;
-  startTime: string;
-  endTime: string;
-}
-
-export interface Shift {
-  id: number;
-  officeId: number;
-  date: string;
-  startTime: string;
-  endTime: string;
-}
-
-export interface Absence {
-  id: number;
-  absenceTypeId: number;
-  code: string;
-  name: string;
-  date: string;
-}
-
-export interface EmployeeSchedule {
-  fullName: string;
-  shifts: Shift[];
-  absences: Absence[];
+// getSchedule Response
+export interface ScheduleResponse {
+  data: Record<string, EmployeeSchedule[]>;
 }
 
 export interface EmployeeSchedule {
   employeeId: number;
   fullName: string;
   phone: string;
-  email: string;
   shifts: Shift[];
   absences: Absence[];
 }
 
-// Response DTOs
+export interface Shift {
+  id: number;
+  officeId: number;
+  employeeId: number;
+  scheduledOn: string;
+  startAt: string;
+  endAt: string;
+}
+
+export interface Absence {
+  id: number;
+  employeeId: number;
+  absentOn: string;
+  absenceType: AbsenceType;
+}
+
+export interface AbsenceType {
+  id: number;
+  code: string;
+  name: string;
+}
+
 export interface ApiShift {
   id: number;
   officeId: number;
@@ -48,24 +41,23 @@ export interface ApiShift {
   endTime: string;
 }
 
-export interface Absence {
-  id: number;
-  typeCode: string;
-  typeName: string;
-  date: string;
+// createShift Response
+export interface CreateShiftDto {
+  employeeId: number;
+  officeId: number;
+  startOn: string;
+  endOn: string;
+  startAt: string;
+  endAt: string;
 }
 
-export interface EmployeeSchedule {
+// getMySchedule
+export interface ScheduleMyResponse {
   employeeId: number;
   fullName: string;
   phone: string;
-  email: string;
-  shifts: ApiShift[];
-  absences: Absence[];
-}
-
-export interface MyShift extends ApiShift {
-  officeName: string;
+  shifts: Shift[];
+  absences: MyAbsence[];
 }
 
 export interface MyAbsence {
@@ -75,42 +67,9 @@ export interface MyAbsence {
   date: string;
 }
 
-export interface ScheduleMyResponse {
-  employeeId: number;
-  fullName: string;
-  phone: string;
-  email: string;
-  shifts: MyShift[];
-  absences: MyAbsence[];
-}
-
-export type EmployeesById = Record<string, EmployeeSchedule>;
-
-export interface ScheduleResponse {
-  data: Record<string, EmployeesById>;
-}
-
-export interface AbsenceType {
+// editShift
+export interface editShiftRequest {
   id: number;
-  code: string;
-  name: string;
+  startAt: string;
+  endAt: string;
 }
-
-export interface OfficeDto {
-  id: number;
-  code: string;
-  name: string;
-  address: string;
-  cityId: number;
-}
-
-export interface OfficesResponse {
-  offices: OfficeDto[];
-}
-
-export type CreateAbsenceDto = {
-  employeeId: number;
-  startDate: string;
-  endDate: string;
-  type: 'vacation' | 'sick';
-};

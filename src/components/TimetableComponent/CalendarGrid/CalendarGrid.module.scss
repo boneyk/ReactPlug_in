@@ -35,6 +35,14 @@
   color: rgba(0, 0, 0, 0.9);
   vertical-align: top;
 
+  &.currentDay {
+    background-color: rgba(255, 100, 50, 0.2);
+
+    & .date {
+      font-weight: 600;
+    }
+  }
+
   @media (max-width: 760px) {
     display: flex;
     flex-direction: column;
@@ -78,7 +86,6 @@ tr:last-child .gridCell:global(.MuiTableCell-root) {
 }
 
 .date {
-  width: 100%;
   height: fit-content;
 }
 
@@ -133,4 +140,42 @@ tr:last-child .gridCell:global(.MuiTableCell-root) {
   @extend .shiftSpan;
   background: rgba(255, 235, 238, 0.95);
   color: rgba(198, 40, 40, 1);
+}
+
+.weekDays:global(.MuiGrid2-root) {
+  width: 100%;
+  max-width: 1700px;
+  margin: 2px auto 5px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+
+  @media (max-width: 760px) {
+    display: none;
+  }
+
+  & > .weekDay:global(.MuiBox-root) {
+    font-family: var(--font-family-base), sans-serif;
+    display: flex;
+    @include flex-center();
+    font-weight: 600;
+    font-size: fluid(18, 12, true);
+  }
+}
+
+.dateWeekday:global(.MuiGrid2-root) {
+  width: 100%;
+  height: fit-content;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2px;
+
+  @media (max-width: 760px) {
+    padding: 2px 8px;
+  }
+
+  & > .weekday {
+    @media (min-width: 761px) {
+      display: none;
+    }
+  }
 }

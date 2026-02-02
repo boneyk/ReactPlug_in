@@ -1,26 +1,26 @@
 import { shiftTypeMap } from '@/constants/timetable';
 
-import type { Absence, ApiShift, EmployeeSchedule, ScheduleMyResponse } from '@/dto/DtoSchedule';
+import type { Absence, EmployeeSchedule, ScheduleMyResponse } from '@/dto/DtoSchedule';
 import type { CalendarCell, ScheduleMyItem, Shift, ShiftType } from '@/types/schedule';
 
 export function transformEmployeeShifts(employeeData: EmployeeSchedule): Shift[] {
   return [
-    ...employeeData.shifts.map((shift: ApiShift) => ({
+    ...employeeData.shifts.map((shift) => ({
       id: shift.id,
-      startTime: shift.startTime,
-      endTime: shift.endTime,
-      date: shift.date,
+      startTime: shift.startAt,
+      endTime: shift.endAt,
+      date: shift.scheduledOn,
       type: 'work' as const
     })),
     ...employeeData.absences.map((absence: Absence) => {
-      const type = normalizeAbsenceType(absence.typeCode);
+      const type = normalizeAbsenceType(absence.absenceType.code);
       return {
         id: absence.id,
         startTime: '00:00',
         endTime: '00:00',
-        date: absence.date,
+        date: absence.absentOn,
         type,
-        label: absence.typeName
+        label: absence.absenceType.name
       };
     })
   ];
@@ -134,7 +134,9 @@ export function getShiftTitle(daysShiftsList: string[], index: number): string {
 export function getCalendarMatrix(year: number, monthIndex: number): string[][] {
   const calendarMatrix: string[][] = [];
   const calendarPointer = new Date(year, monthIndex, 1);
-  calendarPointer.setDate(calendarPointer.getDate() - calendarPointer.getDay());
+  const dayOfWeek = calendarPointer.getDay();
+  const mondayOffset = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  calendarPointer.setDate(calendarPointer.getDate() - mondayOffset);
 
   calendarMatrix.push(Array(7));
   for (let i = 0; i < 7; i++) {
@@ -155,19 +157,22 @@ export function getCalendarMatrix(year: number, monthIndex: number): string[][] 
   return calendarMatrix;
 }
 
-export function getScheduleMyMatrix(data: ScheduleMyResponse, calendarMatrix: string[][]): CalendarCell[][] {
+export function getScheduleMyMatrix(
+  data: ScheduleMyResponse,
+  calendarMatrix: string[][],
+  officeMap: Map<number, string>
+): CalendarCell[][] {
   const shiftsByDate = new Map<string, ScheduleMyItem[]>();
-
   data.shifts.forEach((shift) => {
-    const dateParts = shift.date.split('-');
+    const dateParts = shift.scheduledOn.split('-');
     const day = parseInt(dateParts[2], 10);
     const month = parseInt(dateParts[1], 10) - 1;
     const key = `${day}|${month}`;
     const items = shiftsByDate.get(key) || [];
     items.push({
-      officeName: shift.officeName,
-      startTime: shift.startTime,
-      endTime: shift.endTime,
+      officeName: officeMap.get(shift.officeId) ?? 'Неизвестный офис',
+      startTime: shift.startAt,
+      endTime: shift.endAt,
       type: 'work'
     });
     shiftsByDate.set(key, items);

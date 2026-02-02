@@ -1,20 +1,24 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
-import { IconButton, Stack } from '@mui/material';
+import { Grid2, IconButton } from '@mui/material';
 import { deleteShift } from 'api/shedule_service';
 import axios from 'axios';
+import dayjs from 'dayjs';
 import { observer } from 'mobx-react-lite';
 import { baseLayoutStore } from 'stores/baseLayout.store';
 import { useStores } from 'stores/useStores';
 
+import Modal from '@/components/Modals/ModalCreate/ModalCreate';
 import styles from '@/components/Modals/ModalView/ModalView.module.scss';
 
 import { ShiftModalData } from '@/hooks/useViewModal';
 import { handleNetworkError } from '@/utils/errorHandlers';
 import { isUserAdmin } from 'utils/auth';
+
+import { modalCreateStore } from '@/stores/modalCreate.store';
 
 interface ModalViewButtonsProps {
   onClose: () => void;
@@ -23,6 +27,23 @@ interface ModalViewButtonsProps {
 
 export const ModalViewButtons: FC<ModalViewButtonsProps> = observer(({ onClose, shift }) => {
   const { timetableStore } = useStores();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleClose = () => {
+    setIsOpen(false);
+    modalCreateStore.reset();
+    onClose();
+  };
+
+  const handleOpen = () => {
+    timetableStore.initRoleAndEmployee(shift.job, { id: shift.id, name: shift.fullname });
+    const clickedDay = shift.dayIndex + 1;
+    const clickedDate = dayjs().year(timetableStore.year).month(timetableStore.month).date(clickedDay);
+    modalCreateStore.setStartDate(clickedDate);
+    modalCreateStore.setEndDate(clickedDate);
+    modalCreateStore.selectPreset(1);
+    setIsOpen(true);
+  };
 
   const onDelete = async () => {
     if (!shift?.id) return;
@@ -43,22 +64,22 @@ export const ModalViewButtons: FC<ModalViewButtonsProps> = observer(({ onClose, 
   };
   return (
     <>
-      <Stack direction="row" spacing={1} className={styles.stackPosition}>
+      <Grid2 className={styles.stackPosition}>
         {isUserAdmin() && shift.type === 'work' && (
-          <div>
-            <IconButton>
-              {/* TODO: добавить логику редактирования при нажатии на иконку (задача ORNG-134) */}
+          <>
+            <IconButton onClick={handleOpen}>
               <EditIcon />
             </IconButton>
             <IconButton onClick={onDelete}>
               <DeleteForeverIcon />
             </IconButton>
-          </div>
+          </>
         )}
         <IconButton aria-label="close" onClick={onClose}>
           <CloseIcon />
         </IconButton>
-      </Stack>
+      </Grid2>
+      <Modal isOpen={isOpen} onClose={handleClose} isRoleSelectionDisabled={true} isEdit={true} />
     </>
   );
 });

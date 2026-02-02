@@ -1,12 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { Box, Grid2, SelectChangeEvent } from '@mui/material';
+import axios from 'axios';
 import { observer } from 'mobx-react-lite';
 
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridPaginationModel, GridRowSelectionModel } from '@mui/x-data-grid';
 
 import styles from './EmployeesTable.module.scss';
 import EmployeesTableToolbar from './EmployeesTableToolbar';
+import { deleteEmployees } from '@/api/employees_service';
+import { baseLayoutStore } from '@/stores/baseLayout.store';
+import { timetableStore } from '@/stores/timetable.store';
 import { useStores } from '@/stores/useStores';
 
 const EMPLOYEES_TABLE_COLUMNS = [
@@ -34,30 +38,27 @@ const handleAddEmployee = () => {
   console.log('Добавить сотрудника :)');
 };
 
-const handleDeleteEmployee = () => {
-  console.log('Удалить сотрудника :)');
-};
-
 const EmployeesTable = observer(() => {
   const { employeesStore } = useStores();
-  const { employees, isLoading } = employeesStore;
+  const { currentOfficeEmployees, isLoading, page, pageSize, totalElements } = employeesStore;
 
   const [selectedPositions, setSelectedPositions] = useState<string[]>([]);
   const [isSmallDisplay, setIsSmallDisplay] = useState(window.innerWidth < 600);
+  const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>([]);
 
   const positions = useMemo(() => {
-    const positionNames = employees
-      .map((employee) => employee.positionName)
+    const positionNames = currentOfficeEmployees
+      .map((currentOfficeEmployees) => currentOfficeEmployees.position.name)
       .filter((name): name is string => Boolean(name));
     return [...new Set(positionNames)];
-  }, [employees]);
+  }, [currentOfficeEmployees]);
 
   const rows = useMemo(() => {
-    const allRows = employees.map((employee) => ({
+    const allRows = currentOfficeEmployees.map((employee) => ({
       id: employee.id,
       fullName: employee.fullName,
       email: employee.email,
-      work: employee.positionName ?? ''
+      work: employee.position.name ?? ''
     }));
 
     if (selectedPositions.length === 0) {
@@ -65,7 +66,7 @@ const EmployeesTable = observer(() => {
     }
 
     return allRows.filter((row) => selectedPositions.includes(row.work));
-  }, [employees, selectedPositions]);
+  }, [currentOfficeEmployees, selectedPositions]);
 
   const handlePositionChange = (event: SelectChangeEvent<string[]>) => {
     const value = event.target.value;
@@ -81,12 +82,41 @@ const EmployeesTable = observer(() => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const handlePaginationModelChange = (model: GridPaginationModel) => {
+    if (model.pageSize !== pageSize) {
+      employeesStore.setPageSize(model.pageSize);
+    } else if (model.page !== page) {
+      employeesStore.setPage(model.page);
+    }
+  };
+
+  const handleDeleteEmployee = async () => {
+    if (rowSelectionModel.length === 0) {
+      baseLayoutStore.showWarning('Сначала выберите сотрудника');
+      return;
+    }
+    const employeeIds = rowSelectionModel as number[];
+    try {
+      if (timetableStore.selectedOffice?.id) {
+        await deleteEmployees(timetableStore.selectedOffice.id, employeeIds);
+      }
+      await employeesStore.fetchEmployees();
+      setRowSelectionModel([]);
+    } catch (error) {
+      let message = 'Ошибка при удалении сотрудника';
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.detail ?? message;
+      }
+      baseLayoutStore.showWarning(message);
+    }
+  };
+
   return (
     <Grid2 container className={styles.wrapper}>
       <h1>Сотрудники офиса</h1>
       <Grid2 container className={styles.table}>
         <EmployeesTableToolbar
-          address="ул. Светланская, д.32"
+          address={timetableStore.selectedOffice?.address ?? 'Офис не определен'}
           positions={positions}
           selectedPositions={selectedPositions}
           isSmallDisplay={isSmallDisplay}
@@ -98,13 +128,19 @@ const EmployeesTable = observer(() => {
           <DataGrid
             columns={EMPLOYEES_TABLE_COLUMNS}
             rows={rows}
+            rowCount={totalElements}
             loading={isLoading}
+            paginationMode="server"
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={handlePaginationModelChange}
+            pageSizeOptions={[10, 20, 50]}
             disableColumnResize
             disableColumnMenu
             checkboxSelection
             getRowHeight={() => 'auto'}
             className={styles.data}
             localeText={{ noRowsLabel: 'Сотрудники не найдены' }}
+            onRowSelectionModelChange={setRowSelectionModel}
           />
         </Box>
       </Grid2>

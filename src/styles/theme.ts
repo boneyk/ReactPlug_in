@@ -4,6 +4,25 @@ import { getNumberValue } from './utils';
 
 import vars from './variables.module.scss';
 
+declare module '@mui/material/styles' {
+  interface Components {
+    MuiPickersDay?: any;
+    MuiPickersYear?: any;
+    MuiPickersMonth?: any;
+    MuiPickersCalendarHeader?: any;
+    MuiClockPointer?: any;
+    MuiClockNumber?: any;
+    MuiClock?: any;
+    MuiMultiSectionDigitalClock?: any;
+    MuiDigitalClock?: any;
+    MuiPickersLayout?: any;
+    MuiPickersToolbar?: any;
+    MuiDateTimePickerToolbar?: any;
+    MuiDatePickerToolbar?: any;
+    MuiTimePickerToolbar?: any;
+  }
+}
+
 export const theme = createTheme({
   palette: {
     primary: {
@@ -157,6 +176,9 @@ export const theme = createTheme({
             cursor: 'not-allowed',
             pointerEvents: 'none'
           }
+        },
+        input: {
+          fontFamily: 'var(--font-family-base), sans-serif'
         }
       }
     },
@@ -281,6 +303,439 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           color: 'var(--color-pointer)'
+        }
+      }
+    },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: {
+          fontFamily: 'var(--font-family-base), sans-serif',
+          '&::first-letter': {
+            textTransform: 'uppercase'
+          }
+        }
+      }
+    },
+    MuiPopper: {
+      styleOverrides: {
+        root: {
+          '&.MuiPickersPopper-root': {
+            fontFamily: 'var(--font-family-base), sans-serif',
+            textTransform: 'capitalize',
+            '& *': {
+              fontFamily: 'var(--font-family-base), sans-serif !important'
+            }
+          }
+        }
+      }
+    },
+    MuiPickersDay: {
+      styleOverrides: {
+        root: {
+          fontFamily: 'var(--font-family-base), sans-serif',
+          backgroundColor: 'transparent',
+          '&.Mui-selected': {
+            backgroundColor: 'var(--color-pointer)',
+            color: 'var(--color-white)',
+            '&:hover': {
+              backgroundColor: 'var(--color-pointer)',
+              opacity: 0.9
+            },
+            '&:focus': {
+              backgroundColor: 'var(--color-pointer)'
+            },
+            '&.MuiPickersDay-today': {
+              backgroundColor: 'var(--color-pointer)',
+              color: 'var(--color-white)',
+              border: '1px solid var(--color-pointer)'
+            }
+          },
+          '&.MuiPickersDay-today': {
+            border: '1px solid var(--color-pointer)',
+            backgroundColor: 'transparent',
+            '&:not(.Mui-selected)': {
+              borderColor: 'var(--color-pointer)',
+              backgroundColor: 'transparent'
+            }
+          }
+        }
+      }
+    },
+    MuiPickersYear: {
+      styleOverrides: {
+        yearButton: {
+          fontFamily: 'var(--font-family-base), sans-serif !important',
+          backgroundColor: 'transparent',
+          '&.Mui-selected': {
+            backgroundColor: 'var(--color-pointer)',
+            color: 'var(--color-white)',
+            fontFamily: 'var(--font-family-base), sans-serif',
+            '&:hover': {
+              backgroundColor: 'var(--color-pointer)',
+              opacity: 0.9
+            },
+            '&:focus': {
+              backgroundColor: 'var(--color-pointer)'
+            }
+          }
+        }
+      }
+    },
+    MuiPickersMonth: {
+      styleOverrides: {
+        monthButton: {
+          fontFamily: 'var(--font-family-base), sans-serif !important',
+          backgroundColor: 'transparent',
+          '&.Mui-selected': {
+            backgroundColor: 'var(--color-pointer)',
+            color: 'var(--color-white)',
+            fontFamily: 'var(--font-family-base), sans-serif',
+            '&:hover': {
+              backgroundColor: 'var(--color-pointer)',
+              opacity: 0.9
+            },
+            '&:focus': {
+              backgroundColor: 'var(--color-pointer)'
+            }
+          }
+        }
+      }
+    },
+    MuiPickersCalendarHeader: {
+      styleOverrides: {
+        switchViewButton: {
+          backgroundColor: 'transparent',
+          color: 'var(--color-pointer)',
+          '&:hover': {
+            backgroundColor: 'rgba(255, 115, 50, 0.1)'
+          }
+        },
+        label: {
+          fontFamily: 'var(--font-family-base), sans-serif',
+          textTransform: 'capitalize'
+        }
+      }
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          '&.MuiPickersArrowSwitcher-button': {
+            backgroundColor: 'transparent',
+            color: 'var(--color-pointer)',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 115, 50, 0.1)'
+            }
+          }
+        }
+      }
+    },
+    MuiClockPointer: {
+      styleOverrides: {
+        root: {
+          backgroundColor: 'var(--color-pointer)'
+        },
+        thumb: {
+          backgroundColor: 'var(--color-pointer)',
+          borderColor: 'var(--color-pointer)'
+        }
+      }
+    },
+    MuiClockNumber: {
+      styleOverrides: {
+        root: {
+          fontFamily: 'var(--font-family-base), sans-serif !important',
+          '&.Mui-selected': {
+            backgroundColor: 'var(--color-pointer)',
+            color: 'var(--color-white)',
+            fontFamily: 'var(--font-family-base), sans-serif'
+          }
+        }
+      }
+    },
+    MuiClock: {
+      styleOverrides: {
+        pin: {
+          backgroundColor: 'var(--color-pointer)'
+        }
+      }
+    },
+    MuiMultiSectionDigitalClock: {
+      styleOverrides: {
+        root: {
+          fontFamily: 'var(--font-family-base), sans-serif',
+          '& *': {
+            fontFamily: 'var(--font-family-base), sans-serif !important'
+          },
+          '& .MuiMenuItem-root': {
+            fontFamily: 'var(--font-family-base), sans-serif'
+          },
+          '& .MuiMenuItem-root.Mui-selected': {
+            backgroundColor: 'var(--color-pointer)',
+            color: 'var(--color-white)',
+            fontFamily: 'var(--font-family-base), sans-serif',
+            '&:hover': {
+              backgroundColor: 'var(--color-pointer)',
+              opacity: 0.9
+            }
+          }
+        }
+      }
+    },
+    MuiDigitalClock: {
+      styleOverrides: {
+        root: {
+          fontFamily: 'var(--font-family-base), sans-serif',
+          '& *': {
+            fontFamily: 'var(--font-family-base), sans-serif !important'
+          },
+          '& .MuiMenuItem-root': {
+            fontFamily: 'var(--font-family-base), sans-serif'
+          },
+          '& .MuiMenuItem-root.Mui-selected': {
+            backgroundColor: 'var(--color-pointer)',
+            color: 'var(--color-white)',
+            fontFamily: 'var(--font-family-base), sans-serif',
+            '&:hover': {
+              backgroundColor: 'var(--color-pointer)',
+              opacity: 0.9
+            }
+          }
+        }
+      }
+    },
+    MuiPickersLayout: {
+      styleOverrides: {
+        root: {
+          fontFamily: 'var(--font-family-base), sans-serif',
+          '& *': {
+            fontFamily: 'var(--font-family-base), sans-serif !important'
+          },
+          '& .MuiPickersLayout-actionBar': {
+            '& .MuiButton-root': {
+              backgroundColor: 'transparent',
+              fontFamily: 'var(--font-family-base), sans-serif'
+            }
+          },
+          '& .MuiTabs-root': {
+            '& .MuiTab-root': {
+              fontFamily: 'var(--font-family-base), sans-serif'
+            },
+            '& .MuiTab-root.Mui-selected': {
+              color: 'var(--color-pointer)'
+            },
+            '& .MuiTabs-indicator': {
+              backgroundColor: 'var(--color-pointer)'
+            }
+          }
+        }
+      }
+    },
+    MuiPickersToolbar: {
+      styleOverrides: {
+        root: {
+          fontFamily: 'var(--font-family-base), sans-serif',
+          '& *': {
+            fontFamily: 'var(--font-family-base), sans-serif !important'
+          },
+          '& .MuiTypography-overline': {
+            display: 'none'
+          },
+          '& .MuiPickersToolbar-content': {
+            '& button': {
+              backgroundColor: 'transparent',
+              color: 'var(--color-black)',
+              fontFamily: 'var(--font-family-base), sans-serif',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.04)'
+              },
+              '&.Mui-selected': {
+                color: 'var(--color-pointer)',
+                backgroundColor: 'transparent'
+              }
+            }
+          }
+        }
+      }
+    },
+    MuiDateTimePickerToolbar: {
+      styleOverrides: {
+        root: {
+          fontFamily: 'var(--font-family-base), sans-serif',
+          '& *': {
+            fontFamily: 'var(--font-family-base), sans-serif !important'
+          },
+          '& .MuiTypography-overline': {
+            display: 'none'
+          },
+          '& .MuiSvgIcon-root': {
+            color: 'var(--color-black)'
+          },
+          '& .MuiTypography-root': {
+            textTransform: 'capitalize',
+            fontFamily: 'var(--font-family-base), sans-serif'
+          }
+        },
+        dateContainer: {
+          textTransform: 'capitalize',
+          '& button': {
+            backgroundColor: 'transparent',
+            color: 'var(--color-black)',
+            textTransform: 'capitalize',
+            fontFamily: 'var(--font-family-base), sans-serif',
+            '&:hover': {
+              backgroundColor: 'rgba(0, 0, 0, 0.04)'
+            },
+            '&.Mui-selected': {
+              color: 'var(--color-pointer)',
+              backgroundColor: 'transparent'
+            }
+          },
+          '& .MuiTypography-root': {
+            textTransform: 'capitalize',
+            fontFamily: 'var(--font-family-base), sans-serif'
+          },
+          '& *': {
+            textTransform: 'capitalize',
+            fontFamily: 'var(--font-family-base), sans-serif'
+          }
+        },
+        timeContainer: {
+          '& button': {
+            backgroundColor: 'transparent',
+            color: 'var(--color-black)',
+            fontFamily: 'var(--font-family-base), sans-serif',
+            '&:hover': {
+              backgroundColor: 'rgba(0, 0, 0, 0.04)'
+            },
+            '&.Mui-selected': {
+              color: 'var(--color-pointer)',
+              backgroundColor: 'transparent'
+            }
+          }
+        }
+      }
+    },
+    MuiDatePickerToolbar: {
+      styleOverrides: {
+        root: {
+          fontFamily: 'var(--font-family-base), sans-serif',
+          '& *': {
+            fontFamily: 'var(--font-family-base), sans-serif !important',
+            textTransform: 'capitalize'
+          },
+          '& .MuiTypography-overline': {
+            display: 'none'
+          },
+          '& .MuiSvgIcon-root': {
+            color: 'var(--color-black)'
+          },
+          '& .MuiTypography-root': {
+            textTransform: 'capitalize',
+            fontFamily: 'var(--font-family-base), sans-serif'
+          }
+        }
+      }
+    },
+    MuiTimePickerToolbar: {
+      styleOverrides: {
+        root: {
+          fontFamily: 'var(--font-family-base), sans-serif',
+          '& *': {
+            fontFamily: 'var(--font-family-base), sans-serif !important'
+          },
+          '& .MuiTypography-overline': {
+            display: 'none'
+          },
+          '& .MuiSvgIcon-root': {
+            color: 'var(--color-black)'
+          }
+        }
+      }
+    },
+    MuiInputAdornment: {
+      styleOverrides: {
+        root: {
+          '& .MuiIconButton-root': {
+            color: 'rgba(0, 0, 0, 0.4)',
+            '& .MuiSvgIcon-root': {
+              color: 'rgba(0, 0, 0, 0.4)'
+            }
+          }
+        }
+      }
+    },
+    MuiAutocomplete: {
+      styleOverrides: {
+        noOptions: {
+          fontFamily: 'var(--font-family-base), sans-serif'
+        },
+        listbox: {
+          fontFamily: 'var(--font-family-base), sans-serif',
+          '& .MuiAutocomplete-option': {
+            fontFamily: 'var(--font-family-base), sans-serif'
+          }
+        }
+      }
+    },
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          fontFamily: 'var(--font-family-base), sans-serif'
+        }
+      }
+    },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          overflow: 'visible'
+        }
+      }
+    },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          padding: '8px 16px',
+          fontFamily: 'var(--font-family-base), sans-serif'
+        }
+      }
+    },
+    MuiDialogContent: {
+      styleOverrides: {
+        root: {
+          padding: '4px',
+          boxSizing: 'border-box',
+          fontFamily: 'var(--font-family-base), sans-serif'
+        }
+      }
+    },
+    MuiDialogActions: {
+      styleOverrides: {
+        root: {
+          minWidth: 0,
+          overflow: 'visible',
+          fontFamily: 'var(--font-family-base), sans-serif'
+        }
+      }
+    },
+    MuiToggleButton: {
+      styleOverrides: {
+        root: {
+          fontFamily: 'var(--font-family-base), sans-serif',
+          transition: 'background-color var(--transition-base), color var(--transition-base)',
+          boxSizing: 'border-box'
+        }
+      }
+    },
+    MuiAlert: {
+      styleOverrides: {
+        root: {
+          fontFamily: 'var(--font-family-base), sans-serif',
+          '& .MuiAlert-message': {
+            fontFamily: 'var(--font-family-base), sans-serif',
+            '& .MuiTypography-root': {
+              fontFamily: 'var(--font-family-base), sans-serif'
+            }
+          }
         }
       }
     }

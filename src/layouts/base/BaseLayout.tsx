@@ -14,6 +14,7 @@ import { timetableStore } from 'stores/timetable.store';
 import BurgerMenu from '@/components/BurgerMenu';
 import WarningMessage from '@/components/WarningMessage';
 
+import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { isUserAdmin } from '@/utils/auth';
 
 import styles from './BaseLayout.module.scss';
@@ -21,6 +22,7 @@ import styles from './BaseLayout.module.scss';
 const BaseLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  useDocumentTitle();
 
   const handleClick = (key: string) => {
     navigate(`/${key}`);
@@ -32,16 +34,17 @@ const BaseLayout = () => {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('authorities');
     localStorage.removeItem('selectedOfficeId');
+    localStorage.removeItem('user_id');
     timetableStore.resetStore();
     navigate('/login');
   };
 
   const menuItems = [
     { key: 'schedule', label: 'Расписание', icon: <CalendarMonthIcon /> },
-    { key: 'employee', label: 'Сотрудники', icon: <GroupIcon /> },
-    isUserAdmin()
+    !isUserAdmin()
       ? { key: 'schedule/my', label: 'Мой график смен', icon: <AssignmentIndIcon /> }
-      : { key: 'stats', label: 'График выработки', icon: <WorkIcon /> }
+      : { key: 'employee', label: 'Сотрудники', icon: <GroupIcon /> },
+    { key: 'stats', label: 'Статистика', icon: <WorkIcon /> }
   ];
 
   const burgerMenuItems = menuItems.reduce(

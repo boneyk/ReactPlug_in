@@ -1,71 +1,100 @@
 import { FC } from 'react';
 
-import PersonIcon from '@mui/icons-material/Person';
-import { Autocomplete, MenuItem, Stack, TextField } from '@mui/material';
+import { Autocomplete, Grid2, MenuItem, TextField, Typography } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import { useStores } from 'stores/useStores';
 
 import styles from '../ModalCreate/ModalCreate.module.scss';
 
 type ModalCreateRoleAndPersonProps = {
-  notEditable: boolean;
+  isDisabled: boolean;
 };
 
-export const ModalCreateRoleAndPerson: FC<ModalCreateRoleAndPersonProps> = observer(({ notEditable }) => {
+export const ModalCreateRoleAndPerson: FC<ModalCreateRoleAndPersonProps> = observer(({ isDisabled }) => {
   const { timetableStore } = useStores();
   const { roles, selectedRole, selectedEmployee, getEmployeesByRole, setSelectedRole, setSelectedEmployee } =
     timetableStore;
   const employees = selectedRole ? getEmployeesByRole(selectedRole) : [];
-
   const roleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedRole(event.target.value);
   };
   const changeEmployee = (_: unknown, value: { id: number; name: string } | null) => {
     setSelectedEmployee(value);
   };
-  const optionEqualToValue = (option: { id: number; name: string }, value: { id: number; name: string }) => {
-    return option.name === value.name;
-  };
-  const option = (option: { id: number; name: string }) => {
-    return option.name;
-  };
+  const getOptionLabel = (option: { id: number; name: string }) => option.name;
+  const isOptionEqualToValue = (option: { id: number; name: string }, value: { id: number; name: string }) =>
+    option.name === value.name;
+
+  const roleLabel = !isDisabled ? 'Выберите должность' : 'Должность:';
+  const employeeLabel = !isDisabled ? 'Выберите сотрудника' : 'Сотрудник:';
+
+  if (!isDisabled) {
+    return (
+      <Grid2 container spacing={2} alignItems="center" className={styles.container}>
+        <TextField
+          select
+          label={roleLabel}
+          value={selectedRole || ''}
+          onChange={roleChange}
+          fullWidth
+          error={!selectedRole}
+          className={styles.picker}
+          helperText={!selectedRole ? 'Должность обязательна' : ''}
+          slotProps={{
+            input: {
+              readOnly: false
+            }
+          }}
+        >
+          {roles.map((roleName) => (
+            <MenuItem key={roleName} value={roleName}>
+              {roleName}
+            </MenuItem>
+          ))}
+        </TextField>
+
+        <Autocomplete
+          options={employees}
+          value={selectedEmployee || null}
+          onChange={changeEmployee}
+          getOptionLabel={getOptionLabel}
+          isOptionEqualToValue={isOptionEqualToValue}
+          noOptionsText="Нет сотрудников"
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label={employeeLabel}
+              placeholder="Начните вводить ФИО"
+              error={!selectedEmployee}
+              helperText={!selectedEmployee ? 'Сотрудник обязателен' : ''}
+              className={styles.picker}
+            />
+          )}
+          fullWidth
+        />
+      </Grid2>
+    );
+  }
+
   return (
-    <Stack direction="row" spacing={1} className={styles.container}>
-      <PersonIcon />
-      <TextField
-        select
-        label="Выберите должность"
-        value={selectedRole}
-        onChange={roleChange}
-        fullWidth
-        error={!selectedRole}
-        helperText={!selectedRole ? 'Должность обязательна' : ''}
-        disabled={!notEditable}
-      >
-        {roles.map((roleName) => (
-          <MenuItem key={roleName} value={roleName}>
-            {roleName}
-          </MenuItem>
-        ))}
-      </TextField>
-      <Autocomplete
-        options={employees}
-        value={selectedEmployee || null}
-        onChange={changeEmployee}
-        getOptionLabel={option}
-        isOptionEqualToValue={optionEqualToValue}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Выберите сотрудника"
-            placeholder="Начните вводить ФИО"
-            error={!selectedEmployee}
-            helperText={!selectedEmployee ? 'Сотрудник обязателен' : ''}
-          />
-        )}
-        disabled={!notEditable || !selectedRole}
-        fullWidth
-      />
-    </Stack>
+    <Grid2 container className={styles.containerInfo}>
+      <Grid2 className={styles.infoRow}>
+        <Typography variant="subtitle2" color="text.secondary">
+          {roleLabel}
+        </Typography>
+        <Typography variant="body1" fontWeight="medium">
+          {selectedRole || '—'}
+        </Typography>
+      </Grid2>
+
+      <Grid2 className={styles.infoRow}>
+        <Typography variant="subtitle2" color="text.secondary">
+          {employeeLabel}
+        </Typography>
+        <Typography variant="body1" fontWeight="medium">
+          {selectedEmployee?.name || '—'}
+        </Typography>
+      </Grid2>
+    </Grid2>
   );
 });

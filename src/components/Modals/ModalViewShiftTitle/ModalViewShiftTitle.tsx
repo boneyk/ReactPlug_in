@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { Stack, Typography } from '@mui/material';
 
-import { ShiftModalData } from '../../../hooks/useViewModal';
+import { ShiftModalData } from '@/hooks/useViewModal';
 
 interface ModalViewShiftInfoProps {
   shiftData: ShiftModalData;

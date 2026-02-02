@@ -1,5 +1,3 @@
-// UI types
-
 export type ShiftType = 'work' | 'vacation' | 'sick';
 
 export interface Shift {

@@ -14,6 +14,7 @@ import Modal from '@/components/Modals/ModalCreate/ModalCreate';
 import { isUserAdmin } from '@/utils/auth';
 
 import styles from './TimetableCurrentDateYear.module.scss';
+import { modalCreateStore } from '@/stores/modalCreate.store';
 import { useStores } from '@/stores/useStores';
 
 interface TimetableCurrentDateYearProps {
@@ -27,6 +28,9 @@ const TimetableCurrentDateYear: FC<TimetableCurrentDateYearProps> = observer(({ 
   const handleClose = () => setIsOpen(false);
   const handleOpen = () => {
     timetableStore.resetRoleAndPerson();
+    modalCreateStore.setStartDate(dayjs());
+    modalCreateStore.setEndDate(dayjs());
+    modalCreateStore.selectPreset(1);
     setIsOpen(true);
   };
 
@@ -82,7 +86,7 @@ const TimetableCurrentDateYear: FC<TimetableCurrentDateYearProps> = observer(({ 
         </DropdownProvider>
       )}
 
-      <Modal notEditable={true} defaultStartDate={dayjs()} isOpen={isOpen} onClose={handleClose} />
+      <Modal isRoleSelectionDisabled={false} isOpen={isOpen} onClose={handleClose} isEdit={false} />
     </Grid2>
   );
 });

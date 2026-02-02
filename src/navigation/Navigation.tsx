@@ -1,13 +1,13 @@
 import { Navigate, useRoutes } from 'react-router-dom';
 
 import BaseLayout from 'layouts/base/BaseLayout';
-import Placeholder from 'navigation/Placeholder';
 import ErrorPage from 'pages/error/ErrorPage';
 import LoginPage from 'pages/login/LoginPage';
 
 import EmployeesTable from '@/components/EmployeesTable';
 import CalendarWidget from '@/components/TimetableComponent/CalendarWidget';
 
+import { AccessRequiredPermission } from './AccessRequiredPermission';
 import { ProtectedRouteProvider } from './ProtectedRouteProvider';
 import { SuspenseLayout } from './SuspenseLayout';
 import TimetablePage from '@/pages/timetable/TimetablePage';
@@ -46,15 +46,11 @@ const Navigation = () => {
                 },
                 {
                   path: 'employee',
-                  element: <EmployeesTable />
-                },
-                {
-                  path: 'users',
-                  children: [
-                    { index: true, element: <Placeholder text="i am users list" /> },
-                    { path: 'create', element: <Placeholder text="i am create user page" /> },
-                    { path: 'edit/:id', element: <Placeholder text="i am edit user page" /> }
-                  ]
+                  element: (
+                    <AccessRequiredPermission>
+                      <EmployeesTable />
+                    </AccessRequiredPermission>
+                  )
                 }
               ]
             }

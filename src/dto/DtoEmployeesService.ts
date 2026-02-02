@@ -1,35 +1,47 @@
-export type EmployeeStatus = 'ACTIVE' | 'FIRED';
+import { EmployeeStatus } from '@/stores/employees.store';
 
-export interface PositionDto {
+// getEmployeeEntity
+export interface EmployeeEntityResponse {
+  id: number;
+  userId: number;
+  cityId: number;
+  code: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  position: EmployeeEntityPosition;
+  status: EmployeeEntityStatus;
+  hiredAt: string;
+  firedAt: string;
+  substitutionGroup: boolean;
+}
+
+export interface EmployeeEntityPosition {
   id: number;
   code: string;
   name: string;
 }
 
-export interface EmployeeDto {
+export interface EmployeeEntityStatus {
   id: number;
-  fullName: string;
-  phone: string;
-  email: string;
+  code: string;
+  name: string;
+}
+
+// getEmployees
+export interface EmployeeResponse {
+  id: number;
+  userId: number;
   cityId: number;
-  officeIds: number[];
-  positionCode: string;
-  positionName: string;
-}
-
-export interface EmployeeAllDto {
-  id: number;
+  code: string;
   fullName: string;
   email: string;
-  positionName: string;
-}
-
-export interface EmployeeListItemDto {
-  id: number;
-  fullName: string;
-  positionName: string;
   phone: string;
-  email: string;
+  position: EmployeeEntityPosition;
+  status: EmployeeEntityStatus;
+  hiredAt: string;
+  firedAt: string;
+  substitutionGroup: boolean;
 }
 
 export interface CreateEmployeeRequest {
@@ -41,15 +53,34 @@ export interface CreateEmployeeRequest {
   hireAt: string;
 }
 
-export interface UpdateEmployeeRequest {
-  fullName?: string;
-  phone?: string;
-  email?: string;
-  officeId?: number;
+export interface GetEmployeesParams {
+  id?: number[];
+  excludeId?: number[];
+  cityId?: number;
+  statusId?: number;
   positionId?: number;
+  substitutionGroup?: boolean;
+  page?: number;
+  size?: number;
+  status?: EmployeeStatus;
 }
 
-export interface GetEmployeesParams {
-  officeId?: number;
-  status?: EmployeeStatus;
+export interface PageInfo {
+  size: number;
+  number: number;
+  totalElements: number;
+  totalPages: number;
+}
+
+export interface PaginatedResponse<T> {
+  content: T;
+  page: PageInfo;
+}
+
+export interface OfficesIdsByEmployeeResponse {
+  id: number;
+  code: string;
+  name: string;
+  address: string;
+  cityId: number;
 }

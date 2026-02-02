@@ -1,41 +1,42 @@
 import { AxiosResponse } from 'axios';
 import {
   CreateEmployeeRequest,
-  EmployeeAllDto,
-  EmployeeDto,
-  EmployeeListItemDto,
+  EmployeeEntityResponse,
+  EmployeeResponse,
   GetEmployeesParams,
-  UpdateEmployeeRequest
+  OfficesIdsByEmployeeResponse,
+  PaginatedResponse
 } from 'dto/DtoEmployeesService';
 
 import { instance } from './config';
 
 export type * from 'dto/DtoEmployeesService';
 
-export const getEmployees = (params?: GetEmployeesParams): Promise<AxiosResponse<EmployeeDto[]>> => {
-  return instance.get('/employees', { params });
+export const addEmployeeToOffice = (
+  officeId: number,
+  dto: CreateEmployeeRequest
+): Promise<AxiosResponse<CreateEmployeeRequest>> => {
+  return instance.post(`api/offices/${officeId}/employee`, dto);
 };
 
-export const getEmployeesAll = (): Promise<AxiosResponse<EmployeeAllDto[]>> => {
-  return instance.get('/employees/all');
+export const deleteEmployees = async (officeId: number, employeeIds: number[]): Promise<AxiosResponse<void>> => {
+  return instance.delete(`api/office/offices/${officeId}/employee`, { data: { employeeIds } });
 };
 
-export const getEmployeeById = (id: number): Promise<AxiosResponse<EmployeeDto>> => {
-  return instance.get(`/employees/${id}`);
+export const getEmployees = (
+  params?: GetEmployeesParams
+): Promise<AxiosResponse<PaginatedResponse<EmployeeResponse[]>>> => {
+  return instance.get('api/employee/employees', { params });
 };
 
-export const createEmployee = (dto: CreateEmployeeRequest): Promise<AxiosResponse<EmployeeDto>> => {
-  return instance.post('/employees', dto);
+export const getEmployeeEntity = (userId: number): Promise<AxiosResponse<EmployeeEntityResponse>> => {
+  return instance.get(`api/employee/employees/by-user/${userId}`);
 };
 
-export const updateEmployee = (id: number, dto: UpdateEmployeeRequest): Promise<AxiosResponse<EmployeeDto>> => {
-  return instance.put(`/employees/${id}`, dto);
+export const getOfficesIdsByEmployee = (employeeId: number): Promise<AxiosResponse<OfficesIdsByEmployeeResponse[]>> => {
+  return instance.get(`api/office/offices/by-employee/${employeeId}`);
 };
 
-export const fireEmployee = (id: number, firedAt: string): Promise<AxiosResponse<void>> => {
-  return instance.post(`/employees/${id}/fire`, { firedAt });
-};
-
-export const searchEmployeesByIds = (ids: number[]): Promise<AxiosResponse<EmployeeListItemDto[]>> => {
-  return instance.post('/internal/employees/search', { ids });
+export const getEmployeeIdsByOffices = (officeId: number): Promise<AxiosResponse<number[]>> => {
+  return instance.get(`api/office/offices/${officeId}/employees`);
 };

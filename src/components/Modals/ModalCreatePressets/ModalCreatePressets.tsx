@@ -1,25 +1,32 @@
-import { Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { Grid2, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { DateRangeIcon } from '@mui/x-date-pickers';
 import { observer } from 'mobx-react-lite';
-import { timetableCreateStore } from 'stores/modalCreate.store';
+import { modalCreateStore, ShiftPreset } from 'stores/modalCreate.store';
 
 import styles from '../ModalCreate/ModalCreate.module.scss';
 
 export const ModalCreatePressets = observer(() => {
   const changePresset = (_: unknown, newId: number | null) => {
-    timetableCreateStore.selectPreset(newId);
+    modalCreateStore.selectPreset(newId);
   };
   return (
-    <Stack direction="row" spacing={1} className={styles.container}>
-      <DateRangeIcon />
-      <Typography>Период работы</Typography>
-      <ToggleButtonGroup value={timetableCreateStore.selectedPresetId} exclusive onChange={changePresset}>
-        {timetableCreateStore.presets.map((preset) => (
-          <ToggleButton key={preset.id} value={preset.id}>
+    <Grid2 container className={styles.containerHeader}>
+      <Grid2 className={styles.sectionName}>
+        <DateRangeIcon />
+        <Typography>Период работы</Typography>
+      </Grid2>
+      <ToggleButtonGroup
+        value={modalCreateStore.selectedPresetId}
+        exclusive
+        onChange={changePresset}
+        className={styles.toggleWrapper}
+      >
+        {modalCreateStore.presets.map((preset: ShiftPreset) => (
+          <ToggleButton key={preset.id} value={preset.id} className={styles.timeButton}>
             {preset.label}
           </ToggleButton>
         ))}
       </ToggleButtonGroup>
-    </Stack>
+    </Grid2>
   );
 });

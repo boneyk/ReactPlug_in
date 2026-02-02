@@ -9,29 +9,37 @@ import { ModalCreateRoleAndPerson } from '../ModalCreateRole&Person/ModalCreateR
 import { ModalCreateTitle } from '../ModalCreateTitle/ModalCreateTitle';
 import { ModalCreateActionsButtons } from '../ModalsCreateActionsButtons/ModalsCreateActionsButtons';
 
+import styles from './ModalCreate.module.scss';
+
 interface ModalCreateProps {
   isOpen: boolean;
   onClose: () => void;
-  notEditable: boolean;
-  defaultStartDate: Dayjs | null;
+  isRoleSelectionDisabled?: boolean;
+  isEdit?: boolean;
+  defaultStartDate?: Dayjs | null;
 }
-
-const ModalCreate: FC<ModalCreateProps> = ({ isOpen, onClose, notEditable, defaultStartDate }) => {
+const ModalCreate: FC<ModalCreateProps> = ({
+  isOpen,
+  onClose,
+  isRoleSelectionDisabled = false,
+  isEdit = false,
+  defaultStartDate = null
+}) => {
   return (
-    <Dialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={isOpen} onClose={onClose} className={styles.wrapper}>
       <DialogTitle>
-        <ModalCreateTitle onClose={onClose} />
+        <ModalCreateTitle onClose={onClose} isEdit={isEdit} />
       </DialogTitle>
 
-      <DialogContent dividers>
+      <DialogContent dividers className={styles.content}>
         <Stack direction="column" spacing={3}>
           <ModalCreatePressets />
-          <ModalCreateDatePeriod defaultStartDate={defaultStartDate} />
-          <ModalCreateRoleAndPerson notEditable={notEditable} />
+          <ModalCreateDatePeriod defaultStartDate={defaultStartDate} isEdit={isEdit} />
+          <ModalCreateRoleAndPerson isDisabled={isRoleSelectionDisabled} />
         </Stack>
       </DialogContent>
 
-      <DialogActions>
+      <DialogActions className={styles.dialogActions}>
         <ModalCreateActionsButtons onClose={onClose} />
       </DialogActions>
     </Dialog>

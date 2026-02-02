@@ -1,6 +1,48 @@
-.stackPosition {
+@use "@/styles/helpers" as *;
+
+.wrapper:global(.MuiDialogTitle-root) {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  & :global(.MuiTypography-root) {
+    font-family: var(--font-family-base), sans-serif;
+  }
+
+  & :global(.MuiTypography-root):first-child {
+    font-weight: 600;
+  }
+}
+
+.content:global(.MuiDialogContent-root) {
+
+  & > :global(.MuiStack-root) {
+    & > :global(.MuiStack-root) {
+      & :global(.MuiTypography-root) {
+        font-family: var(--font-family-base), sans-serif;
+      }
+    }
+  }
+}
+
+.stackPosition:global(.MuiGrid2-root) {
+  display: flex;
+  gap: 2px;
+  width: fit-content;
+  height: fit-content;
   position: absolute;
-  right: 8px;
-  top: 8px;
-  color: var(--mui-palette-grey-500)
+  top: 10px;
+  right: 10px;
+
+  @media (max-width: 320px) {
+    gap: 4px;
+    & :global(.MuiButtonBase-root) {
+      width: 25px;
+      height: 25px;
+      & :global(.MuiSvgIcon-root) {
+        width: 25px;
+        height: 25px;
+      }
+    }
+  }
 }

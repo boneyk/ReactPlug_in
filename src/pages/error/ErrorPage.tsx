@@ -2,10 +2,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { Box, Button, Stack, Typography } from '@mui/material';
 
+import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+
 const ErrorPage = () => {
   const { err } = useParams();
   const navigate = useNavigate();
   const errorCode = err ?? '404';
+  useDocumentTitle();
   const handleClick = () => {
     navigate('/');
   };

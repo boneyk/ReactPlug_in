@@ -1,17 +1,5 @@
 @use "@/styles/helpers" as *;
 
-@keyframes scaling {
-  0% {
-    transform: scale(1);
-  }
-  75% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
 .layout {
   display: flex;
   flex-direction: column;
@@ -83,15 +71,20 @@
   background-color: transparent;
   color: rgba(0, 0, 0, 0.7);
   font-weight: 600;
-  transition: color var(--transition-base), border-color var(--transition-base), transform var(--transition-base);
+  transition: color var(--transition-base), border-color var(--transition-base);
   border-radius: 0;
   border-bottom: 2px solid transparent;
   box-sizing: border-box;
 
   &:hover {
     background-color: transparent;
-    transform: scale(1.05);
     color: #1a1a1a;
+    transform: scale(1.02);
+    max-height: 100%;
+  }
+
+  &:active {
+    transform: scale(0.98);
   }
 
   &.selected {
@@ -102,17 +95,6 @@
     cursor: default;
     pointer-events: none;
     transition: border-bottom-color var(--transition-base);
-
-    &:hover {}
-
-    :global(.MuiButton-startIcon) {
-      & > svg {
-        animation-name: scaling;
-        animation-duration: 380ms;
-        animation-iteration-count: 1;
-        animation-fill-mode: forwards;
-      }
-    }
   }
 
   :global(.MuiButton-startIcon) {
@@ -121,14 +103,8 @@
     }
   }
 
-  &:active {
-    :global(.MuiButton-startIcon) {
-      & > svg {
-        transform: scale(0.9);
-      }
-    }
-  }
 }
+
 
 .logout:global(.MuiButton-root) {
   background-color: #232323;

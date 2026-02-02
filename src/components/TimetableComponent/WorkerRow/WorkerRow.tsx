@@ -54,11 +54,14 @@ const WorkerRow: FC<WorkerRowProps> = observer(({ role, employeeId }) => {
 
       {days.map((day, index) => {
         const isStartOrSolo = isStart(daysShiftsList, index) || isSolo(daysShiftsList, index);
+        const isHoliday = new Date(year, month, index + 1).getDay() === 0;
 
         return (
           <TableCell
             key={`worker-${employeeId}-day-${day}`}
-            className={styles.workerDayCell}
+            className={classNames(styles.workerDayCell, {
+              [styles.holiday]: isHoliday
+            })}
             onClick={() => handleCellClick(index)}
           >
             {!!daysShiftsList[index + 1] && (
@@ -74,19 +77,16 @@ const WorkerRow: FC<WorkerRowProps> = observer(({ role, employeeId }) => {
               </span>
             )}
             {isUserAdmin() && !daysShiftsList[index + 1] && canAddShift(index) && (
-              <AddCircleOutline className={styles.addIcon} fontSize="small" />
+              <Grid2 className={styles.iconWrapper}>
+                <AddCircleOutline className={styles.addIcon} fontSize="small" />
+              </Grid2>
             )}
             {day === todayIndex && <div className={styles.pointer}></div>}
           </TableCell>
         );
       })}
       {isUserAdmin() && (
-        <Modal
-          isOpen={createModalData.open}
-          onClose={closeCreateModal}
-          notEditable={false}
-          defaultStartDate={createModalData.startDate}
-        />
+        <Modal isOpen={createModalData.open} onClose={closeCreateModal} isRoleSelectionDisabled={true} isEdit={false} />
       )}
       <ModalView isOpen={isViewModalOpen} onClose={closeViewModal} shiftData={selectedShift} />
     </TableRow>

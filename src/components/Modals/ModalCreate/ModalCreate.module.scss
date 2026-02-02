@@ -1,20 +1,159 @@
-.dialogTitle {
-  position: relative; 
-  padding-right: 48px;
-}
+@use "@/styles/helpers" as *;
 
-.stackPosition {
-  position: absolute;
-  right: 8px;
-  top: 8px;
-  color: var(--mui-palette-grey-500)
-}
-
-.container{
+.content:global(.MuiDialogContent-root) {
   display: flex;
-  align-items: center;
+  @include flex-center();
+  padding: 4px;
+  width: 100%;
+  box-sizing: border-box;
+
+  & :global(.MuiStack-root) {
+    width: 100%;
+    box-sizing: border-box;
+
+    @include mobile {
+      width: 100%;
+    }
+  }
 }
 
-.alert{
+.sectionName:global(.MuiGrid2-root) {
+  display: flex;
+  flex-direction: row;
+  @include flex-center();
+  gap: 6px;
+  justify-content: flex-start;
+  padding: 4px 8px;
+}
+
+.container:global(.MuiGrid2-root) {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  @include flex-center();
+  margin-bottom: 8px;
+  margin-top: 5px;
+  padding: 0 8px;
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-bottom: 0;
+  }
+}
+
+.containerHeader:global(.MuiGrid2-root) {
+  gap: 8px;
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  box-sizing: border-box;
+
+  @include mobile {
+    padding: 0;
+    width: 100%;
+    align-items: stretch;
+
+    & > * {
+      width: 100%;
+    }
+  }
+}
+
+.toggleWrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 8px;
+
+  @include mobile {
+    width: 100%;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+}
+
+.timeButton:global(.MuiToggleButton-root) {
+  width: 100%;
+
+  @include mobile {
+    font-size: 12px;
+    padding: 10px 4px;
+    width: 100%;
+  }
+}
+
+
+.dialogActions:global(.MuiDialogActions-root) {
+  display: flex;
+  flex-direction: row;
+  @include flex-center();
+
+  @include mobile {
+    flex-direction: column;
+  }
+}
+
+.wrapper:global(.MuiDialog-root) {
+  :global(.MuiPaper-root) {
+    width: 600px;
+    margin: 0 auto;
+
+    @include mobile {
+      width: 80%;
+      max-width: 400px;
+      min-width: 285px;
+    }
+  }
+}
+
+.picker:global(.MuiFormControl-root) {
+  width: 100%;
+  box-sizing: border-box;
+
+  & :global(.MuiFormHelperText-root) {
+    display: none;
+  }
+}
+
+.containerInfo:global(.MuiGrid2-root) {
+  align-items: center;
+  justify-content: space-evenly;
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  @include mobile {
+    flex-direction: column;
+    gap: 4px;
+    @include flex-center();
+    margin-top: 4px;
+  }
+
+  & :global(.MuiTypography-root) {
+    font-size: 16px;
+    word-break: break-word;
+  }
+}
+
+.infoRow:global(.MuiGrid2-root) {
+  padding: 0 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 5px;
+  width: 100%;
+
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    align-self: flex-start;
+  }
+
+  & :global(.MuiTypography-root) {
+    font-size: 16px;
+    word-break: break-word;
+  }
 }
