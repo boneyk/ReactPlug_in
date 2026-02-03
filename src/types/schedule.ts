@@ -9,7 +9,7 @@ export interface Shift {
   label?: string;
 }
 
-export interface ScheduleMyItem {
+export interface myScheduleItem {
   officeName: string;
   startTime: string;
   endTime: string;
@@ -19,5 +19,5 @@ export interface ScheduleMyItem {
 export interface CalendarCell {
   day: number;
   month: number;
-  myShifts: ScheduleMyItem[];
+  myShifts: myScheduleItem[];
 }

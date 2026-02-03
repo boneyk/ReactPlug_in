@@ -40,7 +40,11 @@ export class EmployeesStore {
         });
         return;
       }
-      const response = await getEmployees({ page: this.page, size: this.pageSize });
+      const response = await getEmployees({
+        id: EmployeeIdsByOfficesResponse.data,
+        page: this.page,
+        size: this.pageSize
+      });
 
       runInAction(() => {
         this.employees = response.data.content ?? [];
@@ -55,15 +59,15 @@ export class EmployeesStore {
     }
   }
 
-  setPage(page: number) {
+  async setPage(page: number) {
     this.page = page;
-    void this.fetchEmployees();
+    await this.fetchEmployees();
   }
 
-  setPageSize(pageSize: number) {
+  async setPageSize(pageSize: number) {
     this.pageSize = pageSize;
     this.page = 0;
-    void this.fetchEmployees();
+    await this.fetchEmployees();
   }
 
   async init() {

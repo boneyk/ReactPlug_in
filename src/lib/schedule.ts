@@ -1,7 +1,7 @@
 import { shiftTypeMap } from '@/constants/timetable';
 
-import type { Absence, EmployeeSchedule, ScheduleMyResponse } from '@/dto/DtoSchedule';
-import type { CalendarCell, ScheduleMyItem, Shift, ShiftType } from '@/types/schedule';
+import type { Absence, EmployeeSchedule, myScheduleResponse } from '@/dto/DtoSchedule';
+import type { CalendarCell, myScheduleItem, Shift, ShiftType } from '@/types/schedule';
 
 export function transformEmployeeShifts(employeeData: EmployeeSchedule): Shift[] {
   return [
@@ -157,12 +157,12 @@ export function getCalendarMatrix(year: number, monthIndex: number): string[][] 
   return calendarMatrix;
 }
 
-export function getScheduleMyMatrix(
-  data: ScheduleMyResponse,
+export function getmyScheduleMatrix(
+  data: myScheduleResponse,
   calendarMatrix: string[][],
   officeMap: Map<number, string>
 ): CalendarCell[][] {
-  const shiftsByDate = new Map<string, ScheduleMyItem[]>();
+  const shiftsByDate = new Map<string, myScheduleItem[]>();
   data.shifts.forEach((shift) => {
     const dateParts = shift.scheduledOn.split('-');
     const day = parseInt(dateParts[2], 10);
@@ -236,7 +236,7 @@ const shiftTypeClasses: Record<string, string> = {
   sick: 'sick'
 };
 
-export const formatShiftLabel = (shift: ScheduleMyItem): string => {
+export const formatShiftLabel = (shift: myScheduleItem): string => {
   if (shift.type === 'work') {
     return `${shift.officeName}, ${formatTime(shift.startTime)}-${formatTime(shift.endTime)}`;
   }

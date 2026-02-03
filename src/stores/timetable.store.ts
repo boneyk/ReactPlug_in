@@ -4,11 +4,11 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import { handleNetworkError } from '@/utils/errorHandlers';
 
 import { baseLayoutStore } from './baseLayout.store';
-import { getEmployeeEntity } from '@/api/employees_service';
-import { getMySchedule, getOffices, getSchedule } from '@/api/shedule_service';
+import { getEmployeeEntity, getOfficesIdsByEmployee } from '@/api/employees_service';
+import { getMySchedule, getSchedule } from '@/api/shedule_service';
 import { OfficeDto } from '@/dto/DtoOffice';
 import type { EmployeeSchedule } from '@/dto/DtoSchedule';
-import { getCalendarMatrix, getMonthDaysCount, getScheduleMyMatrix } from '@/lib/schedule';
+import { getCalendarMatrix, getMonthDaysCount, getmyScheduleMatrix } from '@/lib/schedule';
 import type { CalendarCell } from '@/types/schedule';
 
 export class TimetableStore {
@@ -51,9 +51,10 @@ export class TimetableStore {
   async fetchOffices() {
     this.isLoading = true;
     try {
-      const response = await getOffices();
+      const EmployeeEntityResponse = await getEmployeeEntity(Number(localStorage.getItem('user_id')));
+      const response = await getOfficesIdsByEmployee(EmployeeEntityResponse.data.id);
       runInAction(() => {
-        this.offices = response.data.offices;
+        this.offices = response.data;
         if (this.offices.length > 0) {
           const savedOfficeId = this.getSavedOfficeId();
           const savedOffice = savedOfficeId ? this.offices.find((office) => office.id === savedOfficeId) : null;
@@ -258,7 +259,7 @@ export class TimetableStore {
       const response = await getMySchedule(employeeEntityResponse.data.id, this.year, this.month + 1);
       const calendarMatrix = getCalendarMatrix(this.year, this.month);
       runInAction(() => {
-        this.myScheduleMatrix = getScheduleMyMatrix(response.data, calendarMatrix, this.getOfficeMap());
+        this.myScheduleMatrix = getmyScheduleMatrix(response.data, calendarMatrix, this.getOfficeMap());
         this.isMyScheduleLoading = false;
       });
     } catch (error) {
