@@ -6,7 +6,6 @@ import GroupIcon from '@mui/icons-material/Group';
 import LogoutIcon from '@mui/icons-material/Logout';
 import WorkIcon from '@mui/icons-material/Work';
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { logout } from 'api/auth_service';
 import logo from 'assets/logo.svg';
 import classNames from 'classnames';
 import { timetableStore } from 'stores/timetable.store';
@@ -18,6 +17,7 @@ import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { isUserAdmin } from '@/utils/auth';
 
 import styles from './BaseLayout.module.scss';
+import { logout } from '@/api/auth_service';
 
 const BaseLayout = () => {
   const navigate = useNavigate();

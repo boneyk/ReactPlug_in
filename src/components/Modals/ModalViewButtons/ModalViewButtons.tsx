@@ -4,7 +4,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import { Grid2, IconButton } from '@mui/material';
-import { deleteShift } from 'api/shedule_service';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { observer } from 'mobx-react-lite';
@@ -18,6 +17,7 @@ import { ShiftModalData } from '@/hooks/useViewModal';
 import { handleNetworkError } from '@/utils/errorHandlers';
 import { isUserAdmin } from 'utils/auth';
 
+import { deleteShift } from '@/api/shedule_service';
 import { modalCreateStore } from '@/stores/modalCreate.store';
 
 interface ModalViewButtonsProps {
@@ -42,6 +42,7 @@ export const ModalViewButtons: FC<ModalViewButtonsProps> = observer(({ onClose, 
     modalCreateStore.setStartDate(clickedDate);
     modalCreateStore.setEndDate(clickedDate);
     modalCreateStore.selectPreset(1);
+    modalCreateStore.setShiftId(shift.id);
     setIsOpen(true);
   };
 
@@ -62,10 +63,11 @@ export const ModalViewButtons: FC<ModalViewButtonsProps> = observer(({ onClose, 
       handleNetworkError(error);
     }
   };
+  const canEditAndDel = isUserAdmin() && shift.type === 'work';
   return (
     <>
       <Grid2 className={styles.stackPosition}>
-        {isUserAdmin() && shift.type === 'work' && (
+        {canEditAndDel && (
           <>
             <IconButton onClick={handleOpen}>
               <EditIcon />

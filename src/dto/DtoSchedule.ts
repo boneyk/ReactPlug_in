@@ -52,7 +52,7 @@ export interface CreateShiftDto {
 }
 
 // getMySchedule
-export interface ScheduleMyResponse {
+export interface myScheduleResponse {
   employeeId: number;
   fullName: string;
   phone: string;
@@ -69,7 +69,6 @@ export interface MyAbsence {
 
 // editShift
 export interface editShiftRequest {
-  id: number;
   startAt: string;
   endAt: string;
 }

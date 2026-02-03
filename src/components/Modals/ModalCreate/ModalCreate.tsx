@@ -40,7 +40,7 @@ const ModalCreate: FC<ModalCreateProps> = ({
       </DialogContent>
 
       <DialogActions className={styles.dialogActions}>
-        <ModalCreateActionsButtons onClose={onClose} />
+        <ModalCreateActionsButtons onClose={onClose} isEdit={isEdit} />
       </DialogActions>
     </Dialog>
   );

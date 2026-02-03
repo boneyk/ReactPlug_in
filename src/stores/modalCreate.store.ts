@@ -1,5 +1,5 @@
 import dayjs, { Dayjs } from 'dayjs';
-import { CreateShiftDto } from 'dto/DtoSchedule';
+import { CreateShiftDto, editShiftRequest } from 'dto/DtoSchedule';
 import { makeAutoObservable } from 'mobx';
 
 import { Formats } from 'utils/formats';
@@ -32,6 +32,7 @@ export class ModalCreateStore {
   endDate: Dayjs | null = null;
   selectedPresetId: number | null = null;
   presets: ShiftPreset[] = [];
+  shiftId: number | null = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -61,6 +62,9 @@ export class ModalCreateStore {
   };
   setEndDate = (date: Dayjs | null) => {
     this.endDate = date;
+  };
+  setShiftId = (id: number) => {
+    this.shiftId = id;
   };
   selectPreset = (presetId: number | null) => {
     this.selectedPresetId = presetId;
@@ -117,6 +121,15 @@ export class ModalCreateStore {
       officeId: office.id,
       startOn: startDate.format(Formats.DATE),
       endOn: endDate.format(Formats.DATE),
+      startAt: startDate.format(Formats.TIME),
+      endAt: endDate.format(Formats.TIME)
+    };
+  }
+
+  get editShiftDto(): editShiftRequest | null {
+    const { startDate, endDate } = this;
+    if (!startDate || !endDate) return null;
+    return {
       startAt: startDate.format(Formats.TIME),
       endAt: endDate.format(Formats.TIME)
     };

@@ -23,12 +23,6 @@ export const deleteEmployees = async (officeId: number, employeeIds: number[]): 
   return instance.delete(`api/office/offices/${officeId}/employee`, { data: { employeeIds } });
 };
 
-export const getEmployees = (
-  params?: GetEmployeesParams
-): Promise<AxiosResponse<PaginatedResponse<EmployeeResponse[]>>> => {
-  return instance.get('api/employee/employees', { params });
-};
-
 export const getEmployeeEntity = (userId: number): Promise<AxiosResponse<EmployeeEntityResponse>> => {
   return instance.get(`api/employee/employees/by-user/${userId}`);
 };
@@ -39,4 +33,10 @@ export const getOfficesIdsByEmployee = (employeeId: number): Promise<AxiosRespon
 
 export const getEmployeeIdsByOffices = (officeId: number): Promise<AxiosResponse<number[]>> => {
   return instance.get(`api/office/offices/${officeId}/employees`);
+};
+
+export const getEmployees = (
+  params?: GetEmployeesParams
+): Promise<AxiosResponse<PaginatedResponse<EmployeeResponse[]>>> => {
+  return instance.get('api/employee/employees', { params });
 };

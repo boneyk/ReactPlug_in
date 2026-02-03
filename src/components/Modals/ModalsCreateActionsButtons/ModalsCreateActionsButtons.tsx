@@ -1,7 +1,6 @@
 import { FC } from 'react';
 
 import { Alert, AlertTitle, Button, Grid2 } from '@mui/material';
-import { createShift } from 'api/shedule_service';
 import axios from 'axios';
 import { observer } from 'mobx-react-lite';
 import { baseLayoutStore } from 'stores/baseLayout.store';
@@ -11,14 +10,17 @@ import { useStores } from 'stores/useStores';
 import { handleNetworkError } from 'utils/errorHandlers';
 
 import styles from './ModalsCreateActionsButtons.module.scss';
+import { createShift, editShift } from '@/api/shedule_service';
 
 interface ModalCreateActionsButtonsProps {
   onClose: () => void;
+  isEdit: boolean;
 }
-export const ModalCreateActionsButtons: FC<ModalCreateActionsButtonsProps> = observer(({ onClose }) => {
+
+export const ModalCreateActionsButtons: FC<ModalCreateActionsButtonsProps> = observer(({ onClose, isEdit }) => {
   const { timetableStore } = useStores();
   const { selectedRole, selectedEmployee } = timetableStore;
-  const { errors, isValid, createShiftDto } = modalCreateStore;
+  const { errors, isValid, createShiftDto, editShiftDto, shiftId } = modalCreateStore;
   const canSave = isValid && !!selectedRole && !!selectedEmployee;
 
   const errorText =
@@ -28,13 +30,30 @@ export const ModalCreateActionsButtons: FC<ModalCreateActionsButtonsProps> = obs
     (!selectedEmployee && 'Не выбран сотрудник');
 
   const onSubmit = async () => {
-    if (!createShiftDto) return;
     try {
-      await createShift(createShiftDto);
-      if (timetableStore.selectedOffice) {
-        await timetableStore.fetchSchedule(timetableStore.selectedOffice.id, timetableStore.year, timetableStore.month);
+      if (!isEdit) {
+        if (!createShiftDto) return;
+        await createShift(createShiftDto);
+        if (timetableStore.selectedOffice) {
+          await timetableStore.fetchSchedule(
+            timetableStore.selectedOffice.id,
+            timetableStore.year,
+            timetableStore.month
+          );
+        }
+        onClose();
+      } else {
+        if (!editShiftDto || !shiftId) return;
+        await editShift(shiftId, editShiftDto);
+        if (timetableStore.selectedOffice) {
+          await timetableStore.fetchSchedule(
+            timetableStore.selectedOffice.id,
+            timetableStore.year,
+            timetableStore.month
+          );
+        }
+        onClose();
       }
-      onClose();
     } catch (err: unknown) {
       let message = 'Ошибка при удалении смены';
       if (axios.isAxiosError(err)) {

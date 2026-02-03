@@ -31,7 +31,6 @@ const LoginPage = observer(() => {
     passwordHelperText,
     sendSubmit
   } = useLoginPage();
-  localStorage.clear();
   return (
     <Box className={styles.container} component="form" onSubmit={sendSubmit}>
       <Stack spacing={2} className={styles.container}>
