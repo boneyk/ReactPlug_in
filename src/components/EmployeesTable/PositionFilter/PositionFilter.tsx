@@ -29,6 +29,7 @@ const PositionFilter: FC<PositionFilterProps> = ({ positions, selectedPositions,
       IconComponent={() => null}
       disabled={positions.length === 0}
       renderValue={() => <FilterButton isSmallDisplay={isSmallDisplay} />}
+      className={styles.filterSelect}
     >
       {positions.map((position) => (
         <MenuItem key={position} value={position}>

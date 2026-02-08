@@ -4,6 +4,7 @@ import type { ShiftType } from '@/types/schedule';
 
 export interface ShiftModalData {
   id: number;
+  employeeId: number;
   fullname: string;
   job: string;
   dayIndex: number;

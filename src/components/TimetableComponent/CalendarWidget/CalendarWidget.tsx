@@ -2,6 +2,8 @@ import { FC, useEffect } from 'react';
 
 import { Grid2 } from '@mui/material';
 
+import { useEmployeeOffices } from '@/hooks/useEmployeeOffices';
+
 import CalendarGrid from '../CalendarGrid';
 import TimetableToolbar from '../TimetableToolbar';
 
@@ -15,10 +17,16 @@ interface CalendarWidgetProps {
 
 const CalendarWidget: FC<CalendarWidgetProps> = ({ title, showDropdown = false }) => {
   const { timetableStore } = useStores();
+  const { employeeQuery, officesQuery } = useEmployeeOffices();
 
   useEffect(() => {
-    timetableStore.resetToCurrentDate();
-  }, [timetableStore]);
+    if (!timetableStore.selectedOffice && officesQuery.data?.length && employeeQuery.data) {
+      timetableStore.setSelectedOffice(officesQuery.data[0]);
+      timetableStore.setOffices(officesQuery.data);
+      timetableStore.setEmployee(employeeQuery.data);
+    }
+  }, [timetableStore, officesQuery.data, employeeQuery.data]);
+
   return (
     <Grid2 container className={styles.wrapper}>
       <Grid2 container className={styles.sectiolnName}>

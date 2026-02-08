@@ -3,28 +3,49 @@ import { makeAutoObservable } from 'mobx';
 export class BaseLayoutStore {
   warningMessage: string = '';
   isWarningVisible: boolean = false;
-  private hideTimeout: ReturnType<typeof setTimeout> | null = null;
+  successMessage: string = '';
+  isSuccessVisible: boolean = false;
+  private hideWarningTimeout: ReturnType<typeof setTimeout> | null = null;
+  private hideSuccessTimeout: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true });
   }
 
   showWarning(message: string, duration: number = 3000) {
-    if (this.hideTimeout) {
-      clearTimeout(this.hideTimeout);
+    if (this.hideWarningTimeout) {
+      clearTimeout(this.hideWarningTimeout);
     }
 
     this.warningMessage = message;
     this.isWarningVisible = true;
 
-    this.hideTimeout = setTimeout(() => {
+    this.hideWarningTimeout = setTimeout(() => {
       this.hideWarning();
     }, duration);
   }
 
   hideWarning() {
     this.isWarningVisible = false;
-    this.hideTimeout = null;
+    this.hideWarningTimeout = null;
+  }
+
+  showSuccess(message: string, duration: number = 3000) {
+    if (this.hideSuccessTimeout) {
+      clearTimeout(this.hideSuccessTimeout);
+    }
+
+    this.successMessage = message;
+    this.isSuccessVisible = true;
+
+    this.hideSuccessTimeout = setTimeout(() => {
+      this.hideSuccess();
+    }, duration);
+  }
+
+  hideSuccess() {
+    this.isSuccessVisible = false;
+    this.hideSuccessTimeout = null;
   }
 }
 

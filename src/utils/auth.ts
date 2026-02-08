@@ -1,3 +1,7 @@
+import jwtDecode from 'jwt-decode';
+
+import { JwtPayload } from '@/dto/DtoAuth';
+
 export const isUserAdmin = (): boolean => {
   const authorities = localStorage.getItem('authorities') || '';
   return authorities
@@ -9,4 +13,21 @@ export const isUserAdmin = (): boolean => {
 export const isAuth = (): boolean => {
   const accessToken = localStorage.getItem('accessToken');
   return !!accessToken;
+};
+
+export const decodeAuthToken = (accessToken: string | null) => {
+  if (!accessToken) {
+    return {
+      userId: null,
+      authorities: []
+    };
+  }
+  const decoded = jwtDecode<JwtPayload>(accessToken);
+  const userId = Number(decoded.user_id);
+  const authorities = decoded.authorities ?? [];
+
+  return {
+    userId,
+    authorities
+  };
 };

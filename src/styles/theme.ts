@@ -146,6 +146,29 @@ export const theme = createTheme({
             borderColor: vars.colorHoverNeutral,
             boxShadow: 'none'
           }
+        },
+        text: {
+          background: 'none',
+          fontFamily: 'var(--font-family-base), sans-serif',
+          cursor: 'pointer',
+          fontWeight: 600,
+          transition: 'color var(--transition-base), transform var(--transition-base)',
+          boxSizing: 'border-box',
+          padding: 0,
+          margin: 0,
+          minHeight: 0,
+          minWidth: 0
+        },
+        textSecondary: {
+          color: 'rgba(0, 0, 0, 0.7)',
+          '&:hover': {
+            color: 'rgba(0, 0, 0, 1)',
+            background: 'none',
+            transform: 'scale(1.05)'
+          },
+          '&:active': {
+            transform: 'scale(0.95)'
+          }
         }
       }
     },
@@ -213,6 +236,9 @@ export const theme = createTheme({
           '&.Mui-disabled': {
             color: 'rgba(0,0,0,0.38)'
           }
+        },
+        shrink: {
+          left: -2
         }
       }
     },
@@ -734,6 +760,28 @@ export const theme = createTheme({
             fontFamily: 'var(--font-family-base), sans-serif',
             '& .MuiTypography-root': {
               fontFamily: 'var(--font-family-base), sans-serif'
+            }
+          }
+        }
+      }
+    },
+    MuiSwitch: {
+      styleOverrides: {
+        thumb: {
+          backgroundColor: 'var(--color-pointer)'
+        },
+        track: {
+          backgroundColor: 'var(--color-gray-300)',
+          opacity: 1
+        },
+        switchBase: {
+          '&.Mui-checked': {
+            '& .MuiSwitch-thumb': {
+              backgroundColor: 'var(--color-pointer)'
+            },
+            '& + .MuiSwitch-track': {
+              backgroundColor: 'var(--color-pointer)',
+              opacity: 0.5
             }
           }
         }

@@ -43,7 +43,6 @@
 
 .desktopNav {
   display: flex;
-  gap: 8px;
   height: 100%;
   position: absolute;
   left: 50%;
@@ -64,17 +63,23 @@
 }
 
 .navBtn:global(.MuiButton-root) {
-  width: fit-content;
+  width: fluid-to-laptop(250, 100);
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
   height: 100%;
   font-size: fluid(16, 10, true) !important;
   font-family: var(--font-family-base), sans-serif;
   background-color: transparent;
   color: rgba(0, 0, 0, 0.7);
   font-weight: 600;
-  transition: color var(--transition-base), border-color var(--transition-base);
+  transition: color var(--transition-base), border-color var(--transition-base), transform var(--transition-base);
   border-radius: 0;
   border-bottom: 2px solid transparent;
   box-sizing: border-box;
+  padding: 0 12px;
+
+  &:last-child {
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+  }
 
   &:hover {
     background-color: transparent;
@@ -116,6 +121,7 @@
   transition: color var(--transition-base), background-color var(--transition-base), transform var(--transition-base), color var(--transition-base);
   font-family: var(--font-family-base), sans-serif;
   height: 90%;
+  padding: 2px 6px;
 
   &:hover {
     color: #232323;

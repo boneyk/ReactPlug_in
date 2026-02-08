@@ -37,9 +37,7 @@ export const ModalCreateRoleAndPerson: FC<ModalCreateRoleAndPersonProps> = obser
           value={selectedRole || ''}
           onChange={roleChange}
           fullWidth
-          error={!selectedRole}
           className={styles.picker}
-          helperText={!selectedRole ? 'Должность обязательна' : ''}
           slotProps={{
             input: {
               readOnly: false
@@ -61,14 +59,7 @@ export const ModalCreateRoleAndPerson: FC<ModalCreateRoleAndPersonProps> = obser
           isOptionEqualToValue={isOptionEqualToValue}
           noOptionsText="Нет сотрудников"
           renderInput={(params) => (
-            <TextField
-              {...params}
-              label={employeeLabel}
-              placeholder="Начните вводить ФИО"
-              error={!selectedEmployee}
-              helperText={!selectedEmployee ? 'Сотрудник обязателен' : ''}
-              className={styles.picker}
-            />
+            <TextField {...params} label={employeeLabel} placeholder="Начните вводить ФИО" className={styles.picker} />
           )}
           fullWidth
         />

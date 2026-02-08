@@ -27,7 +27,7 @@ const EmployeesTableToolbar: FC<EmployeesTableToolbarProps> = ({
   onDeleteEmployee
 }) => (
   <Grid2 container className={styles.infoButtons}>
-    <Box>{address}</Box>
+    <Box className={styles.officeAddress}>{address}</Box>
     <Grid2 className={styles.actionButtons}>
       <Button
         startIcon={isSmallDisplay ? null : <DeleteIcon />}

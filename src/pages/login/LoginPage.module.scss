@@ -11,11 +11,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  bottom: 40px;
 }
 
 .icon {
   font-size: 180px !important;
   color: var(--text-secondary);
+  position: relative;
+  bottom: -40px;
 }
 
 .input:global(.MuiTextField-root),
@@ -39,4 +43,9 @@
   font-family: var(--font-family-base), sans-serif;
   margin-left: 0;
   font-size: fluid(14, 12);
+}
+
+.errorAlert {
+  position: absolute;
+  top: 0;
 }

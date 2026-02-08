@@ -157,3 +157,41 @@
     word-break: break-word;
   }
 }
+
+.contentToDelete.contentToDelete {
+  padding: 0 8px;
+}
+
+.switcher.switcher {
+  margin-left: 8px;
+}
+
+.deleteActions.deleteActions {
+  gap: 8px;
+}
+
+.deleteTitle.deleteTitle {
+  padding-left: 8px;
+}
+
+.info.info {
+  margin-top: 12px;
+  display: grid;
+}
+
+.datePickers.datePickers {
+  margin-top: 12px;
+  column-gap: 8px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  @media (max-width: 395px) {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+}
+
+.datePicker.datePicker {
+  width: 1fr;
+}

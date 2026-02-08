@@ -1,14 +1,8 @@
 import { AxiosResponse } from 'axios';
 
 import { instance } from './config';
-import { OfficesResponse } from '@/dto/DtoOffice';
-import type {
-  ApiShift,
-  CreateShiftDto,
-  editShiftRequest,
-  myScheduleResponse,
-  ScheduleResponse
-} from '@/dto/DtoSchedule';
+import { OfficesResponse, OfficeTimetableDto } from '@/dto/DtoOffice';
+import type { CreateShiftDto, editShiftRequest, myScheduleResponse, ScheduleResponse, Shift } from '@/dto/DtoSchedule';
 
 export const getSchedule = (
   officeId: number,
@@ -36,7 +30,7 @@ export const getMySchedule = (
   });
 };
 
-export const createShift = (dto: CreateShiftDto): Promise<AxiosResponse<ApiShift>> => {
+export const createShift = (dto: CreateShiftDto): Promise<AxiosResponse<Shift[]>> => {
   return instance.post('api/schedule/shifts', dto);
 };
 
@@ -49,3 +43,6 @@ export const editShift = (shiftId: number, dto: editShiftRequest): Promise<Axios
 
 export const getOffices = (): Promise<AxiosResponse<OfficesResponse>> =>
   instance.get<OfficesResponse>('api/office/offices/my');
+
+export const getOfficesTimetable = (officeId: number): Promise<AxiosResponse<OfficeTimetableDto>> =>
+  instance.get<OfficeTimetableDto>(`api/office/offices/${officeId}/extended`);

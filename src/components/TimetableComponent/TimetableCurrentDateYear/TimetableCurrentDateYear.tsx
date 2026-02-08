@@ -1,50 +1,42 @@
-import { FC, useState } from 'react';
+import { FC, useEffect } from 'react';
 
 import { AddCircleOutline } from '@mui/icons-material';
-import { Button, FormControl, Grid2, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
+import { Button, FormControl, Grid2, MenuItem, Select } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
+import { useQuery } from '@tanstack/react-query';
 import arrowBack from 'assets/move-back-arrow.svg';
 import arrowForward from 'assets/move-forward-arrow.svg';
-import dayjs from 'dayjs';
 import { observer } from 'mobx-react-lite';
 
 import DropdownButton, { DropdownProvider } from '@/components/DropdownButton';
 import Modal from '@/components/Modals/ModalCreate/ModalCreate';
 
+import { useTimetableToolbar } from '@/hooks/useTimetableToolbar';
 import { isUserAdmin } from '@/utils/auth';
 
 import styles from './TimetableCurrentDateYear.module.scss';
-import { modalCreateStore } from '@/stores/modalCreate.store';
-import { useStores } from '@/stores/useStores';
+import { fetchOfficeTimetable, officeTimetableKey } from '@/api/queries';
+import { timetableStore } from '@/stores/timetable.store';
 
 interface TimetableCurrentDateYearProps {
   showDropdown?: boolean;
 }
 
 const TimetableCurrentDateYear: FC<TimetableCurrentDateYearProps> = observer(({ showDropdown = true }) => {
-  const { timetableStore } = useStores();
-  const { offices, selectedOffice, year, decYear, incYear, setSelectedOffice } = timetableStore;
-  const [isOpen, setIsOpen] = useState(false);
-  const handleClose = () => setIsOpen(false);
-  const handleOpen = () => {
-    timetableStore.resetRoleAndPerson();
-    modalCreateStore.setStartDate(dayjs());
-    modalCreateStore.setEndDate(dayjs());
-    modalCreateStore.selectPreset(1);
-    setIsOpen(true);
-  };
+  const { offices, selectedOffice, year, isOpen, actionItems, decYear, incYear, handleClose, handleOfficeChange } =
+    useTimetableToolbar();
 
-  const actionItems: Record<string, () => void> = {
-    'Создать смену': handleOpen,
-    'Создать заявку на подмену': () => console.log('2')
-  };
+  const officeId = selectedOffice?.id;
 
-  const handleOfficeChange = (event: SelectChangeEvent<number>) => {
-    const office = offices.find((o) => o.id === event.target.value);
-    if (office) {
-      setSelectedOffice(office);
-    }
-  };
+  const officeTimetable = useQuery({
+    queryKey: officeId ? officeTimetableKey(officeId) : ['officesTimetable-disabled'],
+    queryFn: fetchOfficeTimetable,
+    enabled: !!officeId
+  });
+
+  useEffect(() => {
+    if (officeTimetable.data) timetableStore.setOfficeTimetable(officeTimetable.data);
+  }, [officeTimetable.data]);
 
   return (
     <Grid2 container className={styles.wrapper}>

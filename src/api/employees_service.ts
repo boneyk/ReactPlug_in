@@ -20,11 +20,17 @@ export const addEmployeeToOffice = (
 };
 
 export const deleteEmployees = async (officeId: number, employeeIds: number[]): Promise<AxiosResponse<void>> => {
-  return instance.delete(`api/office/offices/${officeId}/employee`, { data: { employeeIds } });
+  return instance.delete(`api/office/offices/${officeId}/employees`, { data: { employeeIds } });
 };
 
 export const getEmployeeEntity = (userId: number): Promise<AxiosResponse<EmployeeEntityResponse>> => {
   return instance.get(`api/employee/employees/by-user/${userId}`);
+};
+
+export const getOfficesIdsByEmployeeHead = (
+  employeeId: number
+): Promise<AxiosResponse<OfficesIdsByEmployeeResponse>> => {
+  return instance.get(`api/office/offices/by-head/${employeeId}`);
 };
 
 export const getOfficesIdsByEmployee = (employeeId: number): Promise<AxiosResponse<OfficesIdsByEmployeeResponse[]>> => {
@@ -39,4 +45,8 @@ export const getEmployees = (
   params?: GetEmployeesParams
 ): Promise<AxiosResponse<PaginatedResponse<EmployeeResponse[]>>> => {
   return instance.get('api/employee/employees', { params });
+};
+
+export const addEmployees = async (officeId: number, employeeIds: number[]): Promise<AxiosResponse<void>> => {
+  return instance.post(`api/office/offices/${officeId}/employees`, { employeeIds });
 };

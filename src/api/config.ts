@@ -8,9 +8,14 @@ export const getErrorMessage = (status?: number | null): string => {
   return 'Произошла неизвестная ошибка';
 };
 
-const env = (window as any).__ENV__ || {};
-
-const baseURL = env.BASE_URL ?? 'http://demo.orng.atbplugin.tech';
+declare global {
+  interface Window {
+    __ENV__?: {
+      BASE_URL?: string;
+    };
+  }
+}
+const baseURL = window.__ENV__?.BASE_URL || 'http://api.kiberorange.ru';
 export const instance = axios.create({ baseURL: baseURL, withCredentials: true, timeout: 60000 });
 
 instance.interceptors.request.use((config) => {

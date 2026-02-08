@@ -1,19 +1,15 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { timetableStore } from 'stores/timetable.store';
 
+import { daysToIndex } from '@/utils/dateTime';
 import { Formats } from '@/utils/formats';
 
-import { useViewModal } from './useViewModal';
 import { buildShiftsWorkerList, getShiftTitle, getShiftType } from '@/lib/schedule';
 import { modalCreateStore } from '@/stores/modalCreate.store';
+import { modalViewStore } from '@/stores/modalView.store';
 import type { ShiftType } from '@/types/schedule';
-
-interface CreateModalData {
-  open: boolean;
-  startDate: Dayjs | null;
-}
 
 interface UseWorkerRowModalParams {
   role: string;
@@ -25,21 +21,23 @@ interface UseWorkerRowModalParams {
 }
 
 export const useCellClick = ({ role, employeeId, days, daysInMonth, year, month }: UseWorkerRowModalParams) => {
-  const { isOpen, selectedShift, openViewModal, closeModal } = useViewModal();
-  const [createModalData, setCreateModalData] = useState<CreateModalData>({
-    open: false,
-    startDate: null
-  });
-
   const workerData = timetableStore.shifts[role]?.[employeeId];
   const daysShiftsList = useMemo(() => {
     return buildShiftsWorkerList(timetableStore.year, timetableStore.month, daysInMonth, workerData);
   }, [daysInMonth, workerData]);
   const getCellDate = (dayIndex: number) => dayjs(new Date(year, month, days[dayIndex] + 1));
   const isPastDate = (dayIndex: number) => getCellDate(dayIndex).isBefore(dayjs(), 'day');
-  const isSunday = (dayIndex: number) => getCellDate(dayIndex).day() === 0;
   const hasShift = (dayIndex: number) => Boolean(daysShiftsList[dayIndex + 1]);
-  const canAddShift = (dayIndex: number) => !hasShift(dayIndex) && !isPastDate(dayIndex) && !isSunday(dayIndex);
+  const getDaysToIndex = (dayIndex: number) => daysToIndex[getCellDate(dayIndex).day()];
+  const canAddShift = (dayIndex: number) =>
+    !hasShift(dayIndex) && !isPastDate(dayIndex) && isOfficeWorkingDay(dayIndex);
+
+  const isOfficeWorkingDay = (dayIndex: number) => {
+    const officeTimetable = timetableStore.officeTimetable;
+    if (!officeTimetable || !officeTimetable.workingHours) return false;
+    const backendDay = getDaysToIndex(dayIndex);
+    return officeTimetable.workingHours.find((wh) => wh.dayOfWeek === backendDay);
+  };
 
   const getShiftByDayIndex = (dayIndex: number) => {
     const date = getCellDate(dayIndex).format(Formats.DATE);
@@ -56,8 +54,9 @@ export const useCellClick = ({ role, employeeId, days, daysInMonth, year, month 
     const startDate = parts[2] || '';
     const endDate = parts[3] || '';
 
-    openViewModal({
+    modalViewStore.open({
       id: shift.id,
+      employeeId: workerData.employeeId,
       fullname: workerData.fullName,
       job: role,
       dayIndex,
@@ -78,10 +77,7 @@ export const useCellClick = ({ role, employeeId, days, daysInMonth, year, month 
     modalCreateStore.setStartDate(cellDate);
     modalCreateStore.setEndDate(cellDate);
     modalCreateStore.selectPreset(1);
-    setCreateModalData({
-      open: true,
-      startDate: modalCreateStore.startDate
-    });
+    modalCreateStore.open(false);
   };
 
   const handleCellClick = (dayIndex: number) => {
@@ -89,19 +85,14 @@ export const useCellClick = ({ role, employeeId, days, daysInMonth, year, month 
       openViewModalForShift(dayIndex);
       return;
     }
-    if (isPastDate(dayIndex) || isSunday(dayIndex)) return;
+    if (isPastDate(dayIndex) || !isOfficeWorkingDay(dayIndex)) return;
     openCreateModal(dayIndex);
   };
-  const closeCreateModal = () => setCreateModalData((prev) => ({ ...prev, open: false }));
 
   return {
     daysShiftsList,
-    createModalData,
     handleCellClick,
-    closeCreateModal,
-    isViewModalOpen: isOpen,
-    selectedShift,
-    closeViewModal: closeModal,
-    canAddShift
+    canAddShift,
+    isOfficeWorkingDay
   };
 };

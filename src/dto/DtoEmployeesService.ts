@@ -55,10 +55,8 @@ export interface CreateEmployeeRequest {
 
 export interface GetEmployeesParams {
   id?: number[];
-  excludeId?: number[];
+  fullName?: string;
   cityId?: number;
-  statusId?: number;
-  positionId?: number;
   substitutionGroup?: boolean;
   page?: number;
   size?: number;
@@ -79,6 +77,7 @@ export interface PaginatedResponse<T> {
 
 export interface OfficesIdsByEmployeeResponse {
   id: number;
+  headId: number;
   code: string;
   name: string;
   address: string;

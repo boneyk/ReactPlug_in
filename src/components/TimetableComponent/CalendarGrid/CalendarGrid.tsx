@@ -1,44 +1,56 @@
 import { useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { Box, Grid2, Table, TableBody, TableCell, TableRow } from '@mui/material';
-import classNames from 'classnames';
+import { Box, Grid2, Table, TableBody, TableRow } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
 
 import SpinCentered from '@/components/spin-centered/SpinCentered';
 
-import { shortWeekdays } from '@/constants/calendar';
+import { useEmployeeOffices } from '@/hooks/useEmployeeOffices';
 
+import { CalendarCell } from './CalendarCell';
 import styles from './CalendarGrid.module.scss';
-import { formatShiftLabel, getCalendarMatrix, getShiftClassName } from '@/lib/schedule';
+import { fetchMySchedule, myScheduleKey } from '@/api/queries';
+import { getCalendarMatrix } from '@/lib/schedule';
 import { useStores } from '@/stores/useStores';
 
 const CalendarGrid = observer(() => {
   const { timetableStore } = useStores();
-  const { myScheduleMatrix, month, year, isMyScheduleLoading } = timetableStore;
-  const location = useLocation();
-  const isMySchedulePage = location.pathname === '/schedule/my';
+  const { selectedOffice, myScheduleMatrix, month, year } = timetableStore;
+  const { pathname } = useLocation();
+  const { employeeQuery } = useEmployeeOffices();
+
+  const isMySchedulePage = pathname === '/schedule/my';
 
   const emptyCalendarMatrix = useMemo(() => {
-    const matrix = getCalendarMatrix(year, month);
-    return matrix.map((week) =>
+    const matrix = getCalendarMatrix(year, month).map((week) =>
       week.map((cell) => {
         const [day, cellMonth] = cell.split('|').map(Number);
         return { day, month: cellMonth, myShifts: [] };
       })
     );
+    return matrix;
   }, [year, month]);
 
   const calendarMatrix = isMySchedulePage ? myScheduleMatrix : emptyCalendarMatrix;
 
+  const myScheduleQuery = useQuery({
+    queryKey: employeeQuery.data ? myScheduleKey(employeeQuery.data.id, year, month) : ['mySchedule', 'disabled'],
+    queryFn: fetchMySchedule,
+    enabled: !!employeeQuery.data
+  });
+
   useEffect(() => {
-    if (isMySchedulePage) {
-      timetableStore.fetchMySchedule();
+    if (myScheduleQuery.data) {
+      timetableStore.setMySchedule(myScheduleQuery.data);
     }
-  }, [isMySchedulePage, year, month, timetableStore]);
+  }, [myScheduleQuery.data, timetableStore]);
 
-  if (isMyScheduleLoading && isMySchedulePage) return <SpinCentered overlay />;
-
+  const isMyScheduleLoading = myScheduleQuery.isLoading || !myScheduleQuery.data;
+  if (isMySchedulePage && isMyScheduleLoading && !selectedOffice) {
+    return <SpinCentered overlay />;
+  }
   return (
     <>
       <Grid2 container className={styles.weekDays}>
@@ -50,42 +62,21 @@ const CalendarGrid = observer(() => {
         <Box className={styles.weekDay}>Суббота</Box>
         <Box className={styles.weekDay}>Воскресенье</Box>
       </Grid2>
+
       <Table className={styles.calendarGrid}>
         <TableBody>
           {calendarMatrix.map((calendarRow, rowIndex) => (
             <TableRow key={rowIndex}>
-              {calendarRow.map((cell, cellIndex) => {
-                const isNotCurrentMonth = cell.month !== month;
-                const isCurrentDay =
-                  cell.month === month && cell.day === new Date().getDate() && year === new Date().getFullYear();
-
-                return (
-                  <TableCell
-                    colSpan={1}
-                    rowSpan={1}
-                    key={cellIndex}
-                    className={classNames(styles.gridCell, {
-                      [styles.notCurrentMonthCell]: isNotCurrentMonth,
-                      [styles.currentDay]: isCurrentDay
-                    })}
-                  >
-                    <Grid2 container className={styles.wrapper}>
-                      <Grid2 container className={styles.dateWeekday}>
-                        <span className={styles.date}>{cell.day}</span>
-                        <span className={styles.weekday}>{shortWeekdays[cellIndex]}</span>
-                      </Grid2>
-                      <Grid2 className={styles.myShifts}>
-                        {isMySchedulePage &&
-                          cell.myShifts.map((shift, shiftIndex) => (
-                            <span key={shiftIndex} className={styles[getShiftClassName(shift.type)]}>
-                              {formatShiftLabel(shift)}
-                            </span>
-                          ))}
-                      </Grid2>
-                    </Grid2>
-                  </TableCell>
-                );
-              })}
+              {calendarRow.map((cell, cellIndex) => (
+                <CalendarCell
+                  key={cellIndex}
+                  cell={cell}
+                  cellIndex={cellIndex}
+                  currentMonth={month}
+                  year={year}
+                  isMySchedulePage={isMySchedulePage}
+                />
+              ))}
             </TableRow>
           ))}
         </TableBody>

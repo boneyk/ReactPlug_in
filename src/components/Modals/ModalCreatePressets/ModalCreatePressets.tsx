@@ -3,6 +3,8 @@ import { DateRangeIcon } from '@mui/x-date-pickers';
 import { observer } from 'mobx-react-lite';
 import { modalCreateStore, ShiftPreset } from 'stores/modalCreate.store';
 
+import { OfficeScheduleHint } from '@/components/OfficeScheduleHint/OfficeScheduleHint';
+
 import styles from '../ModalCreate/ModalCreate.module.scss';
 
 export const ModalCreatePressets = observer(() => {
@@ -14,6 +16,7 @@ export const ModalCreatePressets = observer(() => {
       <Grid2 className={styles.sectionName}>
         <DateRangeIcon />
         <Typography>Период работы</Typography>
+        <OfficeScheduleHint></OfficeScheduleHint>
       </Grid2>
       <ToggleButtonGroup
         value={modalCreateStore.selectedPresetId}

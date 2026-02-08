@@ -1,0 +1,130 @@
+@use '@/styles/helpers' as *;
+
+.columnTitle.columnTitle {
+  font-family: var(--font-family-base), sans-serif;
+  font-weight: 600;
+  color: var(--color-white);
+  font-size: fluid-to-laptop(16, 12);
+
+  @media (min-width: 521px) {
+    padding-left: 16px;
+  }
+}
+
+.headerContainer {
+  align-items: center;
+  background-color: #1a1a1a;
+
+  @media (max-width: 520px) {
+    padding-left: 0;
+    justify-content: center;
+  }
+}
+
+.columnHeaders {
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.columnHeader {
+  padding: 0 !important;
+  pointer-events: none;
+
+  &:focus,
+  &:focus-within {
+    outline: none !important;
+  }
+
+  &:nth-last-child(3) {
+    & :global(.MuiDataGrid-columnSeparator) {
+      display: none;
+    }
+  }
+}
+
+.checkbox.checkbox {
+  pointer-events: auto;
+  color: rgba(92, 92, 92, 0.51);
+
+  &:global(.Mui-checked) {
+    color: rgba(92, 92, 92, 0.51);
+    background-color: var(--color-white);
+    width: 20px;
+    height: 20px;
+    border-radius: 2px;
+  }
+}
+
+.emptyDataRow {
+  font-family: var(--font-family-base), sans-serif;
+}
+
+.search.search {
+  margin-bottom: 10px;
+  padding: 0;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background-color: var(--color-white);
+}
+
+.searchInput.searchInput {
+  padding: 6px 0 6px 10px;
+  font-size: fluid-to-laptop(16, 12);
+}
+
+.searchInputRoot.searchInputRoot {
+  padding-right: 10px;
+  border-radius: 10px;
+  margin-top: 3px;
+}
+
+.searchCell {
+  font-family: var(--font-family-base), sans-serif;
+  overflow: visible;
+  white-space: normal;
+  word-break: break-word;
+  display: flex;
+  align-items: center;
+  font-size: fluid-to-laptop(16, 12);
+  padding: fluid-to-laptop(4, 2) fluid-to-laptop(6, 4);
+  min-height: 50px;
+
+  &:focus,
+  &:focus-within {
+    outline: none !important;
+  }
+}
+
+.grid.grid {
+  max-height: 350px;
+  min-height: 350px;
+
+  * {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    scrollbar-width: none;
+  }
+}
+
+.scrollbarFiller {
+  display: none;
+}
+
+.row.row {
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+  }
+
+  &:global(.Mui-selected) {
+    background-color: rgba(0, 0, 0, 0.08) !important;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.16) !important;
+    }
+  }
+}

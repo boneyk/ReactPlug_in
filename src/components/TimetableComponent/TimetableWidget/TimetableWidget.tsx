@@ -1,21 +1,13 @@
-import { useEffect } from 'react';
-
 import { Grid2 } from '@mui/material';
+import { observer } from 'mobx-react-lite';
 
 import Timetable from '../Timetable';
 import TimetableControls from '../TimetableControls';
 import TimetableToolbar from '../TimetableToolbar';
 
 import styles from './TimetableWidget.module.scss';
-import { useStores } from '@/stores/useStores';
 
-const TimetableWidget = () => {
-  const { timetableStore } = useStores();
-
-  useEffect(() => {
-    timetableStore.resetToCurrentDate();
-  }, [timetableStore]);
-
+const TimetableWidget = observer(() => {
   return (
     <div>
       <Grid2 container className={styles.sectiolnName}>
@@ -26,6 +18,6 @@ const TimetableWidget = () => {
       <TimetableControls />
     </div>
   );
-};
+});
 
 export default TimetableWidget;

@@ -246,3 +246,5 @@ export const formatShiftLabel = (shift: myScheduleItem): string => {
 export const getShiftClassName = (type: string): string => {
   return shiftTypeClasses[type] || 'work';
 };
+
+export const getShiftKey = (value: string) => value.split('|').slice(2).join('|');

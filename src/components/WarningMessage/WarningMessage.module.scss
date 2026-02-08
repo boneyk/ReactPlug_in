@@ -2,6 +2,8 @@
 
 $backgroundColor: #ffd9d9;
 $color: rgba(255, 0, 0, 0.6);
+$successBackgroundColor: #d9ffd9;
+$successColor: rgba(0, 128, 0, 0.7);
 
 .wrapper:global(.MuiGrid2-root) {
   position: absolute;
@@ -31,6 +33,13 @@ $color: rgba(255, 0, 0, 0.6);
   &.hidden {
     opacity: 0;
     top: -50px;
+    z-index: -1;
+  }
+
+  &.success {
+    background: $successBackgroundColor;
+    border-color: $successColor;
+    color: $successColor;
   }
 }
 

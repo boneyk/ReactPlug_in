@@ -2,9 +2,13 @@ import dayjs, { Dayjs } from 'dayjs';
 import { CreateShiftDto, editShiftRequest } from 'dto/DtoSchedule';
 import { makeAutoObservable } from 'mobx';
 
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
 import { Formats } from 'utils/formats';
 
 import { timetableStore } from './timetable.store';
+
+dayjs.extend(customParseFormat);
 
 export interface ShiftPreset {
   id: number;
@@ -33,11 +37,26 @@ export class ModalCreateStore {
   selectedPresetId: number | null = null;
   presets: ShiftPreset[] = [];
   shiftId: number | null = null;
+  isOpen: boolean = false;
+  isEdit: boolean = false;
+  editMode: 'single' | 'period' = 'single';
+  shiftDates: Dayjs[] = [];
 
   constructor() {
     makeAutoObservable(this);
     this.presets = shiftPresetsMock.map(this.mapShiftPresetDtoToModel);
   }
+
+  open = (isEdit: boolean = false) => {
+    this.isEdit = isEdit;
+    this.isOpen = true;
+  };
+
+  close = () => {
+    this.isOpen = false;
+    this.isEdit = false;
+    this.reset();
+  };
 
   private parseTime = (time: string) => {
     const [hour, minute] = time.split(':').map(Number);
@@ -66,6 +85,40 @@ export class ModalCreateStore {
   setShiftId = (id: number) => {
     this.shiftId = id;
   };
+
+  setEditMode = (mode: 'single' | 'period') => {
+    this.editMode = mode;
+  };
+
+  setShiftDates = (startDate: string, endDate: string) => {
+    const start = dayjs(startDate, 'DD.MM.YYYY');
+    const end = dayjs(endDate, 'DD.MM.YYYY');
+
+    if (!start.isValid() || !end.isValid()) {
+      this.shiftDates = [];
+      return;
+    }
+
+    const dates: Dayjs[] = [];
+    let current = start;
+    while (current.isBefore(end) || current.isSame(end, 'day')) {
+      dates.push(current);
+      current = current.add(1, 'day');
+    }
+    this.shiftDates = dates;
+  };
+
+  selectShiftDate = (date: Dayjs) => {
+    const preset = this.presets.find((p) => p.id === this.selectedPresetId);
+    if (preset) {
+      this.startDate = date.hour(preset.startHour).minute(preset.startMinute).second(0);
+      this.endDate = date.hour(preset.endHour).minute(preset.endMinute).second(0);
+    } else {
+      this.startDate = date;
+      this.endDate = date;
+    }
+  };
+
   selectPreset = (presetId: number | null) => {
     this.selectedPresetId = presetId;
     const preset = this.presets.find((p) => p.id === presetId) || null;
@@ -82,7 +135,34 @@ export class ModalCreateStore {
     this.selectedPresetId = null;
     this.startDate = null;
     this.endDate = null;
+    this.shiftDates = [];
+    this.editMode = 'single';
   };
+
+  get shiftIdsForPeriod(): number[] {
+    const { startDate, endDate } = this;
+    if (!startDate || !endDate) return [];
+
+    const employee = timetableStore.selectedEmployee;
+    const role = timetableStore.selectedRole;
+    if (!employee || !role) return [];
+
+    const employees = timetableStore.shifts[role];
+    if (!employees) return [];
+
+    const emp = employees.find((e) => e.employeeId === employee.id);
+    if (!emp) return [];
+
+    return emp.shifts
+      .filter((shift) => {
+        const shiftDate = dayjs(shift.scheduledOn);
+        return (
+          (shiftDate.isSame(startDate, 'day') || shiftDate.isAfter(startDate, 'day')) &&
+          (shiftDate.isSame(endDate, 'day') || shiftDate.isBefore(endDate, 'day'))
+        );
+      })
+      .map((shift) => shift.id);
+  }
   get errors() {
     const result: { start?: string; end?: string } = {};
     if (!this.startDate) result.start = 'Дата начала обязательна';

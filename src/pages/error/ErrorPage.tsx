@@ -10,7 +10,7 @@ const ErrorPage = () => {
   const errorCode = err ?? '404';
   useDocumentTitle();
   const handleClick = () => {
-    navigate('/');
+    navigate(-1);
   };
 
   return (
@@ -22,12 +22,12 @@ const ErrorPage = () => {
 
         <Stack direction="row" spacing={1} alignItems="center">
           <Typography variant="body1" color="text.secondary">
-            Sorry, the page you visited does not exist.
+            К сожалению, этой страницы не существует.
           </Typography>
         </Stack>
 
         <Button variant="contained" color="primary" onClick={handleClick}>
-          Back Home
+          Вернуться
         </Button>
       </Stack>
     </Box>

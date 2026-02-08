@@ -1,4 +1,4 @@
-import { FC, JSX } from 'react';
+import { FC, JSX, PropsWithChildren } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import { isUserAdmin } from '@/utils/auth';
@@ -11,6 +11,13 @@ interface AccessRequiredProps {
 
 export const AccessRequiredPermission: FC<AccessRequiredProps> = ({ children }): JSX.Element => {
   if (!isUserAdmin()) {
+    return <Navigate to={errorPath(403)} replace />;
+  }
+  return children;
+};
+
+export const NonAdminOnly: FC<PropsWithChildren> = ({ children }) => {
+  if (isUserAdmin()) {
     return <Navigate to={errorPath(403)} replace />;
   }
   return children;

@@ -7,8 +7,8 @@ import LoginPage from 'pages/login/LoginPage';
 import EmployeesTable from '@/components/EmployeesTable';
 import CalendarWidget from '@/components/TimetableComponent/CalendarWidget';
 
-import { AccessRequiredPermission } from './AccessRequiredPermission';
-import { ProtectedRouteProvider } from './ProtectedRouteProvider';
+import { AccessRequiredPermission, NonAdminOnly } from './AccessRequiredPermission';
+import { AlreadyAuthenticated, ProtectedRouteProvider } from './ProtectedRouteProvider';
 import { SuspenseLayout } from './SuspenseLayout';
 import TimetablePage from '@/pages/timetable/TimetablePage';
 
@@ -16,7 +16,11 @@ const Navigation = () => {
   const routes = [
     {
       path: 'login',
-      element: <LoginPage />
+      element: (
+        <AlreadyAuthenticated>
+          <LoginPage />
+        </AlreadyAuthenticated>
+      )
     },
     {
       element: <ProtectedRouteProvider />,
@@ -38,11 +42,15 @@ const Navigation = () => {
                 },
                 {
                   path: 'schedule/my',
-                  element: <CalendarWidget title={'Мой график смен'} />
+                  element: (
+                    <NonAdminOnly>
+                      <CalendarWidget title={'Мой график смен'} />
+                    </NonAdminOnly>
+                  )
                 },
                 {
                   path: 'stats',
-                  element: <CalendarWidget title={'Статистика'} showDropdown={true} />
+                  element: <CalendarWidget title={'Статистика'} />
                 },
                 {
                   path: 'employee',

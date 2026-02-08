@@ -2,6 +2,10 @@ import { useMemo } from 'react';
 
 import { Dayjs } from 'dayjs';
 
+import { daysToIndex } from '@/utils/dateTime';
+
+import { timetableStore } from '@/stores/timetable.store';
+
 type UseModalCreateDatePeriodParams = {
   date: Dayjs | null;
   error?: string;
@@ -9,40 +13,42 @@ type UseModalCreateDatePeriodParams = {
 };
 
 export const useModalCreateDatePeriod = ({ date, error, isEdit = false }: UseModalCreateDatePeriodParams) => {
+  const { officeTimetable } = timetableStore;
   return useMemo(() => {
-    if (!date) {
+    if (!date || !officeTimetable) {
       return {};
     }
-    const day = date.day();
+    const dayOfWeek = daysToIndex[date.day()];
+    const workingDay = officeTimetable.workingHours.find((item) => item.dayOfWeek === dayOfWeek);
+
     const baseConfig = {
-      shouldDisableDate: (d: Dayjs) => d.day() === 0,
+      shouldDisableDate: (d: Dayjs) => {
+        const backendDay = daysToIndex[d.day()];
+        return !officeTimetable.workingHours.some((wh) => wh.dayOfWeek === backendDay);
+      },
       slotProps: {
         textField: {
           error: !!error,
-          helperText: error
+          helperText: '',
+          inputProps: { readOnly: true }
         }
       },
       disablePast: !isEdit
     };
-
-    if (day === 0) {
+    if (!workingDay) {
       return {
-        shouldDisableDate: () => true
+        shouldDisableDate: () => true,
+        shouldDisableTime: () => true
       };
     }
 
-    if (day === 6) {
-      return {
-        ...baseConfig,
-        minTime: date.hour(10).minute(0),
-        maxTime: date.hour(16).minute(0)
-      };
-    }
+    const [startHour, startMinute] = workingDay.startsOn.split(':').map(Number);
+    const [endHour, endMinute] = workingDay.endsOn.split(':').map(Number);
 
     return {
       ...baseConfig,
-      minTime: date.hour(9).minute(0),
-      maxTime: date.hour(19).minute(0)
+      minTime: date.hour(startHour).minute(startMinute),
+      maxTime: date.hour(endHour).minute(endMinute)
     };
-  }, [date, error, isEdit]);
+  }, [date, error, isEdit, officeTimetable]);
 };

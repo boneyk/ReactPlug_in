@@ -1,17 +1,28 @@
 import { useEffect } from 'react';
 
-import { timetableStore } from 'stores/timetable.store';
-
 import TimetableWidget from '../../components/TimetableComponent';
 
-import { isAuth } from 'utils/auth';
+import { useEmployeeOffices } from '@/hooks/useEmployeeOffices';
+
+import { timetableStore } from '@/stores/timetable.store';
 
 const TimetablePage = () => {
+  const { employeeQuery, officesQuery, officesTimetableQuery } = useEmployeeOffices();
+
   useEffect(() => {
-    if (isAuth()) {
-      timetableStore.init();
+    if (
+      !timetableStore.selectedOffice &&
+      officesQuery.data?.length &&
+      employeeQuery.data &&
+      officesTimetableQuery.data
+    ) {
+      timetableStore.setSelectedOffice(officesQuery.data[0]);
+      timetableStore.setOffices(officesQuery.data);
+      timetableStore.setEmployee(employeeQuery.data);
+      timetableStore.setOfficeTimetable(officesTimetableQuery.data);
     }
-  }, []);
+  }, [officesQuery.data, employeeQuery.data, officesTimetableQuery.data]);
+
   return <TimetableWidget />;
 };
 

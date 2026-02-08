@@ -1,0 +1,43 @@
+@use '@/styles/helpers' as *;
+
+.dialogTitle:global(.MuiDialogTitle-root) {
+  position: relative;
+}
+
+.dialogWrapper {
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: fluid(28, 14);
+}
+
+.icon {
+  padding: 0;
+  margin-top: -4px;
+  margin-right: -4px;
+}
+
+.dialogActionsWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.actionButton:global(.MuiButton-root) {
+  font-size: 16px;
+  padding: 4px 8px;
+}
+
+.content {
+  padding: 0 16px 8px !important;
+}
+
+.addDialog {
+  height: 80%;
+  margin: auto auto;
+}
+
+.backdrop {
+  backdrop-filter: blur(3px);
+}
